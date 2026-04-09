@@ -38,7 +38,10 @@ GET a URL and parse the response as JSON. Throws `ParseError` if the response is
 ```typescript
 import { json } from '@glyph/sdk'
 
-interface SearchResult { id: string; title: string }
+interface SearchResult {
+  id: string
+  title: string
+}
 const data = await json<SearchResult[]>('https://api.example.com/search?q=test')
 ```
 
@@ -49,10 +52,10 @@ POST JSON data and parse the response. Automatically sets `Content-Type: applica
 ```typescript
 import { postJSON } from '@glyph/sdk'
 
-const result = await postJSON<{ token: string }>(
-  'https://api.example.com/login',
-  { username: 'user', password: 'pass' }
-)
+const result = await postJSON<{ token: string }>('https://api.example.com/login', {
+  username: 'user',
+  password: 'pass',
+})
 ```
 
 ## Full Control
@@ -67,7 +70,7 @@ import { request } from '@glyph/sdk'
 const body = await request({
   url: 'https://example.com/api',
   method: 'POST',
-  headers: { 'Authorization': 'Bearer token123' },
+  headers: { Authorization: 'Bearer token123' },
   body: JSON.stringify({ query: 'test' }),
 })
 ```
@@ -84,7 +87,7 @@ const { response, body } = await requestFull({
   method: 'GET',
 })
 
-console.log(response.status)  // 200
+console.log(response.status) // 200
 console.log(response.headers) // { 'content-type': 'text/html', ... }
 ```
 
@@ -103,11 +106,11 @@ export default createSource({
 
 ### Presets
 
-| Preset | Rate | Best for |
-|--------|------|----------|
-| `RateLimit.strict` | 1 req/sec | Aggressive rate limiting sites |
-| `RateLimit.balanced` | 3 req/sec | Most sites (recommended) |
-| `RateLimit.loose` | 10 req/sec | Fast/permissive sites |
+| Preset               | Rate       | Best for                       |
+| -------------------- | ---------- | ------------------------------ |
+| `RateLimit.strict`   | 1 req/sec  | Aggressive rate limiting sites |
+| `RateLimit.balanced` | 3 req/sec  | Most sites (recommended)       |
+| `RateLimit.loose`    | 10 req/sec | Fast/permissive sites          |
 
 ### Custom Rate Limit
 
@@ -122,9 +125,9 @@ Enable automatic retry for transient failures. Only GET requests are retried. PO
 ```typescript
 export default createSource({
   retry: {
-    maxRetries: 3,              // default: 3
-    delayMs: 1000,              // default: 1000ms
-    backoff: 'exponential',     // 'fixed' or 'exponential' (default)
+    maxRetries: 3, // default: 3
+    delayMs: 1000, // default: 1000ms
+    backoff: 'exponential', // 'fixed' or 'exponential' (default)
   },
   // ...
 })
@@ -143,10 +146,10 @@ You can also use `withRetry()` directly:
 ```typescript
 import { withRetry, get } from '@glyph/sdk'
 
-const html = await withRetry(
-  () => get('https://flaky-site.com/page'),
-  { maxRetries: 5, backoff: 'exponential' }
-)
+const html = await withRetry(() => get('https://flaky-site.com/page'), {
+  maxRetries: 5,
+  backoff: 'exponential',
+})
 ```
 
 ## Error Handling
@@ -163,7 +166,7 @@ try {
 } catch (error) {
   if (error instanceof HttpError) {
     console.log(error.status) // 404
-    console.log(error.url)    // 'https://example.com/missing-page'
+    console.log(error.url) // 'https://example.com/missing-page'
   }
 }
 ```

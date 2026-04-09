@@ -46,6 +46,7 @@ Open the reader menu → Search in Chapter. Type your query. All matches are hig
 ### The reader shows a white screen / loading forever
 
 Try these steps:
+
 1. Go back and re-open the chapter
 2. If that doesn't work, go to Settings → Storage → Clear Extension Cache, then try again
 3. Check your internet connection, since the extension might need to fetch content
@@ -53,6 +54,7 @@ Try these steps:
 ### A chapter shows "Could not load chapter"
 
 The extension couldn't fetch the chapter content. This usually means:
+
 - The novel website is down or blocking requests
 - Your internet connection dropped
 - The extension needs to be updated
@@ -77,6 +79,7 @@ Go to Settings → Extensions. In the Active Sources section, tap **Refresh** on
 ### An extension isn't loading / shows "Extension not loaded"
 
 The extension's JavaScript bundle might be missing or corrupted. Try:
+
 1. Go to Settings → Extensions → tap the repository → **Refresh** the source
 2. If that doesn't work, go to Settings → Storage → Clear Extension Cache
 3. Re-open the app
@@ -125,6 +128,7 @@ All data is stored locally on your device using SwiftData. If iCloud is enabled,
 ### Novels are showing content I don't want to see
 
 Go to Settings → Filters & Ratings:
+
 - Set your **Maximum Rating** (Everyone, Teen, Mature, Adult)
 - Enable **Blur Mature/Adult Covers** to blur sensitive cover images
 
@@ -133,6 +137,7 @@ Extensions that support tags will have their content filtered automatically.
 ### I lost my reading progress
 
 Your progress syncs via iCloud. If you're on a new device:
+
 1. Make sure you're signed into the same Apple ID
 2. Wait a few minutes for iCloud to sync
 3. Check the History tab

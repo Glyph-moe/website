@@ -4,12 +4,12 @@
 @import '@fontsource/space-grotesk/700.css';
 
 :root {
-  --bg: #0E0E12;
-  --bg-surface: #16161D;
-  --bg-surface-hover: #1E1E28;
-  --text: #E8E6E3;
-  --text-secondary: #8A8A96;
-  --accent: #EF9F27;
+  --bg: #0e0e12;
+  --bg-surface: #16161d;
+  --bg-surface-hover: #1e1e28;
+  --text: #e8e6e3;
+  --text-secondary: #8a8a96;
+  --accent: #ef9f27;
   --accent-dim: rgba(239, 159, 39, 0.12);
   --border: rgba(255, 255, 255, 0.06);
   --nav-bg: rgba(14, 14, 18, 0.8);
@@ -24,60 +24,62 @@
   --phone-screen: #111116;
   --phone-surface: rgba(255, 255, 255, 0.03);
   --phone-surface-border: rgba(255, 255, 255, 0.04);
-  --phone-text: #E8E6E3;
-  --phone-text-secondary: #8A8A96;
+  --phone-text: #e8e6e3;
+  --phone-text-secondary: #8a8a96;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #F8F8FA;
-    --bg-surface: #FFFFFF;
-    --bg-surface-hover: #F0F0F4;
-    --text: #1A1A1E;
-    --text-secondary: #6B6B78;
-    --accent: #D48A1A;
+  :root:not([data-theme='dark']) {
+    --bg: #f8f8fa;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #f0f0f4;
+    --text: #1a1a1e;
+    --text-secondary: #6b6b78;
+    --accent: #d48a1a;
     --accent-dim: rgba(212, 138, 26, 0.1);
     --border: rgba(0, 0, 0, 0.08);
     --nav-bg: rgba(248, 248, 250, 0.85);
-    --logo-stroke: #1A1A1E;
+    --logo-stroke: #1a1a1e;
     --phone-body: #000;
     --phone-border: rgba(255, 255, 255, 0.1);
     --phone-border-inner: rgba(255, 255, 255, 0.04);
     --phone-shadow: rgba(0, 0, 0, 0.15);
-    --phone-screen: #F5F5F7;
+    --phone-screen: #f5f5f7;
     --phone-surface: rgba(0, 0, 0, 0.03);
     --phone-surface-border: rgba(0, 0, 0, 0.06);
-    --phone-text: #1A1A1E;
-    --phone-text-secondary: #6B6B78;
+    --phone-text: #1a1a1e;
+    --phone-text-secondary: #6b6b78;
     color-scheme: light;
   }
 }
 
-[data-theme="light"] {
-  --bg: #F8F8FA;
-  --bg-surface: #FFFFFF;
-  --bg-surface-hover: #F0F0F4;
-  --text: #1A1A1E;
-  --text-secondary: #6B6B78;
-  --accent: #D48A1A;
+[data-theme='light'] {
+  --bg: #f8f8fa;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f0f0f4;
+  --text: #1a1a1e;
+  --text-secondary: #6b6b78;
+  --accent: #d48a1a;
   --accent-dim: rgba(212, 138, 26, 0.1);
   --border: rgba(0, 0, 0, 0.08);
   --nav-bg: rgba(248, 248, 250, 0.85);
-  --logo-stroke: #1A1A1E;
+  --logo-stroke: #1a1a1e;
   --phone-body: #000;
   --phone-border: rgba(255, 255, 255, 0.1);
   --phone-border-inner: rgba(255, 255, 255, 0.04);
   --phone-shadow: rgba(0, 0, 0, 0.15);
-  --phone-screen: #F5F5F7;
+  --phone-screen: #f5f5f7;
   --phone-surface: rgba(0, 0, 0, 0.03);
   --phone-surface-border: rgba(0, 0, 0, 0.06);
-  --phone-text: #1A1A1E;
-  --phone-text-secondary: #6B6B78;
+  --phone-text: #1a1a1e;
+  --phone-text-secondary: #6b6b78;
   color-scheme: light;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -119,21 +121,21 @@ a {
 }
 
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .shiki,
-  :root:not([data-theme="dark"]) .shiki span {
+  :root:not([data-theme='dark']) .shiki,
+  :root:not([data-theme='dark']) .shiki span {
     color: var(--shiki-light, inherit) !important;
   }
-  :root:not([data-theme="dark"]) .shiki {
+  :root:not([data-theme='dark']) .shiki {
     background-color: var(--bg-surface) !important;
   }
 }
 
-[data-theme="light"] .shiki,
-[data-theme="light"] .shiki span {
+[data-theme='light'] .shiki,
+[data-theme='light'] .shiki span {
   color: var(--shiki-light, inherit) !important;
 }
 
-[data-theme="light"] .shiki {
+[data-theme='light'] .shiki {
   background-color: var(--bg-surface) !important;
 }
 

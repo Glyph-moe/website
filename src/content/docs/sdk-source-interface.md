@@ -18,12 +18,14 @@ async searchNovels(query: string, page: number): Promise<PagedResults<Novel>>
 ```
 
 **Parameters:**
+
 - `query`: The search term, or a full URL for genre-based searches
 - `page`: Page number (1-indexed)
 
 **Returns:** `{ items: Novel[], hasNextPage: boolean, nextPage?: number }`
 
 **Example:**
+
 ```typescript
 async searchNovels(query, page) {
   const html = await get(`${BASE}/search?q=${encodeURIComponent(query)}&page=${page}`)
@@ -53,6 +55,7 @@ async fetchNovelDetails(novelUrl: string): Promise<Novel & { chapters: Chapter[]
 **Returns:** A `Novel` object with an additional `chapters` array. Chapters should be in chronological order (oldest first).
 
 **Example:**
+
 ```typescript
 async fetchNovelDetails(novelUrl) {
   const html = await get(novelUrl)
@@ -91,6 +94,7 @@ async fetchChapterContent(chapterUrl: string): Promise<string>
 **Returns:** HTML string of the chapter content. The app sanitizes it (strips scripts, event handlers, iframes) before displaying.
 
 **Example:**
+
 ```typescript
 async fetchChapterContent(chapterUrl) {
   const html = await get(chapterUrl)
@@ -136,6 +140,7 @@ async getDiscoverSectionItems?(sectionId: string, page: number): Promise<Discove
 **Returns:** `{ items: DiscoverSectionItem[], hasNextPage: boolean }`
 
 Items can be:
+
 - `FeaturedItem`: Large hero card (type: `'featured'`)
 - `SimpleCarouselItem`: Cover + title (type: `'simpleCarousel'`)
 - `ChapterUpdateItem`: Cover + title + latest chapter (type: `'chapterUpdate'`)
@@ -180,13 +185,13 @@ async getDiscoverItems?(page: number): Promise<PagedResults<Novel>>
 
 ```typescript
 interface Novel {
-  id: string                    // Unique identifier (usually the URL slug)
+  id: string // Unique identifier (usually the URL slug)
   title: string
-  url: string                   // Full URL to the novel page
-  cover?: string                // Cover image URL
+  url: string // Full URL to the novel page
+  cover?: string // Cover image URL
   author?: string
   description?: string
-  tags?: string[]               // Genre tags — used for content rating
+  tags?: string[] // Genre tags — used for content rating
   status?: 'ongoing' | 'completed' | 'hiatus' | 'dropped' | 'unknown'
   contentRating?: 'everyone' | 'teen' | 'mature' | 'adult'
 }
@@ -196,11 +201,11 @@ interface Novel {
 
 ```typescript
 interface Chapter {
-  id: string                    // Unique identifier
-  title: string                 // Display title
-  number: number                // Chapter number (for sorting)
-  url: string                   // Full URL to the chapter page
-  releaseDate?: string          // Date string (ISO, relative, or formatted)
+  id: string // Unique identifier
+  title: string // Display title
+  number: number // Chapter number (for sorting)
+  url: string // Full URL to the chapter page
+  releaseDate?: string // Date string (ISO, relative, or formatted)
 }
 ```
 
@@ -210,6 +215,6 @@ interface Chapter {
 interface PagedResults<T> {
   items: T[]
   hasNextPage: boolean
-  nextPage?: number             // Explicit next page number (optional)
+  nextPage?: number // Explicit next page number (optional)
 }
 ```

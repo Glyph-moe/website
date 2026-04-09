@@ -1,60 +1,87 @@
 ---
-import MockSite from '../../../layouts/MockSite.astro';
-import { novels } from '../../../data/mock-novels';
+import MockSite from '../../../layouts/MockSite.astro'
+import { novels } from '../../../data/mock-novels'
 
-const query = Astro.url.searchParams.get('q')?.toLowerCase() ?? '';
+const query = Astro.url.searchParams.get('q')?.toLowerCase() ?? ''
 const results = query
-  ? novels.filter(n =>
-      n.title.toLowerCase().includes(query) ||
-      n.author.toLowerCase().includes(query) ||
-      n.tags.some(t => t.toLowerCase().includes(query))
+  ? novels.filter(
+      n =>
+        n.title.toLowerCase().includes(query) ||
+        n.author.toLowerCase().includes(query) ||
+        n.tags.some(t => t.toLowerCase().includes(query)),
     )
-  : novels;
-const page = Number(Astro.url.searchParams.get('page') ?? '1');
-const hasNextPage = false; // static mock, no real pagination
+  : novels
+const page = Number(Astro.url.searchParams.get('page') ?? '1')
+const hasNextPage = false // static mock, no real pagination
 ---
 
 <MockSite title={query ? `Search: ${query}` : 'Search'}>
   <div class="search-page">
     <h1>Search Results</h1>
-    {query && <p class="search-query">Showing results for "<strong>{query}</strong>"</p>}
+    {
+      query && (
+        <p class="search-query">
+          Showing results for "<strong>{query}</strong>"
+        </p>
+      )
+    }
 
     <div class="search-results">
-      {results.length === 0 ? (
-        <p class="no-results">No novels found matching your search.</p>
-      ) : (
-        results.map(novel => (
-          <a href={`/template/example/novel/${novel.id}`} class="result-item">
-            <img class="result-cover" src={novel.cover} alt={novel.title} loading="lazy" />
-            <div class="result-info">
-              <h3 class="result-title">{novel.title}</h3>
-              <span class="result-author">{novel.author}</span>
-              <p class="result-desc">{novel.description.slice(0, 120)}...</p>
-              <div class="result-tags">
-                {novel.tags.map(tag => (
-                  <span class="tag">{tag}</span>
-                ))}
+      {
+        results.length === 0 ? (
+          <p class="no-results">No novels found matching your search.</p>
+        ) : (
+          results.map(novel => (
+            <a href={`/template/example/novel/${novel.id}`} class="result-item">
+              <img class="result-cover" src={novel.cover} alt={novel.title} loading="lazy" />
+              <div class="result-info">
+                <h3 class="result-title">{novel.title}</h3>
+                <span class="result-author">{novel.author}</span>
+                <p class="result-desc">{novel.description.slice(0, 120)}...</p>
+                <div class="result-tags">
+                  {novel.tags.map(tag => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
               </div>
-            </div>
-          </a>
-        ))
-      )}
+            </a>
+          ))
+        )
+      }
     </div>
 
-    {hasNextPage && (
-      <a href={`/template/example/search?q=${query}&page=${page + 1}`} class="load-more">
-        Next page &rarr;
-      </a>
-    )}
+    {
+      hasNextPage && (
+        <a href={`/template/example/search?q=${query}&page=${page + 1}`} class="load-more">
+          Next page &rarr;
+        </a>
+      )
+    }
   </div>
 </MockSite>
 
 <style>
-  .search-page h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-  .search-query { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
-  .no-results { color: var(--text-secondary); padding: 40px 0; text-align: center; }
+  .search-page h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .search-query {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+  .no-results {
+    color: var(--text-secondary);
+    padding: 40px 0;
+    text-align: center;
+  }
 
-  .search-results { display: flex; flex-direction: column; gap: 12px; }
+  .search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
   .result-item {
     display: flex;
@@ -67,7 +94,10 @@ const hasNextPage = false; // static mock, no real pagination
     color: inherit;
     transition: border-color 0.15s;
   }
-  .result-item:hover { border-color: var(--accent); text-decoration: none; }
+  .result-item:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
 
   .result-cover {
     width: 60px;
@@ -78,11 +108,32 @@ const hasNextPage = false; // static mock, no real pagination
     background: var(--tag-bg);
   }
 
-  .result-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .result-title { font-size: 15px; font-weight: 600; }
-  .result-author { font-size: 12px; color: var(--text-secondary); }
-  .result-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-top: 4px; }
-  .result-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .result-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .result-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .result-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+  .result-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
   .tag {
     font-size: 11px;
     padding: 2px 8px;

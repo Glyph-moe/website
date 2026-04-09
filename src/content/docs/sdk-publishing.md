@@ -109,6 +109,7 @@ npm run dev
 ```
 
 Starts a local server that:
+
 - Watches for file changes and rebuilds automatically
 - Validates extensions on every build
 - Serves at `http://localhost:PORT`
@@ -141,19 +142,27 @@ it('searches novels', async () => {
 ### Mock Options
 
 ```typescript
-mockRequest(url, {
-  status: 200,            // HTTP status (default: 200)
-  body: '<html>...</html>', // Response body (required)
-  headers: {},             // Response headers (optional)
-}, {
-  glob: false,             // Enable pattern matching (default: false)
-})
+mockRequest(
+  url,
+  {
+    status: 200, // HTTP status (default: 200)
+    body: '<html>...</html>', // Response body (required)
+    headers: {}, // Response headers (optional)
+  },
+  {
+    glob: false, // Enable pattern matching (default: false)
+  },
+)
 ```
 
 With glob matching:
 
 ```typescript
-mockRequest('https://example.com/book/*', {
-  body: '<html>...</html>',
-}, { glob: true })
+mockRequest(
+  'https://example.com/book/*',
+  {
+    body: '<html>...</html>',
+  },
+  { glob: true },
+)
 ```

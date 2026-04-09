@@ -1,19 +1,20 @@
 ---
-import MockSite from '../../../../../layouts/MockSite.astro';
-import { novels, getNovel, chapterContent } from '../../../../../data/mock-novels';
+import MockSite from '../../../../../layouts/MockSite.astro'
+import { novels, getNovel, chapterContent } from '../../../../../data/mock-novels'
 
 export function getStaticPaths() {
   return novels.flatMap(n =>
     n.chapters.map(ch => ({
       params: { id: n.id, chapter: ch.id },
       props: { novel: n, chapter: ch, chapterIndex: n.chapters.indexOf(ch) },
-    }))
-  );
+    })),
+  )
 }
 
-const { novel, chapter, chapterIndex } = Astro.props;
-const prevChapter = chapterIndex > 0 ? novel.chapters[chapterIndex - 1] : null;
-const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[chapterIndex + 1] : null;
+const { novel, chapter, chapterIndex } = Astro.props
+const prevChapter = chapterIndex > 0 ? novel.chapters[chapterIndex - 1] : null
+const nextChapter =
+  chapterIndex < novel.chapters.length - 1 ? novel.chapters[chapterIndex + 1] : null
 ---
 
 <MockSite title={chapter.title}>
@@ -32,22 +33,33 @@ const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[ch
     </div>
 
     <nav class="chapter-nav">
-      {prevChapter ? (
-        <a href={`/template/example/novel/${novel.id}/${prevChapter.id}`} class="nav-prev">
-          &larr; Previous
-        </a>
-      ) : <span />}
-      {nextChapter ? (
-        <a href={`/template/example/novel/${novel.id}/${nextChapter.id}`} class="nav-next">
-          Next &rarr;
-        </a>
-      ) : <span />}
+      {
+        prevChapter ? (
+          <a href={`/template/example/novel/${novel.id}/${prevChapter.id}`} class="nav-prev">
+            &larr; Previous
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        nextChapter ? (
+          <a href={`/template/example/novel/${novel.id}/${nextChapter.id}`} class="nav-next">
+            Next &rarr;
+          </a>
+        ) : (
+          <span />
+        )
+      }
     </nav>
   </article>
 </MockSite>
 
 <style>
-  .chapter-reader { max-width: 680px; margin: 0 auto; }
+  .chapter-reader {
+    max-width: 680px;
+    margin: 0 auto;
+  }
 
   .reader-header {
     padding-bottom: 20px;
@@ -77,15 +89,21 @@ const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[ch
     line-height: 1.85;
     color: #333;
   }
-  .chapter-content :global(p) { margin-bottom: 1.2em; }
+  .chapter-content :global(p) {
+    margin-bottom: 1.2em;
+  }
   .chapter-content :global(h2) {
     font-size: 20px;
     font-weight: 600;
     margin-top: 2em;
     margin-bottom: 0.8em;
   }
-  .chapter-content :global(em) { font-style: italic; }
-  .chapter-content :global(strong) { font-weight: 600; }
+  .chapter-content :global(em) {
+    font-style: italic;
+  }
+  .chapter-content :global(strong) {
+    font-weight: 600;
+  }
 
   .chapter-nav {
     display: flex;
@@ -96,7 +114,8 @@ const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[ch
     font-size: 14px;
     font-weight: 500;
   }
-  .nav-prev, .nav-next {
+  .nav-prev,
+  .nav-next {
     padding: 8px 16px;
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -104,7 +123,8 @@ const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[ch
     text-decoration: none;
     transition: border-color 0.15s;
   }
-  .nav-prev:hover, .nav-next:hover {
+  .nav-prev:hover,
+  .nav-next:hover {
     border-color: var(--accent);
     text-decoration: none;
   }

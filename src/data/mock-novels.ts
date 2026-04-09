@@ -15,12 +15,18 @@ export const novels: MockNovel[] = [
     title: 'Shadow Monarch: Rise of the Forgotten King',
     author: 'J.K. Nightfall',
     cover: 'https://picsum.photos/seed/shadow/300/450',
-    description: 'After dying in a dungeon raid, Kael wakes up with the power to control shadows. But the system that resurrected him has its own agenda, and the forgotten king\'s throne comes with a price no one is willing to pay. In a world where hunters rank from E to S, Kael must climb from the bottom while hiding abilities that could make him the target of every nation on Earth.',
+    description:
+      "After dying in a dungeon raid, Kael wakes up with the power to control shadows. But the system that resurrected him has its own agenda, and the forgotten king's throne comes with a price no one is willing to pay. In a world where hunters rank from E to S, Kael must climb from the bottom while hiding abilities that could make him the target of every nation on Earth.",
     tags: ['Fantasy', 'Action', 'Adventure', 'System', 'Reincarnation'],
     status: 'Ongoing',
     chapters: Array.from({ length: 142 }, (_, i) => ({
       id: `chapter-${i + 1}`,
-      title: i === 0 ? 'Prologue: The Fall' : i === 1 ? 'Awakening' : `Chapter ${i + 1}: ${['The Shadow Gate', 'Echoes of Power', 'The First Trial', 'Crimson Dawn', 'Into the Abyss', 'A New Ally', 'The Tournament Begins', 'Shattered Bonds', 'Beyond the Veil'][i % 9]}`,
+      title:
+        i === 0
+          ? 'Prologue: The Fall'
+          : i === 1
+            ? 'Awakening'
+            : `Chapter ${i + 1}: ${['The Shadow Gate', 'Echoes of Power', 'The First Trial', 'Crimson Dawn', 'Into the Abyss', 'A New Ally', 'The Tournament Begins', 'Shattered Bonds', 'Beyond the Veil'][i % 9]}`,
       date: new Date(2024, 0, 1 + i).toISOString().split('T')[0],
     })),
   },
@@ -29,12 +35,13 @@ export const novels: MockNovel[] = [
     title: 'Celestial Alchemy: Path of Ten Thousand Stars',
     author: 'Lin Moyu',
     cover: 'https://picsum.photos/seed/celestial/300/450',
-    description: 'In the Azure Continent, cultivation determines everything. Yun Xiao, born with crippled meridians, discovers an ancient alchemy cauldron that lets him refine pills beyond mortal comprehension. Watch as he ascends from a discarded outer disciple to a figure that shakes the heavens.',
+    description:
+      'In the Azure Continent, cultivation determines everything. Yun Xiao, born with crippled meridians, discovers an ancient alchemy cauldron that lets him refine pills beyond mortal comprehension. Watch as he ascends from a discarded outer disciple to a figure that shakes the heavens.',
     tags: ['Fantasy', 'Cultivation', 'Martial Arts', 'Adventure'],
     status: 'Ongoing',
     chapters: Array.from({ length: 89 }, (_, i) => ({
       id: `chapter-${i + 1}`,
-      title: `Chapter ${i + 1}: ${['The Broken Meridian', 'Ancient Cauldron', 'First Refinement', 'Outer Sect Trials', 'Spirit Herb Valley', 'The Elder\'s Test', 'Heavenly Flame', 'Core Formation', 'The Auction'][i % 9]}`,
+      title: `Chapter ${i + 1}: ${['The Broken Meridian', 'Ancient Cauldron', 'First Refinement', 'Outer Sect Trials', 'Spirit Herb Valley', "The Elder's Test", 'Heavenly Flame', 'Core Formation', 'The Auction'][i % 9]}`,
       date: new Date(2024, 2, 1 + i).toISOString().split('T')[0],
     })),
   },
@@ -43,7 +50,8 @@ export const novels: MockNovel[] = [
     title: 'Neon Requiem',
     author: 'Alex Mercer',
     cover: 'https://picsum.photos/seed/neon/300/450',
-    description: 'Neo-Tokyo, 2157. When corporate hacker Reina Sato discovers that her dead sister\'s consciousness has been uploaded to the city\'s neural network, she must navigate a web of augmented gangs, rogue AIs, and corporate assassins to bring her back. But the deeper she digs, the more she realizes her sister might not want to be saved.',
+    description:
+      "Neo-Tokyo, 2157. When corporate hacker Reina Sato discovers that her dead sister's consciousness has been uploaded to the city's neural network, she must navigate a web of augmented gangs, rogue AIs, and corporate assassins to bring her back. But the deeper she digs, the more she realizes her sister might not want to be saved.",
     tags: ['Sci-fi', 'Action', 'Cyberpunk', 'Mystery', 'Mature'],
     status: 'Completed',
     chapters: Array.from({ length: 64 }, (_, i) => ({
@@ -54,15 +62,16 @@ export const novels: MockNovel[] = [
   },
   {
     id: 'dragon-princess',
-    title: 'The Dragon Princess Who Couldn\'t Fly',
+    title: "The Dragon Princess Who Couldn't Fly",
     author: 'Sarah Windsworth',
     cover: 'https://picsum.photos/seed/dragon/300/450',
-    description: 'Princess Ember is the only dragon in her kingdom who can\'t fly. Banished from the royal court, she sets out on a journey across the Shattered Isles to find the legendary Wind Sage. Along the way, she discovers that her "weakness" might be the key to an ancient power that could save dragonkind from extinction.',
+    description:
+      'Princess Ember is the only dragon in her kingdom who can\'t fly. Banished from the royal court, she sets out on a journey across the Shattered Isles to find the legendary Wind Sage. Along the way, she discovers that her "weakness" might be the key to an ancient power that could save dragonkind from extinction.',
     tags: ['Fantasy', 'Adventure', 'Comedy', 'Romance'],
     status: 'Ongoing',
     chapters: Array.from({ length: 37 }, (_, i) => ({
       id: `chapter-${i + 1}`,
-      title: `Chapter ${i + 1}: ${['Grounded', 'The Exile', 'First Flight (Sort Of)', 'Storm\'s Edge', 'The Wandering Sage', 'Scales and Swords', 'Island of Echoes', 'Wings of Glass', 'The Dragon Court'][i % 9]}`,
+      title: `Chapter ${i + 1}: ${['Grounded', 'The Exile', 'First Flight (Sort Of)', "Storm's Edge", 'The Wandering Sage', 'Scales and Swords', 'Island of Echoes', 'Wings of Glass', 'The Dragon Court'][i % 9]}`,
       date: new Date(2024, 5, 1 + i * 3).toISOString().split('T')[0],
     })),
   },
@@ -71,7 +80,8 @@ export const novels: MockNovel[] = [
     title: 'Infinite Regression: I Keep Dying on Monday',
     author: 'Park Jinhyuk',
     cover: 'https://picsum.photos/seed/regression/300/450',
-    description: 'Every Monday at 8:47 AM, Lee Suho dies. Every Monday at 6:00 AM, he wakes up again. Trapped in an infinite time loop, he must unravel the mystery of his death while navigating a world where dungeons have started appearing in downtown Seoul. The catch? Each loop, the dungeons get harder.',
+    description:
+      'Every Monday at 8:47 AM, Lee Suho dies. Every Monday at 6:00 AM, he wakes up again. Trapped in an infinite time loop, he must unravel the mystery of his death while navigating a world where dungeons have started appearing in downtown Seoul. The catch? Each loop, the dungeons get harder.',
     tags: ['Fantasy', 'Action', 'System', 'Time Loop', 'Psychological'],
     status: 'Hiatus',
     chapters: Array.from({ length: 203 }, (_, i) => ({
@@ -85,12 +95,13 @@ export const novels: MockNovel[] = [
     title: 'My Herb Garden Grows Legendary Items',
     author: 'Tanaka Yui',
     cover: 'https://picsum.photos/seed/herb/300/450',
-    description: 'Retired adventurer Milo just wanted to grow herbs in peace. But when his garden starts producing legendary-grade alchemical ingredients, every guild, kingdom, and demon lord comes knocking. A cozy slice-of-life story about an overpowered gardener who just wants to be left alone.',
+    description:
+      'Retired adventurer Milo just wanted to grow herbs in peace. But when his garden starts producing legendary-grade alchemical ingredients, every guild, kingdom, and demon lord comes knocking. A cozy slice-of-life story about an overpowered gardener who just wants to be left alone.',
     tags: ['Fantasy', 'Comedy', 'Slice of Life'],
     status: 'Ongoing',
     chapters: Array.from({ length: 56 }, (_, i) => ({
       id: `chapter-${i + 1}`,
-      title: `Chapter ${i + 1}: ${['The Quiet Garden', 'An Unwanted Visitor', 'Legendary Basil', 'The Guild\'s Offer', 'Peaceful Morning', 'The Dragon Next Door', 'Harvest Festival', 'A Royal Summons', 'Composting Crisis'][i % 9]}`,
+      title: `Chapter ${i + 1}: ${['The Quiet Garden', 'An Unwanted Visitor', 'Legendary Basil', "The Guild's Offer", 'Peaceful Morning', 'The Dragon Next Door', 'Harvest Festival', 'A Royal Summons', 'Composting Crisis'][i % 9]}`,
       date: new Date(2024, 3, 1 + i * 2).toISOString().split('T')[0],
     })),
   },

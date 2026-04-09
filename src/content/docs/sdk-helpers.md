@@ -17,10 +17,12 @@ import { load } from '@glyph/sdk'
 const $ = load(html)
 const title = $('h1.title').text().trim()
 const cover = $('img.cover').attr('src')
-const chapters = $('ul li a').map((_, el) => ({
-  title: $(el).text().trim(),
-  url: $(el).attr('href'),
-})).get()
+const chapters = $('ul li a')
+  .map((_, el) => ({
+    title: $(el).text().trim(),
+    url: $(el).attr('href'),
+  }))
+  .get()
 ```
 
 ### Tips
@@ -41,12 +43,14 @@ const allChapters = await fetchAllPages(async (page, accumulated) => {
   const html = await get(`${BASE}/chapters?page=${page}`)
   const $ = load(html)
 
-  const items = $('li.chapter').map((i, el) => ({
-    id: $(el).find('a').attr('href')!,
-    title: $(el).find('a').text().trim(),
-    number: accumulated + i + 1,
-    url: $(el).find('a').attr('href')!,
-  })).get()
+  const items = $('li.chapter')
+    .map((i, el) => ({
+      id: $(el).find('a').attr('href')!,
+      title: $(el).find('a').text().trim(),
+      number: accumulated + i + 1,
+      url: $(el).find('a').attr('href')!,
+    }))
+    .get()
 
   const hasNextPage = $('a.next').length > 0
   return { items, hasNextPage }
@@ -54,6 +58,7 @@ const allChapters = await fetchAllPages(async (page, accumulated) => {
 ```
 
 **Parameters:**
+
 - `fetcher(page, accumulated)`: Called for each page. `accumulated` is the total items collected so far (useful for numbering).
 - `startPage`: First page number (default: `1`)
 - `maxPages`: Safety limit (default: `200`)
@@ -96,12 +101,12 @@ if (await isRatingAllowed('mature')) {
 
 **Rating levels** (from least to most restrictive):
 
-| Level | Value | Allowed content |
-|-------|-------|----------------|
-| `adult` | 3 | Everything |
-| `mature` | 2 | Everything except adult |
-| `teen` | 1 | Everyone + teen only |
-| `everyone` | 0 | Everyone-rated only |
+| Level      | Value | Allowed content         |
+| ---------- | ----- | ----------------------- |
+| `adult`    | 3     | Everything              |
+| `mature`   | 2     | Everything except adult |
+| `teen`     | 1     | Everyone + teen only    |
+| `everyone` | 0     | Everyone-rated only     |
 
 ### Automatic Rating Detection
 

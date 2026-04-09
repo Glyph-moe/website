@@ -1,90 +1,109 @@
 ---
-import '../styles/global.css';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import { getCollection } from 'astro:content';
+import '../styles/global.css'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+import { getCollection } from 'astro:content'
 
 interface Props {
-  title: string;
-  currentSlug: string;
+  title: string
+  currentSlug: string
 }
 
-const { title, currentSlug } = Astro.props;
+const { title, currentSlug } = Astro.props
 
-const allDocs = await getCollection('docs');
-const sorted = allDocs.sort((a, b) => a.data.order - b.data.order);
-const currentIndex = sorted.findIndex(d => d.id === currentSlug);
-const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null;
-const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
+const allDocs = await getCollection('docs')
+const sorted = allDocs.sort((a, b) => a.data.order - b.data.order)
+const currentIndex = sorted.findIndex(d => d.id === currentSlug)
+const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null
+const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content={`${title} — Glyph Documentation`} />
-  <meta name="theme-color" content="#0E0E12" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <title>{title} — Glyph Docs</title>
-  <script is:inline>
-    (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
-  </script>
-</head>
-<body>
-  <Nav />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={`${title} — Glyph Documentation`} />
+    <meta name="theme-color" content="#0E0E12" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} — Glyph Docs</title>
+    <script is:inline>
+      ;(function () {
+        var t = localStorage.getItem('theme')
+        if (t) document.documentElement.setAttribute('data-theme', t)
+      })()
+    </script>
+  </head>
+  <body>
+    <Nav />
 
-  <div class="docs-shell">
-    <aside class="docs-sidebar">
-      <div class="sidebar-section-title">App</div>
-      <nav class="sidebar-nav">
-        {sorted.filter(d => d.data.order <= 2).map(doc => (
-          <a
-            href={`/docs/${doc.id}`}
-            class:list={['sidebar-link', { active: doc.id === currentSlug }]}
-          >
-            {doc.data.title}
-          </a>
-        ))}
-      </nav>
+    <div class="docs-shell">
+      <aside class="docs-sidebar">
+        <div class="sidebar-section-title">App</div>
+        <nav class="sidebar-nav">
+          {
+            sorted
+              .filter(d => d.data.order <= 2)
+              .map(doc => (
+                <a
+                  href={`/docs/${doc.id}`}
+                  class:list={['sidebar-link', { active: doc.id === currentSlug }]}
+                >
+                  {doc.data.title}
+                </a>
+              ))
+          }
+        </nav>
 
-      <div class="sidebar-section-title">Extension SDK</div>
-      <nav class="sidebar-nav">
-        {sorted.filter(d => d.data.order >= 3).map(doc => (
-          <a
-            href={`/docs/${doc.id}`}
-            class:list={['sidebar-link', { active: doc.id === currentSlug }]}
-          >
-            {doc.data.title}
-          </a>
-        ))}
-      </nav>
-    </aside>
+        <div class="sidebar-section-title">Extension SDK</div>
+        <nav class="sidebar-nav">
+          {
+            sorted
+              .filter(d => d.data.order >= 3)
+              .map(doc => (
+                <a
+                  href={`/docs/${doc.id}`}
+                  class:list={['sidebar-link', { active: doc.id === currentSlug }]}
+                >
+                  {doc.data.title}
+                </a>
+              ))
+          }
+        </nav>
+      </aside>
 
-    <main class="docs-main">
-      <article class="docs-article">
-        <slot />
-      </article>
+      <main class="docs-main">
+        <article class="docs-article">
+          <slot />
+        </article>
 
-      <nav class="docs-pager">
-        {prevDoc ? (
-          <a href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
-            <span class="pager-label">&larr; Previous</span>
-            <span class="pager-title">{prevDoc.data.title}</span>
-          </a>
-        ) : <span />}
-        {nextDoc ? (
-          <a href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
-            <span class="pager-label">Next &rarr;</span>
-            <span class="pager-title">{nextDoc.data.title}</span>
-          </a>
-        ) : <span />}
-      </nav>
-    </main>
-  </div>
+        <nav class="docs-pager">
+          {
+            prevDoc ? (
+              <a href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
+                <span class="pager-label">&larr; Previous</span>
+                <span class="pager-title">{prevDoc.data.title}</span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            nextDoc ? (
+              <a href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
+                <span class="pager-label">Next &rarr;</span>
+                <span class="pager-title">{nextDoc.data.title}</span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+        </nav>
+      </main>
+    </div>
 
-  <Footer />
-</body>
+    <Footer />
+  </body>
 </html>
 
 <style is:global>
@@ -131,7 +150,9 @@ const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : nu
     color: var(--text-secondary);
     padding: 8px 12px;
     border-radius: 8px;
-    transition: color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s;
   }
 
   .sidebar-link:hover {
@@ -197,7 +218,8 @@ const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : nu
     border-bottom-color: var(--accent);
   }
 
-  .docs-article ul, .docs-article ol {
+  .docs-article ul,
+  .docs-article ol {
     padding-left: 24px;
     margin-bottom: 16px;
   }
@@ -277,7 +299,9 @@ const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : nu
     border: 1px solid var(--border);
     border-radius: 10px;
     text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
     min-width: 0;
   }
 
@@ -286,8 +310,13 @@ const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : nu
     background: var(--accent-dim);
   }
 
-  .pager-prev { align-items: flex-start; }
-  .pager-next { align-items: flex-end; margin-left: auto; }
+  .pager-prev {
+    align-items: flex-start;
+  }
+  .pager-next {
+    align-items: flex-end;
+    margin-left: auto;
+  }
 
   .pager-label {
     font-size: 12px;

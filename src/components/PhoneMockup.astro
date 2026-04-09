@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <div class="phone" data-animate="fade-up" data-delay="0.2">
@@ -54,7 +55,7 @@
     height: 520px;
     border-radius: 40px;
     border: 3px solid rgba(255, 255, 255, 0.12);
-    background: #0A0A0E;
+    background: #0a0a0e;
     padding: 12px;
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.04),
@@ -68,7 +69,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 24px;
-    background: #0A0A0E;
+    background: #0a0a0e;
     border-radius: 0 0 16px 16px;
     z-index: 2;
   }
@@ -115,9 +116,7 @@
   .app-dots {
     width: 16px;
     height: 4px;
-    background: radial-gradient(
-      circle, var(--text-secondary) 1.5px, transparent 1.5px
-    );
+    background: radial-gradient(circle, var(--text-secondary) 1.5px, transparent 1.5px);
     background-size: 6px 4px;
   }
 
@@ -137,27 +136,64 @@
     animation: shimmer 3s ease-in-out infinite;
   }
 
-  .app-line:nth-child(4n+1) { animation-delay: 0s; }
-  .app-line:nth-child(4n+2) { animation-delay: 0.3s; }
-  .app-line:nth-child(4n+3) { animation-delay: 0.6s; }
-  .app-line:nth-child(4n)   { animation-delay: 0.9s; }
+  .app-line:nth-child(4n + 1) {
+    animation-delay: 0s;
+  }
+  .app-line:nth-child(4n + 2) {
+    animation-delay: 0.3s;
+  }
+  .app-line:nth-child(4n + 3) {
+    animation-delay: 0.6s;
+  }
+  .app-line:nth-child(4n) {
+    animation-delay: 0.9s;
+  }
 
-  .w100 { width: 100%; }
-  .w95  { width: 95%; }
-  .w93  { width: 93%; }
-  .w92  { width: 92%; }
-  .w90  { width: 90%; }
-  .w88  { width: 88%; }
-  .w85  { width: 85%; }
-  .w82  { width: 82%; }
-  .w80  { width: 80%; }
-  .w75  { width: 75%; }
-  .w70  { width: 70%; }
-  .w60  { width: 60%; }
+  .w100 {
+    width: 100%;
+  }
+  .w95 {
+    width: 95%;
+  }
+  .w93 {
+    width: 93%;
+  }
+  .w92 {
+    width: 92%;
+  }
+  .w90 {
+    width: 90%;
+  }
+  .w88 {
+    width: 88%;
+  }
+  .w85 {
+    width: 85%;
+  }
+  .w82 {
+    width: 82%;
+  }
+  .w80 {
+    width: 80%;
+  }
+  .w75 {
+    width: 75%;
+  }
+  .w70 {
+    width: 70%;
+  }
+  .w60 {
+    width: 60%;
+  }
 
   @keyframes shimmer {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   .app-bottom {

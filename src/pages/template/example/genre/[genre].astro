@@ -1,22 +1,20 @@
 ---
-import MockSite from '../../../../layouts/MockSite.astro';
-import { novels } from '../../../../data/mock-novels';
+import MockSite from '../../../../layouts/MockSite.astro'
+import { novels } from '../../../../data/mock-novels'
 
-const allTags = [...new Set(novels.flatMap(n => n.tags))].sort();
+const allTags = [...new Set(novels.flatMap(n => n.tags))].sort()
 
 export function getStaticPaths() {
-  const tags = [...new Set(novels.flatMap(n => n.tags))];
+  const tags = [...new Set(novels.flatMap(n => n.tags))]
   return tags.map(tag => ({
     params: { genre: tag.toLowerCase().replace(/\s+/g, '-') },
     props: { genre: tag },
-  }));
+  }))
 }
 
-const { genre } = Astro.props;
-const slug = Astro.params.genre;
-const filtered = novels.filter(n =>
-  n.tags.some(t => t.toLowerCase().replace(/\s+/g, '-') === slug)
-);
+const { genre } = Astro.props
+const slug = Astro.params.genre
+const filtered = novels.filter(n => n.tags.some(t => t.toLowerCase().replace(/\s+/g, '-') === slug))
 ---
 
 <MockSite title={genre}>
@@ -27,35 +25,39 @@ const filtered = novels.filter(n =>
     </div>
 
     <div class="genre-tags">
-      {allTags.map(tag => (
-        <a
-          href={`/template/example/genre/${tag.toLowerCase().replace(/\s+/g, '-')}`}
-          class:list={['genre-chip', { active: tag === genre }]}
-        >
-          {tag}
-        </a>
-      ))}
+      {
+        allTags.map(tag => (
+          <a
+            href={`/template/example/genre/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+            class:list={['genre-chip', { active: tag === genre }]}
+          >
+            {tag}
+          </a>
+        ))
+      }
     </div>
 
     <div class="genre-results">
-      {filtered.map(novel => (
-        <a href={`/template/example/novel/${novel.id}`} class="novel-card">
-          <img class="novel-cover" src={novel.cover} alt={novel.title} loading="lazy" />
-          <div class="novel-info">
-            <h3 class="novel-title">{novel.title}</h3>
-            <span class="novel-author">by {novel.author}</span>
-            <div class="novel-tags">
-              {novel.tags.map(tag => (
-                <span class="tag">{tag}</span>
-              ))}
+      {
+        filtered.map(novel => (
+          <a href={`/template/example/novel/${novel.id}`} class="novel-card">
+            <img class="novel-cover" src={novel.cover} alt={novel.title} loading="lazy" />
+            <div class="novel-info">
+              <h3 class="novel-title">{novel.title}</h3>
+              <span class="novel-author">by {novel.author}</span>
+              <div class="novel-tags">
+                {novel.tags.map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+              <div class="novel-meta">
+                <span class={`status status-${novel.status.toLowerCase()}`}>{novel.status}</span>
+                <span class="chapter-count">{novel.chapters.length} chapters</span>
+              </div>
             </div>
-            <div class="novel-meta">
-              <span class={`status status-${novel.status.toLowerCase()}`}>{novel.status}</span>
-              <span class="chapter-count">{novel.chapters.length} chapters</span>
-            </div>
-          </div>
-        </a>
-      ))}
+          </a>
+        ))
+      }
     </div>
   </div>
 </MockSite>
@@ -67,8 +69,14 @@ const filtered = novels.filter(n =>
     gap: 12px;
     margin-bottom: 16px;
   }
-  .genre-header h1 { font-size: 24px; font-weight: 700; }
-  .genre-count { font-size: 14px; color: var(--text-secondary); }
+  .genre-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .genre-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
 
   .genre-tags {
     display: flex;
@@ -85,10 +93,19 @@ const filtered = novels.filter(n =>
     background: var(--tag-bg);
     color: var(--text-secondary);
     text-decoration: none;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
-  .genre-chip:hover { background: var(--accent-light); color: var(--accent); text-decoration: none; }
-  .genre-chip.active { background: var(--accent); color: white; }
+  .genre-chip:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .genre-chip.active {
+    background: var(--accent);
+    color: white;
+  }
 
   .genre-results {
     display: grid;
@@ -107,7 +124,10 @@ const filtered = novels.filter(n =>
     color: inherit;
     transition: border-color 0.15s;
   }
-  .novel-card:hover { border-color: var(--accent); text-decoration: none; }
+  .novel-card:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
 
   .novel-cover {
     width: 70px;
@@ -118,11 +138,28 @@ const filtered = novels.filter(n =>
     background: var(--tag-bg);
   }
 
-  .novel-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .novel-title { font-size: 14px; font-weight: 600; line-height: 1.3; }
-  .novel-author { font-size: 12px; color: var(--text-secondary); }
+  .novel-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .novel-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .novel-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
 
-  .novel-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .novel-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
   .tag {
     font-size: 11px;
     padding: 2px 8px;
@@ -144,8 +181,19 @@ const filtered = novels.filter(n =>
     font-size: 11px;
     font-weight: 600;
   }
-  .status-ongoing { background: #dcfce7; color: #166534; }
-  .status-completed { background: #dbeafe; color: #1e40af; }
-  .status-hiatus { background: #fef3c7; color: #92400e; }
-  .chapter-count { color: var(--text-secondary); }
+  .status-ongoing {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-completed {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .status-hiatus {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .chapter-count {
+    color: var(--text-secondary);
+  }
 </style>

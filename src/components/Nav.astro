@@ -1,5 +1,5 @@
 ---
-import Logo from './Logo.astro';
+import Logo from './Logo.astro'
 ---
 
 <nav class="nav">
@@ -12,11 +12,31 @@ import Logo from './Logo.astro';
       <a href="/#features">Features</a>
       <a href="/docs">Docs</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        <svg
+          class="icon-sun"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <circle cx="12" cy="12" r="5"></circle><path
+            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+          ></path>
         </svg>
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <svg
+          class="icon-moon"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
       <div class="nav-cta-wrap">
@@ -28,24 +48,26 @@ import Logo from './Logo.astro';
 </nav>
 
 <script is:inline>
-  (function() {
-    const toggle = document.getElementById('theme-toggle');
-    const root = document.documentElement;
+  ;(function () {
+    const toggle = document.getElementById('theme-toggle')
+    const root = document.documentElement
 
     // Read saved preference or fall back to system
-    const saved = localStorage.getItem('theme');
+    const saved = localStorage.getItem('theme')
     if (saved) {
-      root.setAttribute('data-theme', saved);
+      root.setAttribute('data-theme', saved)
     }
 
     toggle.addEventListener('click', () => {
-      const current = root.getAttribute('data-theme');
-      const isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      const next = isDark ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-  })();
+      const current = root.getAttribute('data-theme')
+      const isDark =
+        current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      const next = isDark ? 'light' : 'dark'
+      root.setAttribute('data-theme', next)
+      localStorage.setItem('theme', next)
+    })
+  })()
 </script>
 
 <style>
@@ -108,7 +130,9 @@ import Logo from './Logo.astro';
     background: var(--bg-surface);
     color: var(--text-secondary);
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
   }
 
   .theme-toggle:hover {
@@ -117,15 +141,27 @@ import Logo from './Logo.astro';
   }
 
   /* Show sun in dark mode, moon in light mode */
-  .icon-moon { display: none; }
-  .icon-sun { display: block; }
+  .icon-moon {
+    display: none;
+  }
+  .icon-sun {
+    display: block;
+  }
 
-  :root[data-theme="light"] .icon-sun { display: none; }
-  :root[data-theme="light"] .icon-moon { display: block; }
+  :root[data-theme='light'] .icon-sun {
+    display: none;
+  }
+  :root[data-theme='light'] .icon-moon {
+    display: block;
+  }
 
   @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .icon-sun { display: none; }
-    :root:not([data-theme="dark"]) .icon-moon { display: block; }
+    :root:not([data-theme='dark']) .icon-sun {
+      display: none;
+    }
+    :root:not([data-theme='dark']) .icon-moon {
+      display: block;
+    }
   }
 
   .nav-cta {
@@ -169,7 +205,9 @@ import Logo from './Logo.astro';
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
 
   .nav-cta-wrap:hover .nav-tooltip {

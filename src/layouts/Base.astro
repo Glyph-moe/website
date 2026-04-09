@@ -1,63 +1,66 @@
 ---
-import '../styles/global.css';
+import '../styles/global.css'
 
 interface Props {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
 }
 
 const {
   title = 'Glyph — Read anything, your way.',
   description = 'A powerful iOS web novel reader with community-built extensions.',
-} = Astro.props;
+} = Astro.props
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content={description} />
-  <meta name="theme-color" content="#0E0E12" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <title>{title}</title>
-  <script is:inline>
-    (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
-  </script>
-</head>
-<body>
-  <slot />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0E0E12" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <script is:inline>
+      ;(function () {
+        var t = localStorage.getItem('theme')
+        if (t) document.documentElement.setAttribute('data-theme', t)
+      })()
+    </script>
+  </head>
+  <body>
+    <slot />
 
-  <script>
-    import Lenis from 'lenis';
-    import { gsap } from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    <script>
+      import Lenis from 'lenis'
+      import { gsap } from 'gsap'
+      import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-    gsap.registerPlugin(ScrollTrigger);
+      gsap.registerPlugin(ScrollTrigger)
 
-    // Smooth scroll
-    const lenis = new Lenis({ duration: 1.2 });
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
+      // Smooth scroll
+      const lenis = new Lenis({ duration: 1.2 })
+      lenis.on('scroll', ScrollTrigger.update)
+      gsap.ticker.add(time => lenis.raf(time * 1000))
+      gsap.ticker.lagSmoothing(0)
 
-    // Animate elements with data-animate="fade-up"
-    document.querySelectorAll('[data-animate="fade-up"]').forEach((el) => {
-      const delay = parseFloat(el.getAttribute('data-delay') || '0');
-      gsap.set(el, { opacity: 0, y: 30 });
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        delay,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          once: true,
-        },
-      });
-    });
-  </script>
-</body>
+      // Animate elements with data-animate="fade-up"
+      document.querySelectorAll('[data-animate="fade-up"]').forEach(el => {
+        const delay = parseFloat(el.getAttribute('data-delay') || '0')
+        gsap.set(el, { opacity: 0, y: 30 })
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            once: true,
+          },
+        })
+      })
+    </script>
+  </body>
 </html>

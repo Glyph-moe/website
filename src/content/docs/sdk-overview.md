@@ -70,13 +70,20 @@ export default createSource({
   rateLimit: RateLimit.balanced, // 3 req/sec
 
   // Required methods
-  async searchNovels(query, page) { /* ... */ },
-  async fetchNovelDetails(novelUrl) { /* ... */ },
-  async fetchChapterContent(chapterUrl) { /* ... */ },
+  async searchNovels(query, page) {
+    /* ... */
+  },
+  async fetchNovelDetails(novelUrl) {
+    /* ... */
+  },
+  async fetchChapterContent(chapterUrl) {
+    /* ... */
+  },
 })
 ```
 
 `createSource()` handles all the boilerplate:
+
 - Sets User-Agent and Accept headers
 - Configures the rate limiter
 - Provides a clean `Source` object to the app
