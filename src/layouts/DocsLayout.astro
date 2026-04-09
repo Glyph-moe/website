@@ -16,6 +16,8 @@ const sorted = allDocs.sort((a, b) => a.data.order - b.data.order)
 const currentIndex = sorted.findIndex(d => d.id === currentSlug)
 const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null
 const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null
+const appDocs = sorted.filter(d => d.data.order <= 2)
+const sdkDocs = sorted.filter(d => d.data.order >= 3)
 ---
 
 <!doctype html>
@@ -42,32 +44,28 @@ const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : nu
         <div class="sidebar-section-title">App</div>
         <nav class="sidebar-nav">
           {
-            sorted
-              .filter(d => d.data.order <= 2)
-              .map(doc => (
-                <a
-                  href={`/docs/${doc.id}`}
-                  class:list={['sidebar-link', { active: doc.id === currentSlug }]}
-                >
-                  {doc.data.title}
-                </a>
-              ))
+            appDocs.map(doc => (
+              <a
+                href={`/docs/${doc.id}`}
+                class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
+              >
+                {doc.data.title}
+              </a>
+            ))
           }
         </nav>
 
         <div class="sidebar-section-title">Extension SDK</div>
         <nav class="sidebar-nav">
           {
-            sorted
-              .filter(d => d.data.order >= 3)
-              .map(doc => (
-                <a
-                  href={`/docs/${doc.id}`}
-                  class:list={['sidebar-link', { active: doc.id === currentSlug }]}
-                >
-                  {doc.data.title}
-                </a>
-              ))
+            sdkDocs.map(doc => (
+              <a
+                href={`/docs/${doc.id}`}
+                class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
+              >
+                {doc.data.title}
+              </a>
+            ))
           }
         </nav>
       </aside>
