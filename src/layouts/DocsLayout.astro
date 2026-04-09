@@ -1,0 +1,312 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title: string;
+  currentSlug: string;
+}
+
+const { title, currentSlug } = Astro.props;
+
+const allDocs = await getCollection('docs');
+const sorted = allDocs.sort((a, b) => a.data.order - b.data.order);
+const currentIndex = sorted.findIndex(d => d.id === currentSlug);
+const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null;
+const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={`${title} — Glyph Documentation`} />
+  <meta name="theme-color" content="#0E0E12" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>{title} — Glyph Docs</title>
+  <script is:inline>
+    (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+</head>
+<body>
+  <Nav />
+
+  <div class="docs-shell">
+    <aside class="docs-sidebar">
+      <div class="sidebar-section-title">App</div>
+      <nav class="sidebar-nav">
+        {sorted.filter(d => d.data.order <= 2).map(doc => (
+          <a
+            href={`/docs/${doc.id}`}
+            class:list={['sidebar-link', { active: doc.id === currentSlug }]}
+          >
+            {doc.data.title}
+          </a>
+        ))}
+      </nav>
+
+      <div class="sidebar-section-title">Extension SDK</div>
+      <nav class="sidebar-nav">
+        {sorted.filter(d => d.data.order >= 3).map(doc => (
+          <a
+            href={`/docs/${doc.id}`}
+            class:list={['sidebar-link', { active: doc.id === currentSlug }]}
+          >
+            {doc.data.title}
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <main class="docs-main">
+      <article class="docs-article">
+        <slot />
+      </article>
+
+      <nav class="docs-pager">
+        {prevDoc ? (
+          <a href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
+            <span class="pager-label">&larr; Previous</span>
+            <span class="pager-title">{prevDoc.data.title}</span>
+          </a>
+        ) : <span />}
+        {nextDoc ? (
+          <a href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
+            <span class="pager-label">Next &rarr;</span>
+            <span class="pager-title">{nextDoc.data.title}</span>
+          </a>
+        ) : <span />}
+      </nav>
+    </main>
+  </div>
+
+  <Footer />
+</body>
+</html>
+
+<style is:global>
+  .docs-shell {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 72px;
+  }
+
+  /* Sidebar */
+  .docs-sidebar {
+    position: sticky;
+    top: 72px;
+    width: 240px;
+    height: calc(100vh - 72px);
+    flex-shrink: 0;
+    padding: 32px 24px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+
+  .sidebar-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    margin-top: 24px;
+  }
+
+  .sidebar-section-title:first-child {
+    margin-top: 0;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-link {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .sidebar-link:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .sidebar-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    font-weight: 500;
+  }
+
+  /* Main content */
+  .docs-main {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 48px 80px;
+    max-width: 760px;
+  }
+
+  /* Article typography */
+  .docs-article h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+
+  .docs-article h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .docs-article h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  .docs-article p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .docs-article a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .docs-article a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .docs-article ul, .docs-article ol {
+    padding-left: 24px;
+    margin-bottom: 16px;
+  }
+
+  .docs-article li {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .docs-article code {
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .docs-article pre {
+    margin-bottom: 20px;
+    padding: 18px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .docs-article pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .docs-article table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .docs-article th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .docs-article td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .docs-article td code {
+    font-size: 12px;
+  }
+
+  /* Page navigation */
+  .docs-pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    min-width: 0;
+  }
+
+  .pager-link:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .pager-prev { align-items: flex-start; }
+  .pager-next { align-items: flex-end; margin-left: auto; }
+
+  .pager-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .pager-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .docs-sidebar {
+      display: none;
+    }
+    .docs-main {
+      padding: 32px 24px 80px;
+    }
+  }
+</style>

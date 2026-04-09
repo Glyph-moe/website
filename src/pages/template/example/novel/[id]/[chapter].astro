@@ -1,0 +1,111 @@
+---
+import MockSite from '../../../../../layouts/MockSite.astro';
+import { novels, getNovel, chapterContent } from '../../../../../data/mock-novels';
+
+export function getStaticPaths() {
+  return novels.flatMap(n =>
+    n.chapters.map(ch => ({
+      params: { id: n.id, chapter: ch.id },
+      props: { novel: n, chapter: ch, chapterIndex: n.chapters.indexOf(ch) },
+    }))
+  );
+}
+
+const { novel, chapter, chapterIndex } = Astro.props;
+const prevChapter = chapterIndex > 0 ? novel.chapters[chapterIndex - 1] : null;
+const nextChapter = chapterIndex < novel.chapters.length - 1 ? novel.chapters[chapterIndex + 1] : null;
+---
+
+<MockSite title={chapter.title}>
+  <article class="chapter-reader">
+    <div class="reader-header">
+      <a href={`/template/example/novel/${novel.id}`} class="back-link">&larr; {novel.title}</a>
+      <h1 class="chapter-heading">{chapter.title}</h1>
+      <div class="reader-meta">
+        <span>Chapter {chapterIndex + 1} of {novel.chapters.length}</span>
+        <span>{chapter.date}</span>
+      </div>
+    </div>
+
+    <div class="chapter-content" itemprop="text">
+      <Fragment set:html={chapterContent} />
+    </div>
+
+    <nav class="chapter-nav">
+      {prevChapter ? (
+        <a href={`/template/example/novel/${novel.id}/${prevChapter.id}`} class="nav-prev">
+          &larr; Previous
+        </a>
+      ) : <span />}
+      {nextChapter ? (
+        <a href={`/template/example/novel/${novel.id}/${nextChapter.id}`} class="nav-next">
+          Next &rarr;
+        </a>
+      ) : <span />}
+    </nav>
+  </article>
+</MockSite>
+
+<style>
+  .chapter-reader { max-width: 680px; margin: 0 auto; }
+
+  .reader-header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .back-link {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .chapter-heading {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .reader-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .chapter-content {
+    font-size: 16px;
+    line-height: 1.85;
+    color: #333;
+  }
+  .chapter-content :global(p) { margin-bottom: 1.2em; }
+  .chapter-content :global(h2) {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+  }
+  .chapter-content :global(em) { font-style: italic; }
+  .chapter-content :global(strong) { font-weight: 600; }
+
+  .chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 0;
+    margin-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .nav-prev, .nav-next {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+</style>

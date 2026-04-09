@@ -1,0 +1,148 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = 'NovelHaven' } = Astro.props;
+const base = '/template/example';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title} — NovelHaven</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --accent: #6366f1;
+      --accent-light: #eef2ff;
+      --tag-bg: #f3f4f6;
+      --green: #22c55e;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --mono: 'SF Mono', 'Fira Code', monospace;
+      --max-width: 960px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    .site-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .site-nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .site-logo:hover { text-decoration: none; }
+    .site-search {
+      display: flex;
+      gap: 8px;
+    }
+    .site-search input {
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 200px;
+      outline: none;
+    }
+    .site-search button {
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .site-links {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+    .site-links a { color: var(--text-secondary); }
+    .site-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* Main */
+    .site-main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+
+    /* Glyph banner */
+    .glyph-banner {
+      background: #0E0E12;
+      color: #8A8A96;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+    }
+    .glyph-banner a { color: #EF9F27; }
+    .glyph-banner code {
+      font-family: var(--mono);
+      background: rgba(255,255,255,0.08);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="glyph-banner">
+    This is a mock novel site for testing Glyph extensions.
+    <a href="/docs/sdk-overview">Read the SDK docs</a> to build your own.
+    Base URL: <code>{Astro.url.origin}{base}</code>
+  </div>
+
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <a href={base} class="site-logo">📚 NovelHaven</a>
+      <div class="site-search">
+        <input type="text" placeholder="Search novels..." id="search-input" />
+        <button onclick={`window.location='${base}/search?q='+document.getElementById('search-input').value`}>Search</button>
+      </div>
+      <div class="site-links">
+        <a href={`${base}`}>Home</a>
+        <a href={`${base}/genre/fantasy`}>Fantasy</a>
+        <a href={`${base}/genre/action`}>Action</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="site-main">
+    <slot />
+  </main>
+</body>
+</html>

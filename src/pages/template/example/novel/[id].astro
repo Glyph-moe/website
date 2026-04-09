@@ -1,0 +1,166 @@
+---
+import MockSite from '../../../../layouts/MockSite.astro';
+import { novels, getNovel } from '../../../../data/mock-novels';
+
+export function getStaticPaths() {
+  return novels.map(n => ({ params: { id: n.id } }));
+}
+
+const novel = getNovel(Astro.params.id)!;
+---
+
+<MockSite title={novel.title}>
+  <div class="novel-detail">
+    <div class="novel-header">
+      <img class="novel-cover" src={novel.cover} alt={novel.title} />
+      <div class="novel-meta">
+        <h1 class="novel-title" itemprop="name">{novel.title}</h1>
+        <div class="novel-author">
+          <span class="label">Author</span>
+          <span class="value" itemprop="author">{novel.author}</span>
+        </div>
+        <div class="novel-status">
+          <span class="label">Status</span>
+          <span class={`status-badge status-${novel.status.toLowerCase()}`}>{novel.status}</span>
+        </div>
+        <div class="novel-tags">
+          {novel.tags.map(tag => (
+            <a href={`/template/example/genre/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag" rel="tag">{tag}</a>
+          ))}
+        </div>
+        <div class="novel-description" itemprop="description">
+          <p>{novel.description}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter-section">
+      <div class="chapter-header">
+        <h2>Chapters</h2>
+        <span class="chapter-count">{novel.chapters.length} chapters</span>
+      </div>
+      <ul class="chapter-list">
+        {novel.chapters.map((ch, i) => (
+          <li class="chapter-item">
+            <a href={`/template/example/novel/${novel.id}/${ch.id}`}>
+              <span class="chapter-title">{ch.title}</span>
+              <span class="chapter-date">{ch.date}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</MockSite>
+
+<style>
+  .novel-detail { padding-top: 8px; }
+
+  .novel-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .novel-cover {
+    width: 180px;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: var(--tag-bg);
+  }
+
+  .novel-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .novel-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .novel-author, .novel-status {
+    font-size: 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .label {
+    color: var(--text-secondary);
+    min-width: 50px;
+  }
+  .value { font-weight: 500; }
+
+  .status-badge {
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-ongoing { background: #dcfce7; color: #166534; }
+  .status-completed { background: #dbeafe; color: #1e40af; }
+  .status-hiatus { background: #fef3c7; color: #92400e; }
+
+  .novel-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    background: var(--tag-bg);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+  .tag:hover { background: var(--accent-light); color: var(--accent); text-decoration: none; }
+
+  .novel-description {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 560px;
+  }
+
+  /* Chapters */
+  .chapter-section { margin-top: 8px; }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .chapter-header h2 { font-size: 18px; font-weight: 600; }
+  .chapter-count { font-size: 13px; color: var(--text-secondary); }
+
+  .chapter-list { list-style: none; }
+  .chapter-item a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.1s;
+  }
+  .chapter-item a:hover { background: var(--accent-light); }
+  .chapter-title { font-weight: 400; }
+  .chapter-date { font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 640px) {
+    .novel-header { flex-direction: column; align-items: center; text-align: center; }
+    .novel-tags { justify-content: center; }
+    .novel-author, .novel-status { justify-content: center; }
+  }
+</style>

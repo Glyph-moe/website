@@ -1,0 +1,188 @@
+---
+import Logo from './Logo.astro';
+---
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="nav-brand">
+      <Logo size={28} />
+      <span class="nav-name">Glyph</span>
+    </a>
+    <div class="nav-links">
+      <a href="/#features">Features</a>
+      <a href="/docs">Docs</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="nav-cta-wrap">
+        <button class="nav-cta" disabled>Download</button>
+        <span class="nav-tooltip">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script is:inline>
+  (function() {
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+
+    // Read saved preference or fall back to system
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+      root.setAttribute('data-theme', saved);
+    }
+
+    toggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const next = isDark ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--text-secondary);
+  }
+
+  /* Show sun in dark mode, moon in light mode */
+  .icon-moon { display: none; }
+  .icon-sun { display: block; }
+
+  :root[data-theme="light"] .icon-sun { display: none; }
+  :root[data-theme="light"] .icon-moon { display: block; }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .icon-sun { display: none; }
+    :root:not([data-theme="dark"]) .icon-moon { display: block; }
+  }
+
+  .nav-cta {
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .nav-cta:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .nav-cta:not(:disabled):hover {
+    opacity: 0.85;
+  }
+
+  .nav-cta-wrap {
+    position: relative;
+  }
+
+  .nav-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .nav-cta-wrap:hover .nav-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  @media (max-width: 600px) {
+    .nav-links {
+      gap: 16px;
+    }
+    .nav-links a {
+      font-size: 13px;
+    }
+  }
+</style>

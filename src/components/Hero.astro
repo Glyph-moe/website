@@ -1,0 +1,108 @@
+---
+import Logo from './Logo.astro';
+---
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-logo" data-animate="fade-up">
+      <Logo size={56} />
+    </div>
+    <h1 class="hero-title" data-animate="fade-up" data-delay="0.1">
+      Read anything,<br />your way.
+    </h1>
+    <p class="hero-subtitle" data-animate="fade-up" data-delay="0.2">
+      A powerful web novel reader with community-built extensions.
+    </p>
+    <div class="hero-actions" data-animate="fade-up" data-delay="0.3">
+      <button class="btn-primary" disabled>Coming to TestFlight</button>
+      <a href="/docs" class="btn-secondary">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 0 80px;
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .hero-logo {
+    margin-bottom: 8px;
+  }
+
+  .hero-title {
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: var(--text);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--text-secondary);
+    max-width: 440px;
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .btn-primary {
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: var(--bg);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    .btn-primary, .btn-secondary {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
