@@ -80,7 +80,7 @@ console.log(cookies['session_id']) // 'abc123'
 await setCookie('https://example.com', 'auth_token', 'xyz789')
 ```
 
-**Note:** Cookies are stored in memory and lost when the app restarts. This is by design for privacy. If a site requires login, the user will need to re-authenticate each session.
+> **Note:** Cookies are stored in memory and lost when the app restarts. This is by design for privacy. If a site requires login, the user will need to re-authenticate each session.
 
 ## Content Rating
 

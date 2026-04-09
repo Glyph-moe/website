@@ -91,7 +91,9 @@ Fetch the HTML content of a chapter.
 async fetchChapterContent(chapterUrl: string): Promise<string>
 ```
 
-**Returns:** HTML string of the chapter content. The app sanitizes it (strips scripts, event handlers, iframes) before displaying.
+**Returns:** HTML string of the chapter content.
+
+> **Note:** The app automatically sanitizes chapter HTML before displaying it. Scripts, event handlers, iframes, and inline styles are stripped for security.
 
 **Example:**
 
@@ -146,7 +148,7 @@ Items can be:
 - `ChapterUpdateItem`: Cover + title + latest chapter (type: `'chapterUpdate'`)
 - `GenreItem`: Genre tag (type: `'genre'`)
 
-**Important:** Include `tags` in your items so the app can filter by content rating:
+> **Important:** Include `tags` in your items so the app can filter by content rating. Without tags, the app cannot detect adult/mature content.
 
 ```typescript
 items.push({

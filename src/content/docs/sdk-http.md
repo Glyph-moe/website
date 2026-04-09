@@ -93,6 +93,8 @@ console.log(response.headers) // { 'content-type': 'text/html', ... }
 
 ## Rate Limiting
 
+> **Tip:** Always set a rate limit. Sites will block your extension if it sends too many requests too fast.
+
 Prevent getting blocked by setting a rate limit. The SDK uses a **token bucket** algorithm: the first N requests go through instantly (burst), then throttled to maintain the rate.
 
 ```typescript

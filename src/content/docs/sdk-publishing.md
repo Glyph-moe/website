@@ -43,7 +43,9 @@ Host the `dist/` folder on any static HTTPS host. The app fetches `index.json` t
 
 ### Other Hosts
 
-Netlify, Vercel, Cloudflare Pages, or any static file server. The only requirement is **HTTPS** (HTTP is only allowed for localhost during development).
+Netlify, Vercel, Cloudflare Pages, or any static file server.
+
+> **Important:** HTTPS is required. HTTP is only allowed for `localhost` during development.
 
 ## Installing in Glyph
 
