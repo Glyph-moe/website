@@ -110,32 +110,28 @@ a {
   padding: 0 24px;
 }
 
-/* Shiki dual theme: dark by default, switch to light when theme changes */
-.shiki,
-.shiki span {
+/* Shiki dual theme.
+   Astro generates inline style="color:LIGHT" + --shiki-dark:DARK on each span.
+   We use a CSS var toggle: dark mode reads --shiki-dark, light mode ignores it. */
+
+/* Dark mode: override inline light colors with --shiki-dark */
+:root:not([data-theme='light']) .astro-code,
+:root:not([data-theme='light']) .astro-code span {
   color: var(--shiki-dark) !important;
 }
 
-.shiki {
-  background-color: var(--shiki-dark-bg, var(--bg-surface)) !important;
+:root:not([data-theme='light']) .astro-code {
+  background-color: var(--shiki-dark-bg, #0d1117) !important;
 }
 
+/* Light mode: inline colors are already light, just fix background */
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) .shiki,
-  :root:not([data-theme='dark']) .shiki span {
-    color: var(--shiki-light, inherit) !important;
-  }
-  :root:not([data-theme='dark']) .shiki {
+  :root:not([data-theme='dark']) .astro-code {
     background-color: var(--bg-surface) !important;
   }
 }
 
-[data-theme='light'] .shiki,
-[data-theme='light'] .shiki span {
-  color: var(--shiki-light, inherit) !important;
-}
-
-[data-theme='light'] .shiki {
+[data-theme='light'] .astro-code {
   background-color: var(--bg-surface) !important;
 }
 
