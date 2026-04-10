@@ -1,6 +1,6 @@
 ---
 title: Debugging
-order: 8
+order: 9
 ---
 
 # Debugging Extensions
@@ -128,6 +128,16 @@ if (!href) {
 
 ## Dev Server Tips
 
+### Starting the dev server
+
+```bash
+npm run dev                        # default port 8888
+npm run dev -- --open              # opens browser automatically
+npm run dev -- --port 3000         # custom port
+```
+
+The terminal output shows your LAN IP, deep link, and rebuild status. The screen clears between rebuilds to keep output readable.
+
 ### Testing on a real device
 
 The dev server binds to `0.0.0.0` and prints your LAN IP. Add the URL in Glyph on your iPhone (same Wi-Fi network):
@@ -135,6 +145,8 @@ The dev server binds to `0.0.0.0` and prints your LAN IP. Add the URL in Glyph o
 ```
 Settings > Extensions > + > http://192.168.1.xxx:8888
 ```
+
+Or use `glyph dev --open` to open the landing page in your browser, which has a one-tap "Add to Glyph" deep link.
 
 ### Hot reload
 

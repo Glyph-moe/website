@@ -90,7 +90,7 @@ Yes. Go to Settings → Extensions → tap the repository. Swipe left on any sou
 
 ### How do I create my own extension?
 
-See the [SDK Documentation](/docs/sdk-overview) for a complete guide. You'll need basic TypeScript knowledge and familiarity with HTML selectors.
+Run `npx create-glyph-extension my-extensions` to scaffold a new project. See the [SDK Documentation](/docs/sdk-overview) for a complete guide. You'll need basic TypeScript knowledge and familiarity with HTML selectors.
 
 ---
 

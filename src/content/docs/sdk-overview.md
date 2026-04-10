@@ -24,29 +24,41 @@ Extensions run inside a WKWebView in the iOS app. All HTTP requests go through t
 ## Quick Start
 
 ```bash
-git clone https://github.com/thinkaz/glyph-extension-template
-cd glyph-extension-template
-npm install
+npx create-glyph-extension my-extensions
+cd my-extensions
 npm run dev
 ```
 
-The dev server builds your extension on-the-fly and serves it at a local URL. Add that URL in Glyph (Settings → Extensions → +) to test live.
+The CLI scaffolds a complete project with an example source. The dev server builds your extension on-the-fly and serves it at a local URL. Add that URL in Glyph (Settings → Extensions → +) to test live.
 
 ## Project Structure
 
 ```
-glyph-extension-template/
-├── packages/sdk/src/       # @glyph/sdk source
+my-extensions/
 ├── sources/
 │   └── my-source/
 │       └── src/
 │           ├── main.ts     # Entry point — export default createSource({...})
-│           └── parser.ts   # HTML parsing logic
-├── scripts/
-│   ├── build-all.js        # Production build (minified IIFE bundles)
-│   └── dev-server.js       # Dev server with validation
+│           ├── parser.ts   # HTML parsing logic
+│           └── my-source.test.ts
+├── repo.json               # Repository metadata
+├── package.json            # Uses @glyph/cli commands
 └── dist/                   # Built bundles + index.json
 ```
+
+## CLI Commands
+
+The `@glyph/cli` package provides all development commands:
+
+| Command              | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| `npm run dev`        | Development server with hot reload                          |
+| `npm run build`      | Production build with validation                            |
+| `npm run test`       | Run tests                                                   |
+| `npm run validate`   | Validate extensions (flags: `--typecheck`, `--fix`, `--ci`) |
+| `npx glyph add <id>` | Add a new source to your project                            |
+
+See the [CLI Reference](/docs/cli) for full details.
 
 ## Creating a Source
 

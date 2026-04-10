@@ -1,6 +1,6 @@
 ---
 title: Publishing
-order: 7
+order: 8
 ---
 
 # Publishing Your Extension
@@ -107,22 +107,36 @@ The build generates an `index.json` with this structure:
 ### Dev Server
 
 ```bash
-npm run dev
+npm run dev                        # start dev server
+npm run dev -- --open              # opens browser automatically
+npm run dev -- --port 3000         # custom port
 ```
 
 Starts a local server that:
 
 - Watches for file changes and rebuilds automatically
+- Clears the terminal between rebuilds (like Vite)
 - Validates extensions on every build
-- Serves at `http://localhost:PORT`
+- Serves at `http://localhost:PORT` and your LAN IP
 - Prints a deep link for easy testing in Glyph
+
+### Validation
+
+```bash
+npm run validate                   # basic validation
+npm run validate -- --typecheck    # + TypeScript check
+npm run validate -- --with-tests   # + run tests
+npm run validate -- --fix          # auto-fix missing fields
+npm run validate -- --ci           # JSON output for CI
+```
 
 ### Testing
 
 ```bash
 npm test              # Unit tests (fast, mocked HTTP)
-npm run test:integration  # Integration tests (real HTTP, slower)
 ```
+
+The CLI automatically injects the runtime test setup — no manual `test-setup.js` needed.
 
 Unit tests use mocked HTTP responses:
 
@@ -152,12 +166,12 @@ mockRequest(
     headers: {}, // Response headers (optional)
   },
   {
-    glob: false, // Enable pattern matching (default: false)
+    pattern: false, // Enable wildcard matching (default: false)
   },
 )
 ```
 
-With glob matching:
+With wildcard matching (`*` matches any substring):
 
 ```typescript
 mockRequest(
@@ -165,6 +179,6 @@ mockRequest(
   {
     body: '<html>...</html>',
   },
-  { glob: true },
+  { pattern: true },
 )
 ```
