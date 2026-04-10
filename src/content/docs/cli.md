@@ -62,6 +62,24 @@ The dev server:
 - Serves `index.html`, bundles, and static files
 - Prints your LAN IP and deep link for iOS testing
 - Auto-increments port if taken
+- Includes a **Playground** for testing extension methods in the browser (see below)
+
+### Playground
+
+The dev server landing page includes an interactive playground below the sources list. It lets you test your extension methods directly in the browser — no iOS device needed.
+
+**How it works:**
+
+1. Select a source from the dropdown
+2. Pick a method tab: Search, Novel Details, Chapter, or Discover
+3. Enter the inputs (query, URL, etc.) and click Run
+4. View results as a visual Preview or raw JSON
+
+The playground executes your extension code on the server (not in the browser), making real HTTP requests to the target website. This means no CORS issues and identical behavior to the app.
+
+**Navigation flow:** Results are clickable. Click a search result to load its novel details, click a chapter to read its content. This mirrors the app's navigation: browse → novel → chapter.
+
+**Runs alongside iOS testing:** The deep link and sources list are still at the top of the page. You can test on your iPhone and in the playground at the same time.
 
 ### `glyph build`
 

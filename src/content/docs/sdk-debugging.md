@@ -164,6 +164,20 @@ The dev server automatically tries the next port if 8888 is taken. Check the ter
 
 ## Testing Without the App
 
+### Playground
+
+The dev server includes a built-in playground for testing your extension methods in the browser. Start the dev server and scroll below the sources list:
+
+```bash
+npm run dev -- --open
+```
+
+You can call `searchNovels`, `fetchNovelDetails`, `fetchChapterContent`, and discover methods interactively. Results are displayed as visual previews (novel cards, chapter reader) and raw JSON. Click through results to navigate the same way users do in the app.
+
+The playground runs your code on the server with real HTTP — no mocks, no CORS issues, same behavior as the app.
+
+### Unit Tests
+
 Use the mock test site at [glyph.moe/template/example](https://glyph.moe/template/example) and write unit tests with mocked HTTP:
 
 ```typescript

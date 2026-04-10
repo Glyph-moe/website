@@ -119,6 +119,7 @@ Starts a local server that:
 - Validates extensions on every build
 - Serves at `http://localhost:PORT` and your LAN IP
 - Prints a deep link for easy testing in Glyph
+- Includes a [Playground](/docs/cli#playground) for testing methods in the browser
 
 ### Validation
 
