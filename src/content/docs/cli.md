@@ -58,7 +58,7 @@ The dev server:
 
 - Watches all sources for file changes
 - Rebuilds automatically on save
-- Clears the terminal between rebuilds
+- Picks up new sources added while running (via `glyph add` in another terminal)
 - Serves `index.html`, bundles, and static files
 - Prints your LAN IP and deep link for iOS testing
 - Auto-increments port if taken
@@ -117,17 +117,19 @@ Validate all extension sources.
 ```bash
 npm run validate
 npm run validate -- --typecheck
-npm run validate -- --with-tests
+npm run validate -- --tests
+npm run validate -- --smoke
 npm run validate -- --fix
 npm run validate -- --ci
 ```
 
-| Option         | Description                              |
-| -------------- | ---------------------------------------- |
-| `--typecheck`  | Run `tsc --noEmit` (requires typescript) |
-| `--with-tests` | Run the test suite                       |
-| `--fix`        | Auto-fix fixable issues                  |
-| `--ci`         | JSON output, non-interactive             |
+| Option        | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `--typecheck` | Run `tsc --noEmit` (requires typescript)             |
+| `--tests`     | Run the test suite                                   |
+| `--smoke`     | Run smoke test (calls `searchNovels` with real HTTP) |
+| `--fix`       | Auto-fix fixable issues                              |
+| `--ci`        | JSON output, non-interactive                         |
 
 **Base validation** (always runs):
 

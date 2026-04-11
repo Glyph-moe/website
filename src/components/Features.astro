@@ -54,21 +54,60 @@ const features = [
               <div class="s-nav"><span class="s-title">Browse</span></div>
               <div class="s-body">
                 <div class="source-card">
-                  <div class="source-icon"></div>
+                  <div class="source-icon" style="background: #2563eb;">
+                    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"
+                      ><text
+                        x="50%"
+                        y="54%"
+                        dominant-baseline="central"
+                        text-anchor="middle"
+                        fill="white"
+                        font-size="16"
+                        font-weight="700"
+                        font-family="system-ui">R</text
+                      ></svg
+                    >
+                  </div>
                   <div class="source-info">
                     <span class="source-name">Royal Road</span>
                     <span class="source-lang">EN</span>
                   </div>
                 </div>
                 <div class="source-card">
-                  <div class="source-icon"></div>
+                  <div class="source-icon" style="background: #f97316;">
+                    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"
+                      ><text
+                        x="50%"
+                        y="54%"
+                        dominant-baseline="central"
+                        text-anchor="middle"
+                        fill="white"
+                        font-size="16"
+                        font-weight="700"
+                        font-family="system-ui">N</text
+                      ></svg
+                    >
+                  </div>
                   <div class="source-info">
                     <span class="source-name">NovelFire</span>
                     <span class="source-lang">EN</span>
                   </div>
                 </div>
                 <div class="source-card">
-                  <div class="source-icon"></div>
+                  <div class="source-icon" style="background: #8b5cf6;">
+                    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"
+                      ><text
+                        x="50%"
+                        y="54%"
+                        dominant-baseline="central"
+                        text-anchor="middle"
+                        fill="white"
+                        font-size="16"
+                        font-weight="700"
+                        font-family="system-ui">U</text
+                      ></svg
+                    >
+                  </div>
                   <div class="source-info">
                     <span class="source-name">Novelish Universe</span>
                     <span class="source-lang">EN</span>
@@ -82,7 +121,14 @@ const features = [
               <div class="s-nav"><span class="s-title">Downloads</span></div>
               <div class="s-body">
                 <div class="dl-item">
-                  <div class="dl-cover"></div>
+                  <img
+                    class="dl-cover"
+                    src="https://picsum.photos/seed/shadow/64/88"
+                    alt="Shadow Monarch cover"
+                    width="32"
+                    height="44"
+                    loading="lazy"
+                  />
                   <div class="dl-info">
                     <span class="dl-name">Shadow Monarch</span>
                     <span class="dl-meta">142 chapters &middot; 24 MB</span>
@@ -90,7 +136,14 @@ const features = [
                   <div class="dl-check">&#10003;</div>
                 </div>
                 <div class="dl-item">
-                  <div class="dl-cover"></div>
+                  <img
+                    class="dl-cover"
+                    src="https://picsum.photos/seed/tbate/64/88"
+                    alt="The Beginning After the End cover"
+                    width="32"
+                    height="44"
+                    loading="lazy"
+                  />
                   <div class="dl-info">
                     <span class="dl-name">The Beginning After the End</span>
                     <span class="dl-meta">86 chapters &middot; 18 MB</span>
@@ -98,7 +151,14 @@ const features = [
                   <div class="dl-check">&#10003;</div>
                 </div>
                 <div class="dl-item downloading">
-                  <div class="dl-cover"></div>
+                  <img
+                    class="dl-cover"
+                    src="https://picsum.photos/seed/omniscient/64/88"
+                    alt="Omniscient Reader cover"
+                    width="32"
+                    height="44"
+                    loading="lazy"
+                  />
                   <div class="dl-info">
                     <span class="dl-name">Omniscient Reader</span>
                     <div class="dl-progress"><div class="dl-bar"></div></div>
@@ -296,6 +356,16 @@ const features = [
     height: 36px;
     border-radius: 8px;
     background: var(--phone-surface-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .source-icon svg {
+    width: 100%;
+    height: 100%;
   }
 
   .source-info {
@@ -332,6 +402,7 @@ const features = [
     border-radius: 4px;
     background: var(--phone-surface-border);
     flex-shrink: 0;
+    object-fit: cover;
   }
 
   .dl-info {
