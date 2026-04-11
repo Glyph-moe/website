@@ -38,7 +38,7 @@ my-extensions/
 ├── sources/
 │   └── my-source/
 │       └── src/
-│           ├── main.ts     # Entry point — export default createSource({...})
+│           ├── main.ts     # Entry point -> export default createSource({...})
 │           ├── parser.ts   # HTML parsing logic
 │           └── my-source.test.ts
 ├── repo.json               # Repository metadata

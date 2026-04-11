@@ -174,7 +174,7 @@ npm run dev -- --open
 
 You can call `searchNovels`, `fetchNovelDetails`, `fetchChapterContent`, and discover methods interactively. Results are displayed as visual previews (novel cards, chapter reader) and raw JSON. Click through results to navigate the same way users do in the app.
 
-The playground runs your code on the server with real HTTP — no mocks, no CORS issues, same behavior as the app.
+The playground runs your code on the server with real HTTP, no mocks, no CORS issues, same behavior as the app.
 
 ### Unit Tests
 

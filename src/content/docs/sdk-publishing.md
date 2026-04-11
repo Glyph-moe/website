@@ -137,7 +137,7 @@ npm run validate -- --ci           # JSON output for CI
 npm test              # Unit tests (fast, mocked HTTP)
 ```
 
-The CLI automatically injects the runtime test setup — no manual `test-setup.js` needed.
+The CLI automatically injects the runtime test setup, no manual `test-setup.js` needed.
 
 Unit tests use mocked HTTP responses:
 

@@ -66,7 +66,7 @@ The dev server:
 
 ### Playground
 
-The dev server landing page includes an interactive playground below the sources list. It lets you test your extension methods directly in the browser — no iOS device needed.
+The dev server landing page includes an interactive playground below the sources list. It lets you test your extension methods directly in the browser, no iOS device needed.
 
 **How it works:**
 

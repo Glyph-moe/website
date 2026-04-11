@@ -193,7 +193,7 @@ interface Novel {
   cover?: string // Cover image URL
   author?: string
   description?: string
-  tags?: string[] // Genre tags — used for content rating
+  tags?: string[] // Genre tags (used for content rating)
   status?: 'ongoing' | 'completed' | 'hiatus' | 'dropped' | 'unknown'
   contentRating?: 'everyone' | 'teen' | 'mature' | 'adult'
 }
