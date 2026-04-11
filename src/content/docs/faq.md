@@ -23,8 +23,6 @@ Extensions are shared as repository URLs by the community. You add them in Setti
 
 Yes. You can download chapters for offline reading from any novel's detail page. Downloaded chapters are stored on your device and accessible without an internet connection.
 
----
-
 ## Reading
 
 ### How do I switch between paginated and scroll mode?
@@ -61,8 +59,6 @@ The extension couldn't fetch the chapter content. This usually means:
 
 Tap "Retry" to try again. If it persists, check if the extension has an update in Settings → Extensions.
 
----
-
 ## Extensions
 
 ### How do I add a new extension repository?
@@ -92,8 +88,6 @@ Yes. Go to Settings → Extensions → tap the repository. Swipe left on any sou
 
 Run `npx create-glyph-extension my-extensions` to scaffold a new project. See the [SDK Documentation](/docs/sdk-overview) for a complete guide. You'll need basic TypeScript knowledge and familiarity with HTML selectors.
 
----
-
 ## Data & Privacy
 
 ### Does Glyph track me?
@@ -114,8 +108,6 @@ Yes, via iCloud. Your library, reading history, bookmarks, and progress sync aut
 ### Where is my data stored?
 
 All data is stored locally on your device using SwiftData. If iCloud is enabled, it's also synced to your iCloud account. Extensions run in sandboxed WebViews with domain restrictions and can only access their declared base URL.
-
----
 
 ## Troubleshooting
 
