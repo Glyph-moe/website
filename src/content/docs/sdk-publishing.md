@@ -142,7 +142,7 @@ The CLI automatically injects the runtime test setup — no manual `test-setup.j
 Unit tests use mocked HTTP responses:
 
 ```typescript
-import { mockRequest, clearMocks } from '@glyph/sdk/testing'
+import { mockRequest, clearMocks } from '@glyphmoe/sdk/testing'
 
 beforeEach(() => clearMocks())
 

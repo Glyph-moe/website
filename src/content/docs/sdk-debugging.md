@@ -181,7 +181,7 @@ The playground runs your code on the server with real HTTP — no mocks, no CORS
 Use the mock test site at [glyph.moe/template/example](https://glyph.moe/template/example) and write unit tests with mocked HTTP:
 
 ```typescript
-import { mockRequest, clearMocks } from '@glyph/sdk/testing'
+import { mockRequest, clearMocks } from '@glyphmoe/sdk/testing'
 
 beforeEach(() => clearMocks())
 

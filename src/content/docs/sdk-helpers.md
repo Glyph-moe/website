@@ -12,7 +12,7 @@ Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and co
 The SDK re-exports [cheerio](https://cheerio.js.org/) for jQuery-style HTML parsing:
 
 ```typescript
-import { load } from '@glyph/sdk'
+import { load } from '@glyphmoe/sdk'
 
 const $ = load(html)
 const title = $('h1.title').text().trim()
@@ -37,7 +37,7 @@ const chapters = $('ul li a')
 Automatically fetch all pages of a paginated endpoint:
 
 ```typescript
-import { fetchAllPages, get, load } from '@glyph/sdk'
+import { fetchAllPages, get, load } from '@glyphmoe/sdk'
 
 const allChapters = await fetchAllPages(async (page, accumulated) => {
   const html = await get(`${BASE}/chapters?page=${page}`)
@@ -70,7 +70,7 @@ const allChapters = await fetchAllPages(async (page, accumulated) => {
 Read and write cookies for the current source. Cookies are **isolated per source**, so one extension can't access another's cookies.
 
 ```typescript
-import { getCookies, setCookie } from '@glyph/sdk'
+import { getCookies, setCookie } from '@glyphmoe/sdk'
 
 // Read all cookies for a URL
 const cookies = await getCookies('https://example.com')
@@ -87,7 +87,7 @@ await setCookie('https://example.com', 'auth_token', 'xyz789')
 Check the user's content rating preference to filter content server-side:
 
 ```typescript
-import { getMaxContentRating, isRatingAllowed } from '@glyph/sdk'
+import { getMaxContentRating, isRatingAllowed } from '@glyphmoe/sdk'
 
 // Get the raw rating level
 const rating = await getMaxContentRating()
@@ -125,7 +125,7 @@ If none match, the novel is rated `everyone`.
 Shorthand functions to define discover page sections:
 
 ```typescript
-import { featured, carousel, updates, genres } from '@glyph/sdk'
+import { featured, carousel, updates, genres } from '@glyphmoe/sdk'
 
 async getDiscoverSections() {
   return [

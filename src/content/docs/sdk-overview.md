@@ -5,14 +5,14 @@ order: 3
 
 # SDK Overview
 
-The `@glyph/sdk` is the TypeScript toolkit for building Glyph extensions. It handles HTTP requests, rate limiting, retries, HTML parsing, and cookie management so you can focus on parsing novel content.
+The `@glyphmoe/sdk` is the TypeScript toolkit for building Glyph extensions. It handles HTTP requests, rate limiting, retries, HTML parsing, and cookie management so you can focus on parsing novel content.
 
 ## Architecture
 
 ```
 Your Extension (TypeScript)
     ↓ calls get(), post(), json()
-@glyph/sdk (request layer, rate limiter, interceptors)
+@glyphmoe/sdk (request layer, rate limiter, interceptors)
     ↓ calls Application.scheduleRequest()
 Glyph iOS App (WKWebView bridge)
     ↓ makes real HTTP request
@@ -42,13 +42,13 @@ my-extensions/
 │           ├── parser.ts   # HTML parsing logic
 │           └── my-source.test.ts
 ├── repo.json               # Repository metadata
-├── package.json            # Uses @glyph/cli commands
+├── package.json            # Uses @glyphmoe/cli commands
 └── dist/                   # Built bundles + index.json
 ```
 
 ## CLI Commands
 
-The `@glyph/cli` package provides all development commands:
+The `@glyphmoe/cli` package provides all development commands:
 
 | Command              | Description                                                 |
 | -------------------- | ----------------------------------------------------------- |
@@ -65,7 +65,7 @@ See the [CLI Reference](/docs/cli) for full details.
 Every extension exports a source object:
 
 ```typescript
-import { createSource, get, RateLimit } from '@glyph/sdk'
+import { createSource, get, RateLimit } from '@glyphmoe/sdk'
 
 const BASE = 'https://example-novels.com'
 

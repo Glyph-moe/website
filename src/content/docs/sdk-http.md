@@ -14,7 +14,7 @@ All HTTP requests in extensions go through the Glyph bridge. The SDK provides he
 Fetch a URL and return the body as a string.
 
 ```typescript
-import { get } from '@glyph/sdk'
+import { get } from '@glyphmoe/sdk'
 
 const html = await get('https://example.com/page')
 ```
@@ -24,7 +24,7 @@ const html = await get('https://example.com/page')
 Send a POST request.
 
 ```typescript
-import { post } from '@glyph/sdk'
+import { post } from '@glyphmoe/sdk'
 
 const result = await post('https://example.com/api', 'key=value', {
   'Content-Type': 'application/x-www-form-urlencoded',
@@ -36,7 +36,7 @@ const result = await post('https://example.com/api', 'key=value', {
 GET a URL and parse the response as JSON. Throws `ParseError` if the response isn't valid JSON.
 
 ```typescript
-import { json } from '@glyph/sdk'
+import { json } from '@glyphmoe/sdk'
 
 interface SearchResult {
   id: string
@@ -50,7 +50,7 @@ const data = await json<SearchResult[]>('https://api.example.com/search?q=test')
 POST JSON data and parse the response. Automatically sets `Content-Type: application/json`.
 
 ```typescript
-import { postJSON } from '@glyph/sdk'
+import { postJSON } from '@glyphmoe/sdk'
 
 const result = await postJSON<{ token: string }>('https://api.example.com/login', {
   username: 'user',
@@ -65,7 +65,7 @@ const result = await postJSON<{ token: string }>('https://api.example.com/login'
 Make a request with full control over method, headers, and body. Returns the response body.
 
 ```typescript
-import { request } from '@glyph/sdk'
+import { request } from '@glyphmoe/sdk'
 
 const body = await request({
   url: 'https://example.com/api',
@@ -80,7 +80,7 @@ const body = await request({
 Like `request()` but returns both the response metadata and body.
 
 ```typescript
-import { requestFull } from '@glyph/sdk'
+import { requestFull } from '@glyphmoe/sdk'
 
 const { response, body } = await requestFull({
   url: 'https://example.com/api',
@@ -98,7 +98,7 @@ console.log(response.headers) // { 'content-type': 'text/html', ... }
 Prevent getting blocked by setting a rate limit. The SDK uses a **token bucket** algorithm: the first N requests go through instantly (burst), then throttled to maintain the rate.
 
 ```typescript
-import { createSource, RateLimit } from '@glyph/sdk'
+import { createSource, RateLimit } from '@glyphmoe/sdk'
 
 export default createSource({
   rateLimit: RateLimit.balanced,
@@ -146,7 +146,7 @@ export default createSource({
 You can also use `withRetry()` directly:
 
 ```typescript
-import { withRetry, get } from '@glyph/sdk'
+import { withRetry, get } from '@glyphmoe/sdk'
 
 const html = await withRetry(() => get('https://flaky-site.com/page'), {
   maxRetries: 5,
@@ -161,7 +161,7 @@ const html = await withRetry(() => get('https://flaky-site.com/page'), {
 Thrown when a request returns a 4xx or 5xx status code.
 
 ```typescript
-import { get, HttpError } from '@glyph/sdk'
+import { get, HttpError } from '@glyphmoe/sdk'
 
 try {
   const html = await get('https://example.com/missing-page')
@@ -178,7 +178,7 @@ try {
 Thrown by `json()` and `postJSON()` when the response body isn't valid JSON.
 
 ```typescript
-import { json, ParseError } from '@glyph/sdk'
+import { json, ParseError } from '@glyphmoe/sdk'
 
 try {
   const data = await json('https://example.com/not-json')
@@ -202,7 +202,7 @@ Error: Request timeout after 30000ms: https://example.com/slow-page
 Interceptors let you modify requests before they're sent and responses after they arrive.
 
 ```typescript
-import { registerInterceptor } from '@glyph/sdk'
+import { registerInterceptor } from '@glyphmoe/sdk'
 
 registerInterceptor({
   async interceptRequest(request) {
@@ -229,7 +229,7 @@ registerInterceptor({
 Build URLs with query parameters safely:
 
 ```typescript
-import { buildUrl } from '@glyph/sdk'
+import { buildUrl } from '@glyphmoe/sdk'
 
 buildUrl('https://site.com', '/search', { keyword: 'hello world', page: 2 })
 // → 'https://site.com/search?keyword=hello%20world&page=2'

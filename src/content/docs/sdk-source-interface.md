@@ -118,7 +118,7 @@ async getDiscoverSections?(): Promise<DiscoverSection[]>
 Use the helper functions to create sections:
 
 ```typescript
-import { featured, carousel, updates, genres } from '@glyph/sdk'
+import { featured, carousel, updates, genres } from '@glyphmoe/sdk'
 
 async getDiscoverSections() {
   return [
