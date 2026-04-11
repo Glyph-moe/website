@@ -8,7 +8,7 @@ import Logo from './Logo.astro'
       <Logo size={56} />
     </div>
     <h1 class="hero-title" data-animate="fade-up" data-delay="0.1">
-      Read anything,<br />your way.
+      <span class="hero-title-accent">Glyph</span> Read anything,<br />your way.
     </h1>
     <p class="hero-subtitle" data-animate="fade-up" data-delay="0.2">
       A powerful web novel reader with community-built extensions.
@@ -47,6 +47,13 @@ import Logo from './Logo.astro'
     letter-spacing: -0.035em;
     line-height: 1.05;
     color: var(--text);
+  }
+
+  .hero-title-accent {
+    color: var(--accent);
+    display: inline-block;
+    transform: skew(-10deg);
+    padding: 0 8px;
   }
 
   .hero-subtitle {

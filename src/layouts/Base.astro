@@ -7,9 +7,12 @@ interface Props {
 }
 
 const {
-  title = 'Glyph — Read anything, your way.',
-  description = 'A powerful iOS web novel reader with community-built extensions.',
+  title = 'Glyph — Free iOS Web Novel Reader with Extensions',
+  description = 'Glyph is a free iOS web novel reader with community-built extensions. Browse dozens of novel sources, read offline, and customize your reading experience — no accounts, no tracking.',
 } = Astro.props
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const ogImage = new URL('/og-image.png', Astro.site)
 ---
 
 <!doctype html>
@@ -20,7 +23,42 @@ const {
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0E0E12" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:site_name" content="Glyph" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
     <title>{title}</title>
+
+    <!-- Structured Data -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Glyph',
+        applicationCategory: 'ReadingApp',
+        operatingSystem: 'iOS',
+        description: description,
+        url: 'https://glyph.moe',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+      })}
+    />
     <script is:inline>
       ;(function () {
         var t = localStorage.getItem('theme')
@@ -29,6 +67,14 @@ const {
     </script>
   </head>
   <body>
+    <noscript
+      ><style>
+        [data-animate] {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style></noscript
+    >
     <slot />
 
     <script>
