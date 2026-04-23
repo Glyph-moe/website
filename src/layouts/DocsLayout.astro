@@ -22,13 +22,12 @@ const sorted = allDocs.sort((a, b) => a.data.order - b.data.order)
 const currentIndex = sorted.findIndex(d => d.id === currentSlug)
 const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null
 const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null
-const appIds = ['getting-started', 'faq']
-const buildingIds = ['sdk-overview', 'cli', 'sdk-publishing']
-const referenceIds = ['sdk-source-interface', 'sdk-http', 'sdk-helpers', 'sdk-debugging']
 
-const appDocs = appIds.map(id => sorted.find(d => d.id === id)!).filter(Boolean)
-const buildingDocs = buildingIds.map(id => sorted.find(d => d.id === id)!).filter(Boolean)
-const referenceDocs = referenceIds.map(id => sorted.find(d => d.id === id)!).filter(Boolean)
+// Group docs by section, preserving order within each section
+const sectionOrder = ['Using Glyph', 'Building Extensions', 'SDK Reference']
+const sections = sectionOrder
+  .map(name => ({ name, docs: sorted.filter(d => d.data.section === name) }))
+  .filter(s => s.docs.length > 0)
 ---
 
 <!doctype html>
@@ -86,47 +85,23 @@ const referenceDocs = referenceIds.map(id => sorted.find(d => d.id === id)!).fil
     <div class="docs-shell">
       <div class="docs-sidebar-overlay" id="docs-sidebar-overlay"></div>
       <aside class="docs-sidebar" id="docs-sidebar">
-        <div class="sidebar-section-title">Using Glyph</div>
-        <nav class="sidebar-nav">
-          {
-            appDocs.map(doc => (
-              <a
-                href={`/docs/${doc.id}`}
-                class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
-              >
-                {doc.data.title}
-              </a>
-            ))
-          }
-        </nav>
-
-        <div class="sidebar-section-title">Building Extensions</div>
-        <nav class="sidebar-nav">
-          {
-            buildingDocs.map(doc => (
-              <a
-                href={`/docs/${doc.id}`}
-                class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
-              >
-                {doc.data.title}
-              </a>
-            ))
-          }
-        </nav>
-
-        <div class="sidebar-section-title">SDK Reference</div>
-        <nav class="sidebar-nav">
-          {
-            referenceDocs.map(doc => (
-              <a
-                href={`/docs/${doc.id}`}
-                class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
-              >
-                {doc.data.title}
-              </a>
-            ))
-          }
-        </nav>
+        {
+          sections.map((section, i) => (
+            <>
+              <div class:list={['sidebar-section-title', { first: i === 0 }]}>{section.name}</div>
+              <nav class="sidebar-nav">
+                {section.docs.map(doc => (
+                  <a
+                    href={`/docs/${doc.id}`}
+                    class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
+                  >
+                    {doc.data.title}
+                  </a>
+                ))}
+              </nav>
+            </>
+          ))
+        }
       </aside>
 
       <main class="docs-main">

@@ -1,15 +1,16 @@
 ---
 title: Helpers & Utilities
 order: 7
+section: 'SDK Reference'
 ---
 
 # Helpers & Utilities
 
-Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and content rating.
+Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and content rating. All functions are **synchronous** — no `async`/`await` needed.
 
 ## HTML Parsing
 
-The SDK re-exports [cheerio](https://cheerio.js.org/) for jQuery-style HTML parsing:
+The SDK provides a jQuery-style HTML parsing API backed by the host's native HTML parser (SwiftSoup on iOS) via the WIT `glyph:extension/html@0.1.0` interface. No JS HTML parser is bundled — parsing happens natively on the device, which is faster and keeps bundle sizes small. In tests and dev mode, a cheerio-based shim is used instead; the API is identical, so you don't need to think about the difference.
 
 ```typescript
 import { load } from '@glyphmoe/sdk'
@@ -25,12 +26,26 @@ const chapters = $('ul li a')
   .get()
 ```
 
+### Querying within elements
+
+Use `$(el).find(selector)` or the `find()` method to query within a matched element:
+
+```typescript
+$('.novel-card').each((_, el) => {
+  const title = $(el).find('.title').text().trim()
+  const cover = $(el).find('img').attr('src')
+  const url = $(el).attr('href')
+})
+```
+
 ### Tips
 
 - Always call `.trim()` on text content, since HTML often has whitespace
-- Use `.attr('href')` not `.prop('href')`, as cheerio doesn't resolve relative URLs
+- Use `.attr('href')` for attributes — the API doesn't resolve relative URLs
 - Check for `data-src` or `data-lazy` attributes for lazy-loaded images
 - Use `.html()` to get inner HTML (for chapter content), `.text()` for plain text
+- Use `.find()` to query within a matched element's subtree
+- `.map()` uses `(index, element)` callback order and returns `.get()` for a plain array
 
 ## Pagination
 
@@ -39,8 +54,8 @@ Automatically fetch all pages of a paginated endpoint:
 ```typescript
 import { fetchAllPages, get, load } from '@glyphmoe/sdk'
 
-const allChapters = await fetchAllPages(async (page, accumulated) => {
-  const html = await get(`${BASE}/chapters?page=${page}`)
+const allChapters = fetchAllPages((page, accumulated) => {
+  const html = get(`${BASE}/chapters?page=${page}`)
   const $ = load(html)
 
   const items = $('li.chapter')
@@ -67,34 +82,34 @@ const allChapters = await fetchAllPages(async (page, accumulated) => {
 
 ## Cookies
 
-Read and write cookies for the current source. Cookies are **isolated per source**, so one extension can't access another's cookies.
+Read and write cookies for the current source via the WIT `glyph:extension/host@0.1.0` interface. Per-source cookie isolation is enforced by the host — one extension can't access another's cookies. Both `getCookies()` and `setCookie()` are synchronous.
 
 ```typescript
 import { getCookies, setCookie } from '@glyphmoe/sdk'
 
 // Read all cookies for a URL
-const cookies = await getCookies('https://example.com')
+const cookies = getCookies('https://example.com')
 console.log(cookies['session_id']) // 'abc123'
 
 // Set a cookie
-await setCookie('https://example.com', 'auth_token', 'xyz789')
+setCookie('https://example.com', 'auth_token', 'xyz789')
 ```
 
 > **Note:** Cookies are stored in memory and lost when the app restarts. This is by design for privacy. If a site requires login, the user will need to re-authenticate each session.
 
 ## Content Rating
 
-Check the user's content rating preference to filter content server-side:
+Check the user's content rating preference to filter content server-side. These also go through the WIT `glyph:extension/host@0.1.0` interface and are synchronous.
 
 ```typescript
 import { getMaxContentRating, isRatingAllowed } from '@glyphmoe/sdk'
 
 // Get the raw rating level
-const rating = await getMaxContentRating()
+const rating = getMaxContentRating()
 // Returns: 'everyone' | 'teen' | 'mature' | 'adult'
 
 // Check if a specific rating is allowed
-if (await isRatingAllowed('mature')) {
+if (isRatingAllowed('mature')) {
   // Show mature content
 }
 ```
@@ -127,7 +142,7 @@ Shorthand functions to define discover page sections:
 ```typescript
 import { featured, carousel, updates, genres } from '@glyphmoe/sdk'
 
-async getDiscoverSections() {
+getDiscoverSections() {
   return [
     featured('hot', 'Hot Right Now'),           // Large hero cards
     carousel('popular', 'Popular'),             // Horizontal cover scroll

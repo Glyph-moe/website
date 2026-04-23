@@ -1,6 +1,7 @@
 ---
 title: FAQ
 order: 2
+section: 'Using Glyph'
 ---
 
 # Frequently Asked Questions

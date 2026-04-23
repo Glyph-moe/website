@@ -1,6 +1,7 @@
 ---
 title: SDK Overview
 order: 3
+section: 'Building Extensions'
 ---
 
 # SDK Overview
@@ -11,15 +12,21 @@ The `@glyphmoe/sdk` is the TypeScript toolkit for building Glyph extensions. It 
 
 ```
 Your Extension (TypeScript)
-    ↓ calls get(), post(), json()
-@glyphmoe/sdk (request layer, rate limiter, interceptors)
-    ↓ calls Application.scheduleRequest()
-Glyph iOS App (WKWebView bridge)
-    ↓ makes real HTTP request
+    ↓ calls get(), post(), load()
+@glyphmoe/sdk (request layer, rate limiter, HTML parsing)
+    ↓ resolved to window.__wit.* globals at build time
+WKWebView bridge (window.prompt() → Native)
+    ↓ synchronous JS→Native communication
+Glyph Native Runtime (URLSession, SwiftSoup, cookie store)
+    ↓ handles HTTP fetches, HTML parsing, host functions
 Novel Website
 ```
 
-Extensions run inside a WKWebView in the iOS app. All HTTP requests go through the app's bridge, which allows per-source cookie isolation, domain restrictions, and network logging.
+Extensions run inside a **WKWebView**. The bridge uses `window.prompt()` for synchronous JS-to-Native communication — there are no async message handlers or XHR involved. The native side handles HTTP fetches (via URLSession), HTML parsing (via SwiftSoup), and host functions (cookies, content rating, user agent). The SDK handles all the plumbing — your code just calls `get()`, `load()`, etc. All HTTP requests go through the native runtime, which provides per-source cookie isolation, domain restrictions, and network logging.
+
+All SDK functions are **synchronous** — no `async`/`await` needed in extension code. For example, `get(url)` returns a string directly, not a Promise.
+
+Extensions are compiled to **IIFE** format (not ESM). esbuild bundles everything with `globalName: 'GlyphExtension'`. WIT imports (`glyph:extension/http@0.1.0`, `glyph:extension/html@0.1.0`, `glyph:extension/host@0.1.0`) are resolved to `window.__wit.*` globals at build time.
 
 ## Quick Start
 
@@ -38,7 +45,7 @@ my-extensions/
 ├── sources/
 │   └── my-source/
 │       └── src/
-│           ├── main.ts     # Entry point -> export default createSource({...})
+│           ├── main.ts     # Entry point -> export const source = createSource({...})
 │           ├── parser.ts   # HTML parsing logic
 │           └── my-source.test.ts
 ├── repo.json               # Repository metadata
@@ -50,13 +57,14 @@ my-extensions/
 
 The `@glyphmoe/cli` package provides all development commands:
 
-| Command              | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
-| `npm run dev`        | Development server with hot reload                          |
-| `npm run build`      | Production build with validation                            |
-| `npm run test`       | Run tests                                                   |
-| `npm run validate`   | Validate extensions (flags: `--typecheck`, `--fix`, `--ci`) |
-| `npx glyph add <id>` | Add a new source to your project                            |
+| Command              | Description                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `npm run dev`        | Development server with hot reload                                    |
+| `npm run build`      | Production build with validation                                      |
+| `npm run test`       | Run tests                                                             |
+| `npm run validate`   | Validate extensions (flags: `--typecheck`, `--fix`, `--ci`)           |
+| `npx glyph add <id>` | Add a new source to your project                                      |
+| `npx glyph logcat`   | Start a standalone log receiver on port 9999 for remote log streaming |
 
 See the [CLI Reference](/docs/cli) for full details.
 
@@ -65,11 +73,11 @@ See the [CLI Reference](/docs/cli) for full details.
 Every extension exports a source object:
 
 ```typescript
-import { createSource, get, RateLimit } from '@glyphmoe/sdk'
+import { createSource, get, load, RateLimit } from '@glyphmoe/sdk'
 
 const BASE = 'https://example-novels.com'
 
-export default createSource({
+export const source = createSource({
   // Identity
   id: 'example-novels',
   name: 'Example Novels',
@@ -82,22 +90,28 @@ export default createSource({
   rateLimit: RateLimit.balanced, // 3 req/sec
 
   // Required methods
-  async searchNovels(query, page) {
-    /* ... */
+  searchNovels(query, page) {
+    const html = get(`${BASE}/search?q=${encodeURIComponent(query)}&page=${page}`)
+    const $ = load(html)
+    // ... parse and return { items, hasNextPage }
   },
-  async fetchNovelDetails(novelUrl) {
-    /* ... */
+  fetchNovelDetails(novelUrl) {
+    const html = get(novelUrl)
+    const $ = load(html)
+    // ... parse and return { id, title, url, chapters, ... }
   },
-  async fetchChapterContent(chapterUrl) {
-    /* ... */
+  fetchChapterContent(chapterUrl) {
+    const html = get(chapterUrl)
+    const $ = load(html)
+    return $('div.chapter-content').html() ?? ''
   },
 })
 ```
 
 `createSource()` handles all the boilerplate:
 
-- Sets User-Agent and Accept headers
+- Sets User-Agent and Accept headers automatically
 - Configures the rate limiter
-- Provides a clean `Source` object to the app
+- Runs setup at module load time (no async `initialise()` needed)
 
 See the [Source Interface](/docs/sdk-source-interface) for all required and optional methods.

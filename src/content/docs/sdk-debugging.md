@@ -1,6 +1,7 @@
 ---
 title: Debugging
 order: 9
+section: 'SDK Reference'
 ---
 
 # Debugging Extensions
@@ -57,9 +58,35 @@ async searchNovels(query, page) {
 }
 ```
 
-These appear in **App Logs** with the `Extension` category and the corresponding level (log = info, warn = warn, error = error).
+These appear in **App Logs** with the `Extension` category and the corresponding level (log = info, warn = warn, error = error). When a dev server is connected, these logs are also forwarded to the remote log stream (see below).
 
-> **Note:** `console.log` calls are visible in the app's Developer Tools but NOT in Xcode's console. The extension runs in a WKWebView, not in the app's main process.
+> **Note:** `console.log` calls are visible in the app's Developer Tools and in the remote log stream, but NOT in Xcode's console. The extension runs in the WASM runtime, not in the app's main process.
+
+## Remote Log Streaming
+
+When the app installs a repo from an HTTP dev server, it automatically enables remote log forwarding. All app logs — extensions, network, lifecycle — are POSTed to `{devServerUrl}/api/log` as JSON batches every 500ms. The dev server prints these in the terminal with timestamps and color-coded levels.
+
+This means you can watch logs scroll in your terminal as you interact with the app on your phone. No need to go back and forth between the app's Developer Tools and your code.
+
+```
+[12:04:31] INFO  [Extensions] callMethod START: fetchNovelDetails
+[12:04:31] INFO  [Extensions] Searching for: isekai page: 1
+[12:04:32] WARN  [Network] Slow response (2.1s): https://example.com/api/search
+[12:04:32] INFO  [Extensions] callMethod END: fetchNovelDetails
+```
+
+Log streaming starts automatically when you add a dev server URL in the app. No extra configuration needed — just run `npm run dev` and add the URL.
+
+### `glyph logcat`
+
+If you don't need the full dev server (builds, playground, etc.) and just want to receive logs, use the standalone `logcat` command:
+
+```bash
+npx glyph logcat              # starts a log receiver on port 9999
+npx glyph logcat --port 3000  # custom port
+```
+
+This starts a minimal HTTP server that accepts log batches and prints them to the terminal. The app sends logs here whenever it's connected to any dev server. Useful for tailing logs while working on something unrelated to your extension code.
 
 ## Common Errors
 
@@ -84,7 +111,7 @@ If you need to fetch from a CDN or API on a different domain, make sure the `bas
 The `source.info.baseUrl` is missing or invalid. Make sure your `createSource()` has a valid `baseUrl`:
 
 ```typescript
-export default createSource({
+export const source = createSource({
   baseUrl: 'https://example.com', // must be a valid HTTPS URL
   // ...
 })
@@ -113,7 +140,7 @@ async fetchChapterContent(chapterUrl) {
 
 ### "undefined is not an object" or similar JS errors
 
-Usually a selector that returns nothing. Always check that your cheerio selectors match the actual HTML:
+Usually a selector that returns nothing. Always check that your selectors match the actual HTML:
 
 ```typescript
 const title = $('h1.title').text().trim()
@@ -161,6 +188,19 @@ You don't need to remove and re-add the extension. Just refresh.
 ### Port already in use
 
 The dev server automatically tries the next port if 8888 is taken. Check the terminal output for the actual port.
+
+### Interactive commands
+
+The dev server has an interactive prompt while running. Press a key to trigger an action:
+
+| Key | Action                        |
+| --- | ----------------------------- |
+| `h` | Show help (list all commands) |
+| `r` | Restart all builds            |
+| `u` | Show all URLs and LAN IPs     |
+| `q` | Quit the dev server           |
+
+This is handy when you need to force a full rebuild or quickly grab the URL to paste into the app.
 
 ## Testing Without the App
 

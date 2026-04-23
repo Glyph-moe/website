@@ -1,6 +1,7 @@
 ---
 title: CLI Reference
 order: 4
+section: 'Building Extensions'
 ---
 
 # CLI Reference
@@ -49,10 +50,11 @@ npm run dev -- --port 3000
 npm run dev -- --open
 ```
 
-| Option            | Description                 |
-| ----------------- | --------------------------- |
-| `--port <number>` | Port number (default: 8888) |
-| `--open`          | Open browser automatically  |
+| Option            | Description                                           |
+| ----------------- | ----------------------------------------------------- |
+| `--port <number>` | Port number (default: 8888)                           |
+| `--open`          | Open browser automatically                            |
+| `--url <url>`     | Public base URL for tunnels (cloudflared, ngrok, etc) |
 
 The dev server:
 
@@ -60,9 +62,19 @@ The dev server:
 - Rebuilds automatically on save
 - Picks up new sources added while running (via `glyph add` in another terminal)
 - Serves `index.html`, bundles, and static files
-- Prints your LAN IP and deep link for iOS testing
+- Prints all network interface URLs and deep links for iOS testing
 - Auto-increments port if taken
+- Accepts remote logs from the iOS app via a `/api/log` POST endpoint
 - Includes a **Playground** for testing extension methods in the browser (see below)
+
+**Interactive terminal commands:**
+
+| Key | Action              |
+| --- | ------------------- |
+| `h` | Show help           |
+| `r` | Restart all builds  |
+| `u` | Show server URLs    |
+| `q` | Quit the dev server |
 
 ### Playground
 
@@ -81,6 +93,27 @@ The playground executes your extension code on the server (not in the browser), 
 
 **Runs alongside iOS testing:** The deep link and sources list are still at the top of the page. You can test on your iPhone and in the playground at the same time.
 
+### `glyph logcat`
+
+Start a standalone log receiver server. The iOS app streams logs here when connected to a dev server.
+
+```bash
+npx glyph logcat
+npx glyph logcat -p 3000
+```
+
+| Option                | Description                 |
+| --------------------- | --------------------------- |
+| `-p, --port <number>` | Port number (default: 9999) |
+
+The server listens for log entries on HTTP and displays them in the terminal with timestamps and color-coded levels:
+
+- **INFO** — blue
+- **WARN** — yellow
+- **ERROR** — red
+
+Each entry includes a category tag so you can tell which source or subsystem produced it. This is the same log stream available through the `/api/log` endpoint in `glyph dev`, but as a dedicated process you can run in a separate terminal window.
+
 ### `glyph build`
 
 Build all extensions for production.
@@ -89,12 +122,13 @@ Build all extensions for production.
 npm run build
 ```
 
-Creates optimized, minified IIFE bundles in `dist/`. For each source:
+Creates optimized ESM bundles in `dist/`. For each source:
 
-1. Bundles with esbuild (includes SDK and polyfills)
-2. Validates the bundle (info fields, required methods)
-3. Copies static assets
-4. Generates `dist/index.json`
+1. **JS sources:** Bundles with esbuild, validates, copies static assets
+2. **Rust sources:** Builds with `cargo component`, transpiles with JCO
+3. Generates `dist/index.json` with all sources
+
+Progress is shown with listr2 spinners for each source. When the build finishes, you see the bundle size and timing for each source, plus the total build time. A `.metafile.json` file is written alongside each bundle for bundle analysis (compatible with [esbuild's bundle analyzer](https://esbuild.github.io/analyze/)).
 
 Exits with code 1 if any source fails validation.
 
@@ -106,9 +140,16 @@ Run tests with vitest.
 npm test
 npm test -- --watch
 npm test -- src/mysite.test.ts
+npm test -- --generate
 ```
 
-Arguments after `--` are passed directly to vitest. The CLI automatically injects the runtime test setup that mocks the iOS globals (`Application`, etc.) — no manual setup file needed in your project.
+| Option       | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `--generate` | Scaffold test files for sources that don't have one yet |
+
+Arguments after `--` are passed directly to vitest (except `--generate`, which is handled by the CLI). The CLI automatically injects the runtime test setup that provides WIT interface shims — no manual setup file needed in your project.
+
+`--generate` creates a basic test file with the source imports and a placeholder test for each source missing a `.test.ts` file. Useful after adding several sources with `glyph add`.
 
 ### `glyph validate`
 
@@ -152,7 +193,7 @@ npm run validate -- --ci
 }
 ```
 
-Default output:
+Default output uses listr2 progress spinners (falls back to plain text in CI mode):
 
 ```
 Validating 2 source(s)...
@@ -169,8 +210,13 @@ Validating 2 source(s)...
 Add a new source to an existing project.
 
 ```bash
-glyph add mysite
+glyph add mysite                # TypeScript (default)
+glyph add -l rust mysite        # Rust
 ```
+
+| Option                  | Description                                  |
+| ----------------------- | -------------------------------------------- |
+| `-l, --language <lang>` | Extension language: `js` (default) or `rust` |
 
 Prompts for:
 
@@ -181,6 +227,8 @@ Prompts for:
 
 Creates the full source directory structure:
 
+**TypeScript:**
+
 ```
 sources/mysite/
 ├── package.json
@@ -190,6 +238,17 @@ sources/mysite/
     ├── main.ts          # Skeleton with TODOs
     ├── parser.ts        # Empty parser class
     └── mysite.test.ts   # Test template
+```
+
+**Rust:**
+
+```
+sources/mysite/
+├── Cargo.toml           # With [package.metadata.component] for WIT
+├── source.json          # Extension metadata
+├── static/
+└── src/
+    └── lib.rs           # Stub Guest implementation
 ```
 
 ### `glyph --version`

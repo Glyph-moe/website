@@ -1,6 +1,7 @@
 ---
 title: Getting Started
 order: 1
+section: 'Using Glyph'
 ---
 
 # Getting Started

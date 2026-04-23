@@ -1,6 +1,7 @@
 ---
 title: Source Interface
 order: 5
+section: 'SDK Reference'
 ---
 
 # Source Interface
@@ -14,7 +15,7 @@ A source is the core of every extension. It tells Glyph how to search, fetch nov
 Search for novels on the source website.
 
 ```typescript
-async searchNovels(query: string, page: number): Promise<PagedResults<Novel>>
+searchNovels(query: string, page: number): PagedResults<Novel>
 ```
 
 **Parameters:**
@@ -27,8 +28,8 @@ async searchNovels(query: string, page: number): Promise<PagedResults<Novel>>
 **Example:**
 
 ```typescript
-async searchNovels(query, page) {
-  const html = await get(`${BASE}/search?q=${encodeURIComponent(query)}&page=${page}`)
+searchNovels(query, page) {
+  const html = get(`${BASE}/search?q=${encodeURIComponent(query)}&page=${page}`)
   const $ = load(html)
   const items: Novel[] = []
 
@@ -49,7 +50,7 @@ async searchNovels(query, page) {
 Fetch full novel metadata and chapter list.
 
 ```typescript
-async fetchNovelDetails(novelUrl: string): Promise<Novel & { chapters: Chapter[] }>
+fetchNovelDetails(novelUrl: string): Novel & { chapters: Chapter[] }
 ```
 
 **Returns:** A `Novel` object with an additional `chapters` array. Chapters should be in chronological order (oldest first).
@@ -57,8 +58,8 @@ async fetchNovelDetails(novelUrl: string): Promise<Novel & { chapters: Chapter[]
 **Example:**
 
 ```typescript
-async fetchNovelDetails(novelUrl) {
-  const html = await get(novelUrl)
+fetchNovelDetails(novelUrl) {
+  const html = get(novelUrl)
   const $ = load(html)
 
   const title = $('h1.title').text().trim()
@@ -88,7 +89,7 @@ async fetchNovelDetails(novelUrl) {
 Fetch the HTML content of a chapter.
 
 ```typescript
-async fetchChapterContent(chapterUrl: string): Promise<string>
+fetchChapterContent(chapterUrl: string): string
 ```
 
 **Returns:** HTML string of the chapter content.
@@ -98,8 +99,8 @@ async fetchChapterContent(chapterUrl: string): Promise<string>
 **Example:**
 
 ```typescript
-async fetchChapterContent(chapterUrl) {
-  const html = await get(chapterUrl)
+fetchChapterContent(chapterUrl) {
+  const html = get(chapterUrl)
   const $ = load(html)
   return $('div.chapter-content').html() ?? ''
 }
@@ -112,7 +113,7 @@ async fetchChapterContent(chapterUrl) {
 Define the layout of the source's discover page (what users see when they tap the source in Browse).
 
 ```typescript
-async getDiscoverSections?(): Promise<DiscoverSection[]>
+getDiscoverSections?(): DiscoverSection[]
 ```
 
 Use the helper functions to create sections:
@@ -120,7 +121,7 @@ Use the helper functions to create sections:
 ```typescript
 import { featured, carousel, updates, genres } from '@glyphmoe/sdk'
 
-async getDiscoverSections() {
+getDiscoverSections() {
   return [
     featured('hot', 'Hot Right Now'),
     carousel('popular', 'Popular'),
@@ -136,7 +137,7 @@ async getDiscoverSections() {
 Load items for a discover section.
 
 ```typescript
-async getDiscoverSectionItems?(sectionId: string, page: number): Promise<DiscoverSectionResults>
+getDiscoverSectionItems?(sectionId: string, page: number): DiscoverSectionResults
 ```
 
 **Returns:** `{ items: DiscoverSectionItem[], hasNextPage: boolean }`
@@ -166,11 +167,11 @@ items.push({
 Paginated chapter list for novels with many chapters (1000+). If implemented, the app uses this instead of fetching all chapters at once.
 
 ```typescript
-async fetchChaptersList?(novelUrl: string, page: number): Promise<{
+fetchChaptersList?(novelUrl: string, page: number): {
   chapters: Chapter[]
   hasNextPage: boolean
   totalPages?: number
-}>
+}
 ```
 
 ### `getDiscoverItems(page)`
@@ -178,7 +179,7 @@ async fetchChaptersList?(novelUrl: string, page: number): Promise<{
 Legacy discover method. Returns a simple paginated list of novels. Used as fallback if `getDiscoverSections` is not implemented.
 
 ```typescript
-async getDiscoverItems?(page: number): Promise<PagedResults<Novel>>
+getDiscoverItems?(page: number): PagedResults<Novel>
 ```
 
 ## Types Reference

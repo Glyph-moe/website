@@ -1,6 +1,7 @@
 ---
 title: Publishing
 order: 8
+section: 'Building Extensions'
 ---
 
 # Publishing Your Extension
@@ -17,9 +18,11 @@ This creates optimized, minified bundles in `dist/`:
 
 ```
 dist/
-├── my-source.js       # Minified extension bundle (~680KB with cheerio)
+├── my-source.js       # Minified ESM extension bundle (~15KB without cheerio)
 ├── index.json          # Repository metadata
 ```
+
+> HTML parsing is handled by the host runtime, so bundles no longer include cheerio. This makes extensions significantly smaller.
 
 ### Build Validation
 
@@ -72,7 +75,7 @@ The dev server prints this link automatically when you start it.
 Bump the `version` field in your `createSource()` call:
 
 ```typescript
-export default createSource({
+export const source = createSource({
   id: 'my-source',
   version: '1.0.1', // ← bump this
   // ...
