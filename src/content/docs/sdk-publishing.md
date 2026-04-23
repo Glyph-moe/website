@@ -1,6 +1,6 @@
 ---
 title: Publishing
-order: 8
+order: 5
 section: 'Building Extensions'
 ---
 
