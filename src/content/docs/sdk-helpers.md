@@ -2,6 +2,7 @@
 title: Helpers & Utilities
 order: 8
 section: 'SDK Reference'
+description: SDK utilities for HTML parsing with Cheerio, pagination, cookies, and content-rating tagging.
 ---
 
 # Helpers & Utilities

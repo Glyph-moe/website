@@ -2,6 +2,7 @@
 title: Source Interface
 order: 6
 section: 'SDK Reference'
+description: The Source interface — required methods, types, and patterns for searching, fetching novels, and loading chapter content.
 ---
 
 # Source Interface

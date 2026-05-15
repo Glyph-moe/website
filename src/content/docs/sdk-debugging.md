@@ -2,6 +2,7 @@
 title: Debugging
 order: 9
 section: 'SDK Reference'
+description: Diagnose Glyph extension issues — inspecting requests, reading logs, validating selectors, and common failure modes.
 ---
 
 # Debugging Extensions

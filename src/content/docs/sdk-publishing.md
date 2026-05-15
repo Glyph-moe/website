@@ -2,6 +2,7 @@
 title: Publishing
 order: 5
 section: 'Building Extensions'
+description: Build, version, and publish your Glyph extension so others can install it from a repository URL.
 ---
 
 # Publishing Your Extension

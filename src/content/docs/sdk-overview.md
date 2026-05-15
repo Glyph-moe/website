@@ -2,6 +2,7 @@
 title: SDK Overview
 order: 3
 section: 'Building Extensions'
+description: How Glyph extensions are structured, what they can do, and a quick start for building your first source with TypeScript.
 ---
 
 # SDK Overview

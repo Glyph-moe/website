@@ -2,6 +2,7 @@
 title: CLI Reference
 order: 4
 section: 'Building Extensions'
+description: Every command in the Glyph CLI — scaffolding new extensions, running the dev server, building, validating, and testing.
 ---
 
 # CLI Reference

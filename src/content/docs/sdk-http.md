@@ -2,6 +2,7 @@
 title: HTTP & Requests
 order: 7
 section: 'SDK Reference'
+description: HTTP helpers in the Glyph SDK — making requests, rate limiting, retries, cookie handling, and error patterns.
 ---
 
 # HTTP & Requests

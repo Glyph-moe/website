@@ -147,14 +147,14 @@ const features = [
               <div class="s-nav"><span class="s-title">Downloads</span></div>
               <div class="s-body">
                 <div class="dl-item">
-                  <img
+                  <div
                     class="dl-cover"
-                    src="https://picsum.photos/seed/shadow/64/88"
-                    alt="Shadow Monarch cover"
-                    width="32"
-                    height="44"
-                    loading="lazy"
-                  />
+                    style="background: linear-gradient(135deg, #4338ca 0%, #1e1b4b 100%);"
+                    aria-label="Shadow Monarch cover"
+                    role="img"
+                  >
+                    S
+                  </div>
                   <div class="dl-info">
                     <span class="dl-name">Shadow Monarch</span>
                     <span class="dl-meta">142 chapters &middot; 24 MB</span>
@@ -162,14 +162,14 @@ const features = [
                   <div class="dl-check">&#10003;</div>
                 </div>
                 <div class="dl-item">
-                  <img
+                  <div
                     class="dl-cover"
-                    src="https://picsum.photos/seed/tbate/64/88"
-                    alt="The Beginning After the End cover"
-                    width="32"
-                    height="44"
-                    loading="lazy"
-                  />
+                    style="background: linear-gradient(135deg, #b45309 0%, #422006 100%);"
+                    aria-label="The Beginning After the End cover"
+                    role="img"
+                  >
+                    B
+                  </div>
                   <div class="dl-info">
                     <span class="dl-name">The Beginning After the End</span>
                     <span class="dl-meta">86 chapters &middot; 18 MB</span>
@@ -177,14 +177,14 @@ const features = [
                   <div class="dl-check">&#10003;</div>
                 </div>
                 <div class="dl-item downloading">
-                  <img
+                  <div
                     class="dl-cover"
-                    src="https://picsum.photos/seed/omniscient/64/88"
-                    alt="Omniscient Reader cover"
-                    width="32"
-                    height="44"
-                    loading="lazy"
-                  />
+                    style="background: linear-gradient(135deg, #047857 0%, #064e3b 100%);"
+                    aria-label="Omniscient Reader cover"
+                    role="img"
+                  >
+                    O
+                  </div>
                   <div class="dl-info">
                     <span class="dl-name">Omniscient Reader</span>
                     <div class="dl-progress"><div class="dl-bar"></div></div>
@@ -537,7 +537,14 @@ const features = [
     border-radius: 4px;
     background: var(--phone-surface-border);
     flex-shrink: 0;
-    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+    letter-spacing: -0.02em;
   }
 
   .dl-info {
@@ -707,36 +714,33 @@ const features = [
 </style>
 
 <script>
-  import { gsap } from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  gsap.registerPlugin(ScrollTrigger)
-
-  const cards = document.querySelectorAll('.feature-card[data-feature]')
-  const screens = document.querySelectorAll('.screen[data-screen]')
+  const cards = document.querySelectorAll<HTMLElement>('.feature-card[data-feature]')
+  const screens = document.querySelectorAll<HTMLElement>('.screen[data-screen]')
 
   function setActiveScreen(id: string) {
     screens.forEach(s => s.classList.toggle('active', s.getAttribute('data-screen') === id))
     cards.forEach(c => c.classList.toggle('active', c.getAttribute('data-feature') === id))
   }
 
-  cards.forEach((card, i) => {
-    ScrollTrigger.create({
-      trigger: card,
-      start: 'top 65%',
-      end: () => {
-        const next = cards[i + 1] as HTMLElement | undefined
-        if (next) {
-          return `+=${next.offsetTop - (card as HTMLElement).offsetTop}`
+  // Activate a card's screen when the card crosses the middle band of the viewport.
+  // rootMargin -45%/-45% creates a thin horizontal band at vertical center.
+  const cardObserver = new IntersectionObserver(
+    entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('data-feature')
+          if (id) setActiveScreen(id)
         }
-        return 'bottom top'
-      },
-      onToggle: ({ isActive }) => {
-        if (isActive) setActiveScreen(card.getAttribute('data-feature')!)
-      },
-    })
+      }
+    },
+    { rootMargin: '-45% 0px -45% 0px' },
+  )
 
+  cards.forEach(card => {
+    cardObserver.observe(card)
     card.addEventListener('click', () => {
-      setActiveScreen(card.getAttribute('data-feature')!)
+      const id = card.getAttribute('data-feature')
+      if (id) setActiveScreen(id)
     })
   })
 </script>

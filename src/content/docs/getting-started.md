@@ -2,6 +2,7 @@
 title: Getting Started
 order: 1
 section: 'Using Glyph'
+description: Set up Glyph, add extensions, browse and search, customize the reader, and download chapters for offline reading.
 ---
 
 # Getting Started

@@ -21,8 +21,13 @@ const ogImage = new URL('/og-image.png', Astro.site)
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0E0E12" />
+    <meta name="theme-color" content="#f8f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e12" media="(prefers-color-scheme: dark)" />
+    <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalURL.href} />
 
     <!-- Open Graph -->
@@ -31,13 +36,18 @@ const ogImage = new URL('/og-image.png', Astro.site)
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Glyph — An iOS reader for web novels" />
     <meta property="og:site_name" content="Glyph" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
+    <meta name="twitter:image:alt" content="Glyph — An iOS reader for web novels" />
 
     <title>{title}</title>
 
@@ -46,9 +56,9 @@ const ogImage = new URL('/og-image.png', Astro.site)
       type="application/ld+json"
       set:html={JSON.stringify({
         '@context': 'https://schema.org',
-        '@type': 'SoftwareApplication',
+        '@type': 'MobileApplication',
         name: 'Glyph',
-        applicationCategory: 'ReadingApp',
+        applicationCategory: 'BookApplication',
         operatingSystem: 'iOS',
         description: description,
         url: 'https://glyph.moe',
@@ -79,34 +89,33 @@ const ogImage = new URL('/og-image.png', Astro.site)
 
     <script>
       import Lenis from 'lenis'
-      import { gsap } from 'gsap'
-      import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-      gsap.registerPlugin(ScrollTrigger)
 
       // Smooth scroll
       const lenis = new Lenis({ duration: 1.2 })
-      lenis.on('scroll', ScrollTrigger.update)
-      gsap.ticker.add(time => lenis.raf(time * 1000))
-      gsap.ticker.lagSmoothing(0)
+      function raf(time: number) {
+        lenis.raf(time)
+        requestAnimationFrame(raf)
+      }
+      requestAnimationFrame(raf)
 
-      // Animate elements with data-animate="fade-up"
-      document.querySelectorAll('[data-animate="fade-up"]').forEach(el => {
-        const delay = parseFloat(el.getAttribute('data-delay') || '0')
-        gsap.set(el, { opacity: 0, y: 30 })
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          delay,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            once: true,
-          },
-        })
-      })
+      // Fade-up: IntersectionObserver toggles .is-visible; CSS handles the transition.
+      const fadeObserver = new IntersectionObserver(
+        entries => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const el = entry.target as HTMLElement
+              const delay = parseFloat(el.getAttribute('data-delay') || '0')
+              el.style.transitionDelay = `${delay}s`
+              el.classList.add('is-visible')
+              fadeObserver.unobserve(el)
+            }
+          }
+        },
+        { rootMargin: '0px 0px -10% 0px' },
+      )
+      document
+        .querySelectorAll<HTMLElement>('[data-animate="fade-up"]')
+        .forEach(el => fadeObserver.observe(el))
     </script>
   </body>
 </html>
