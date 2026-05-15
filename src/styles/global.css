@@ -91,7 +91,11 @@ html {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
+}
+
+[data-animate='fade-up'] {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 body {

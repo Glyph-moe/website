@@ -12,6 +12,7 @@ import Logo from './Logo.astro'
     <!-- Desktop links -->
     <div class="nav-links">
       <a href="/#features">Features</a>
+      <a href="/#faq">FAQ</a>
       <a href="/docs/getting-started">Docs</a>
       <a
         href="https://github.com/Glyph-moe"
@@ -65,10 +66,9 @@ import Logo from './Logo.astro'
           ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg
         >
       </button>
-      <div class="nav-cta-wrap">
-        <button class="nav-cta" disabled>Download</button>
-        <span class="nav-tooltip">Coming soon</span>
-      </div>
+      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="nav-cta">
+        Join Discord
+      </a>
     </div>
 
     <!-- Mobile: theme + burger -->
@@ -111,6 +111,7 @@ import Logo from './Logo.astro'
 <aside class="drawer" id="drawer">
   <nav class="drawer-nav">
     <a href="/#features" class="drawer-link">Features</a>
+    <a href="/#faq" class="drawer-link">FAQ</a>
     <a href="/docs/getting-started" class="drawer-link">Docs</a>
     <div class="drawer-divider"></div>
     <a href="https://github.com/Glyph-moe" target="_blank" rel="noopener" class="drawer-link">
@@ -211,13 +212,13 @@ import Logo from './Logo.astro'
     gap: 20px;
   }
 
-  .nav-links a {
+  .nav-links a:not(.nav-cta) {
     font-size: 14px;
     color: var(--text-secondary);
     transition: color 0.2s;
   }
 
-  .nav-links a:hover {
+  .nav-links a:not(.nav-cta):hover {
     color: var(--text);
   }
 
@@ -278,39 +279,14 @@ import Logo from './Logo.astro'
     border-radius: 8px;
     border: none;
     background: var(--accent);
-    color: white;
+    color: #0e0e12;
     cursor: pointer;
     transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
   }
-  .nav-cta:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  .nav-cta-wrap {
-    position: relative;
-  }
-  .nav-tooltip {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) scale(0.95);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-    background: var(--bg-surface-hover);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      opacity 0.2s,
-      transform 0.2s;
-  }
-  .nav-cta-wrap:hover .nav-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
+  .nav-cta:hover {
+    opacity: 0.92;
   }
 
   /* Burger (mobile only) */

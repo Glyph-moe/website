@@ -1,0 +1,176 @@
+---
+const items = [
+  {
+    q: 'What is Glyph?',
+    a: 'An iOS app for reading web novels. It has no content of its own — it connects to novel sites through community-built extensions. Think of it as a browser made for reading.',
+  },
+  {
+    q: 'Is it free?',
+    a: 'Yes. Free, no ads, no subscriptions, no in-app purchases.',
+  },
+  {
+    q: 'Where do extensions come from?',
+    a: 'The community shares them as repository URLs. You add a URL in Settings → Extensions, fetch the available sources, and install. Anyone can build one with the SDK.',
+  },
+  {
+    q: 'Can I read offline?',
+    a: 'Yes. Download any chapter (or all of them) from a novel’s detail page. Downloads stay on your device and read without a connection.',
+  },
+  {
+    q: 'Does it track me?',
+    a: 'No analytics, no accounts, no tracking. Your reading data lives on your device, syncing to iCloud only if you’re signed in. Extensions run sandboxed with domain restrictions.',
+  },
+]
+---
+
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-head" data-animate="fade-up">
+      <h2 class="faq-title">Questions</h2>
+      <p class="faq-sub">Short answers to the things people ask first.</p>
+    </div>
+
+    <div class="faq-list">
+      {
+        items.map((it, i) => (
+          <details class="faq-item" data-animate="fade-up" data-delay={String(0.05 * i)} name="faq">
+            <summary class="faq-q">
+              <span>{it.q}</span>
+              <svg
+                class="faq-chev"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <div class="faq-a">{it.a}</div>
+          </details>
+        ))
+      }
+    </div>
+
+    <p class="faq-more" data-animate="fade-up">
+      More questions in the <a href="/docs/faq">full FAQ</a>, or ask us in the
+      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener">Discord</a>.
+    </p>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding: 40px 0 100px;
+  }
+
+  .faq-head {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .faq-title {
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .faq-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+
+  .faq-list {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .faq-item[open] {
+    border-color: rgba(239, 159, 39, 0.18);
+    background: var(--bg-surface-hover);
+  }
+
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chev {
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-chev {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  .faq-a {
+    padding: 0 22px 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .faq-more {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .faq-more a {
+    color: var(--accent);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .faq-more a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .faq {
+      padding: 24px 0 64px;
+    }
+    .faq-q {
+      padding: 16px 18px;
+      font-size: 14px;
+    }
+    .faq-a {
+      padding: 0 18px 18px;
+      font-size: 13.5px;
+    }
+  }
+</style>

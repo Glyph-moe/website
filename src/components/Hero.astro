@@ -8,26 +8,32 @@ import Logo from './Logo.astro'
       <Logo size={56} />
     </div>
     <h1 class="hero-title" data-animate="fade-up" data-delay="0.1">
-      <span class="hero-title-accent">Glyph</span> Read anything,<br />your way.
+      Read novels,<br />your way.
     </h1>
     <p class="hero-subtitle" data-animate="fade-up" data-delay="0.2">
-      A powerful web novel reader with community-built extensions.
+      A free iOS reader for web novels. Bring your own sources, customize every detail, read
+      offline. No accounts. No tracking.
     </p>
     <div class="hero-actions" data-animate="fade-up" data-delay="0.3">
-      <button class="btn-primary" disabled>Coming to TestFlight</button>
+      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="btn-primary">
+        Join the Discord
+      </a>
       <a href="/docs/getting-started" class="btn-secondary">Read the docs</a>
     </div>
+    <p class="hero-note" data-animate="fade-up" data-delay="0.4">
+      TestFlight invites coming soon. We'll announce in Discord.
+    </p>
   </div>
 </section>
 
 <style>
   .hero {
-    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 120px 0 80px;
+    padding: 100px 0 60px;
   }
 
   .hero-inner {
@@ -49,18 +55,11 @@ import Logo from './Logo.astro'
     color: var(--text);
   }
 
-  .hero-title-accent {
-    color: var(--accent);
-    display: inline-block;
-    transform: skew(-10deg);
-    padding: 0 8px;
-  }
-
   .hero-subtitle {
-    font-size: clamp(16px, 2.5vw, 20px);
+    font-size: clamp(16px, 2.5vw, 19px);
     color: var(--text-secondary);
-    max-width: 440px;
-    line-height: 1.5;
+    max-width: 520px;
+    line-height: 1.55;
   }
 
   .hero-actions {
@@ -77,14 +76,18 @@ import Logo from './Logo.astro'
     border-radius: 10px;
     border: none;
     background: var(--accent);
-    color: var(--bg);
+    color: #0e0e12;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .btn-primary:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  .btn-primary:hover {
+    opacity: 0.92;
   }
 
   .btn-secondary {
@@ -97,6 +100,9 @@ import Logo from './Logo.astro'
     transition:
       color 0.2s,
       border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-secondary:hover {
@@ -104,20 +110,27 @@ import Logo from './Logo.astro'
     border-color: rgba(255, 255, 255, 0.15);
   }
 
+  .hero-note {
+    font-size: 13px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
   @media (max-width: 640px) {
     .hero {
-      padding: 100px 0 60px;
+      padding: 90px 0 48px;
       min-height: auto;
     }
     .hero-title {
-      font-size: 32px;
+      font-size: 36px;
     }
     .hero-subtitle {
       font-size: 15px;
     }
     .hero-logo :global(svg) {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
     }
   }
 

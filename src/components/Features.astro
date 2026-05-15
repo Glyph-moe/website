@@ -1,23 +1,30 @@
 ---
 const features = [
   {
+    id: 'reading',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H12v18H5.5A1.5 1.5 0 0 1 4 19.5v-15z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H12v18h6.5a1.5 1.5 0 0 0 1.5-1.5v-15z"/><path d="M7 8h2M7 11h2M15 8h2M15 11h2"/></svg>`,
+    title: 'Made for reading',
+    description:
+      'Seven themes, fine-grained typography, paginated or scroll. The reader gets out of the way and lets the prose breathe.',
+  },
+  {
     id: 'extensions',
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11"/><path d="M17 15V18M17 21V18M17 18H14M17 18H20"/></svg>`,
     title: 'Extensions',
     description:
-      'Community-built sources. Add any novel site with a simple TypeScript extension. Browse, search, and read from dozens of sources.',
+      'Community-built sources for any novel site. Add a repo URL, browse and search across all of them at once.',
   },
   {
     id: 'offline',
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>`,
     title: 'Offline reading',
     description:
-      'Download chapters for offline access. Read anywhere, on a plane, in the subway, or in bed with no connection.',
+      'Download chapters once, read them anywhere. On a plane, in the subway, or in bed with no signal.',
   },
   {
     id: 'privacy',
     icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>`,
-    title: 'Privacy first',
+    title: 'Private by default',
     description:
       'No accounts, no tracking, no ads. Your reading data stays on your device. Extensions run sandboxed with domain restrictions.',
   },
@@ -27,30 +34,49 @@ const features = [
 <section class="features" id="features">
   <div class="container features-layout">
     <h2 class="visually-hidden">Features</h2>
-    <div class="features-cards">
-      {
-        features.map((f, i) => (
-          <div
-            class="feature-card"
-            data-feature={f.id}
-            data-animate="fade-up"
-            data-delay={String(i * 0.1)}
-          >
-            <div class="feature-icon" set:html={f.icon} />
-            <h3 class="feature-title">{f.title}</h3>
-            <p class="feature-desc">{f.description}</p>
-          </div>
-        ))
-      }
-    </div>
 
     <div class="phone-sticky">
       <div class="iphone">
         <div class="iphone-frame">
           <div class="dynamic-island"></div>
           <div class="iphone-screen">
+            <!-- Screen: Reader -->
+            <div class="screen screen-reader active" data-screen="reading">
+              <div class="reader-surface">
+                <div class="r-topbar">
+                  <span class="r-chapter">Chapter 14</span>
+                  <span class="r-progress">14 / 142</span>
+                </div>
+                <div class="r-body">
+                  <p>
+                    The rain hadn't stopped for three days. Elias sat at the window watching it
+                    streak down the glass, each drop catching the lamplight before disappearing into
+                    the dark below.
+                  </p>
+                  <p>
+                    He thought about what the merchant had said. Not the warning — that part was
+                    easy to dismiss. It was the other thing. The way the man's eyes had moved
+                    when&hellip;
+                  </p>
+                </div>
+                <div class="r-controls">
+                  <div class="r-sizes">
+                    <span class="r-size-small">A</span>
+                    <span class="r-size-large">A</span>
+                  </div>
+                  <div class="r-themes">
+                    <span class="r-theme" style="background:#ffffff;border-color:#e0d8c8;"></span>
+                    <span class="r-theme active" style="background:#f5ecd9;border-color:#d9c9a8;"
+                    ></span>
+                    <span class="r-theme" style="background:#3a3a40;border-color:#3a3a40;"></span>
+                    <span class="r-theme" style="background:#000;border-color:#000;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Screen: Extensions -->
-            <div class="screen screen-extensions active" data-screen="extensions">
+            <div class="screen screen-extensions" data-screen="extensions">
               <div class="s-nav"><span class="s-title">Browse</span></div>
               <div class="s-body">
                 <div class="source-card">
@@ -196,6 +222,23 @@ const features = [
         </div>
       </div>
     </div>
+
+    <div class="features-cards">
+      {
+        features.map((f, i) => (
+          <div
+            class="feature-card"
+            data-feature={f.id}
+            data-animate="fade-up"
+            data-delay={String(i * 0.1)}
+          >
+            <div class="feature-icon" set:html={f.icon} />
+            <h3 class="feature-title">{f.title}</h3>
+            <p class="feature-desc">{f.description}</p>
+          </div>
+        ))
+      }
+    </div>
   </div>
 </section>
 
@@ -218,7 +261,7 @@ const features = [
   }
 
   .feature-card {
-    padding: 32px 28px;
+    padding: 28px 26px;
     border-radius: var(--radius);
     border: 1px solid var(--border);
     background: var(--bg-surface);
@@ -257,11 +300,12 @@ const features = [
     color: var(--text-secondary);
   }
 
-  /* Phone sticky column */
+  /* Phone column — desktop: sticky right; mobile: sticky top single-column */
   .phone-sticky {
     position: sticky;
     top: 120px;
     flex-shrink: 0;
+    order: 2;
   }
 
   /* iPhone mockup */
@@ -338,6 +382,97 @@ const features = [
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
+  }
+
+  /* Reader screen (sepia, regardless of site theme) */
+  .reader-surface {
+    flex: 1;
+    background: #f5ecd9;
+    color: #3a2e20;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 18px 14px;
+  }
+
+  .r-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(58, 46, 32, 0.55);
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+
+  .r-chapter {
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .r-progress {
+    font-variant-numeric: tabular-nums;
+    font-size: 10px;
+  }
+
+  .r-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  }
+
+  .r-body p {
+    font-size: 12px;
+    line-height: 1.65;
+    color: #3a2e20;
+    margin: 0;
+  }
+
+  .r-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(58, 46, 32, 0.06);
+  }
+
+  .r-sizes {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: #3a2e20;
+    font-family: Georgia, serif;
+  }
+
+  .r-size-small {
+    font-size: 10px;
+  }
+  .r-size-large {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .r-themes {
+    display: flex;
+    gap: 6px;
+  }
+
+  .r-theme {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid;
+    display: inline-block;
+  }
+
+  .r-theme.active {
+    box-shadow: 0 0 0 2px var(--accent);
   }
 
   /* Extensions screen */
@@ -543,6 +678,9 @@ const features = [
       height: 24px;
       top: 12px;
     }
+    .reader-surface {
+      padding: 42px 16px 12px;
+    }
   }
 
   @media (max-width: 768px) {
@@ -557,7 +695,7 @@ const features = [
       padding: 24px 0 80px;
     }
     .feature-card {
-      padding: 24px 20px;
+      padding: 22px 18px;
     }
     .feature-title {
       font-size: 16px;
@@ -582,8 +720,6 @@ const features = [
   }
 
   cards.forEach((card, i) => {
-    // Each card activates when its top enters the center of the viewport
-    // and stays active until the NEXT card enters that zone
     ScrollTrigger.create({
       trigger: card,
       start: 'top 65%',
