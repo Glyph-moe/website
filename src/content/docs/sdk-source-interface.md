@@ -1,8 +1,8 @@
 ---
 title: Source Interface
-order: 6
+order: 16
 section: 'SDK Reference'
-description: The Source interface — required methods, types, and patterns for searching, fetching novels, and loading chapter content.
+description: The Source interface, required methods, types, and patterns for searching, fetching novels, and loading chapter content.
 ---
 
 # Source Interface
@@ -108,6 +108,8 @@ fetchChapterContent(chapterUrl) {
 ```
 
 ## Optional Methods
+
+Implementing an optional method automatically declares a [capability](/docs/sdk-capabilities), the build pipeline writes it into `index.json` so the host knows what your source supports without probing the bundle. You don't have to think about this; it just works.
 
 ### `getDiscoverSections()`
 

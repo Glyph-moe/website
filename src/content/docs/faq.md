@@ -1,8 +1,8 @@
 ---
 title: FAQ
-order: 2
+order: 10
 section: 'Using Glyph'
-description: Answers to common questions about Glyph — extensions, offline reading, privacy, reader customization, and troubleshooting.
+description: Answers to common questions about Glyph, extensions, offline reading, privacy, reader customization, and troubleshooting.
 ---
 
 # Frequently Asked Questions

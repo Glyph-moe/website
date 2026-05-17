@@ -1,6 +1,6 @@
 ---
 title: SDK Overview
-order: 3
+order: 11
 section: 'Building Extensions'
 description: How Glyph extensions are structured, what they can do, and a quick start for building your first source with TypeScript.
 ---
@@ -23,11 +23,22 @@ Glyph Native Runtime (URLSession, SwiftSoup, cookie store)
 Novel Website
 ```
 
-Extensions run inside a **WKWebView**. The bridge uses `window.prompt()` for synchronous JS-to-Native communication — there are no async message handlers or XHR involved. The native side handles HTTP fetches (via URLSession), HTML parsing (via SwiftSoup), and host functions (cookies, content rating, user agent). The SDK handles all the plumbing — your code just calls `get()`, `load()`, etc. All HTTP requests go through the native runtime, which provides per-source cookie isolation, domain restrictions, and network logging.
+Extensions run inside a **WKWebView**. The bridge uses `window.prompt()` for synchronous JS-to-Native communication, there are no async message handlers or XHR involved. The native side handles HTTP fetches (via URLSession), HTML parsing (via SwiftSoup), and host functions (cookies, content rating, user agent). The SDK handles all the plumbing, your code just calls `get()`, `load()`, etc. All HTTP requests go through the native runtime, which provides per-source cookie isolation, domain restrictions, and network logging.
 
-All SDK functions are **synchronous** — no `async`/`await` needed in extension code. For example, `get(url)` returns a string directly, not a Promise.
+All SDK functions are **synchronous**, no `async`/`await` needed in extension code. For example, `get(url)` returns a string directly, not a Promise.
 
 Extensions are compiled to **IIFE** format (not ESM). esbuild bundles everything with `globalName: 'GlyphExtension'`. WIT imports (`glyph:extension/http@0.1.0`, `glyph:extension/html@0.1.0`, `glyph:extension/host@0.1.0`) are resolved to `window.__wit.*` globals at build time.
+
+## Languages
+
+Glyph supports two extension languages, pick what fits your project:
+
+| Language                     | Status                                                               | When to use                                                                  |
+| ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| TypeScript / JavaScript      | **Recommended.** Mature SDK, scaffolder, test runner, playground     | Default choice for new sources                                               |
+| Rust → WebAssembly Component | Experimental. Pipeline works, but no helper crate or test runner yet | When you have a Rust library you want to reuse, or want stronger type safety |
+
+Both compile to the same [WIT contract](/docs/wit-contract) and run on the same iOS host. For Rust, see [Rust Extensions](/docs/rust-extensions). The rest of this page covers the JS/TS path.
 
 ## Quick Start
 
@@ -114,5 +125,19 @@ export const source = createSource({
 - Sets User-Agent and Accept headers automatically
 - Configures the rate limiter
 - Runs setup at module load time (no async `initialise()` needed)
+- Auto-detects [capabilities](/docs/sdk-capabilities) (discover, filters, login, etc.) from the methods and flags you provide and writes them into `index.json`, the host uses these to gate features without probing the bundle
 
 See the [Source Interface](/docs/sdk-source-interface) for all required and optional methods.
+
+## Next steps
+
+| If you want to...                         | Read                                           |
+| ----------------------------------------- | ---------------------------------------------- |
+| Implement all the methods a source needs  | [Source Interface](/docs/sdk-source-interface) |
+| Make HTTP requests, set headers, throttle | [HTTP & Requests](/docs/sdk-http)              |
+| Parse HTML, paginate, read cookies        | [Helpers & Utilities](/docs/sdk-helpers)       |
+| Declare what your source supports         | [Capabilities](/docs/sdk-capabilities)         |
+| Build and ship                            | [Publishing](/docs/sdk-publishing)             |
+| Debug a misbehaving extension             | [Debugging](/docs/sdk-debugging)               |
+| Use Rust instead of TypeScript            | [Rust Extensions](/docs/rust-extensions)       |
+| Understand the underlying contract        | [WIT Contract](/docs/wit-contract)             |

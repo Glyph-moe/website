@@ -1,8 +1,8 @@
 ---
 title: CLI Reference
-order: 4
+order: 12
 section: 'Building Extensions'
-description: Every command in the Glyph CLI — scaffolding new extensions, running the dev server, building, validating, and testing.
+description: Every command in the Glyph CLI, scaffolding new extensions, running the dev server, building, validating, and testing.
 ---
 
 # CLI Reference
@@ -109,9 +109,9 @@ npx glyph logcat -p 3000
 
 The server listens for log entries on HTTP and displays them in the terminal with timestamps and color-coded levels:
 
-- **INFO** — blue
-- **WARN** — yellow
-- **ERROR** — red
+- **INFO**: blue
+- **WARN**: yellow
+- **ERROR**: red
 
 Each entry includes a category tag so you can tell which source or subsystem produced it. This is the same log stream available through the `/api/log` endpoint in `glyph dev`, but as a dedicated process you can run in a separate terminal window.
 
@@ -148,7 +148,7 @@ npm test -- --generate
 | ------------ | ------------------------------------------------------- |
 | `--generate` | Scaffold test files for sources that don't have one yet |
 
-Arguments after `--` are passed directly to vitest (except `--generate`, which is handled by the CLI). The CLI automatically injects the runtime test setup that provides WIT interface shims — no manual setup file needed in your project.
+Arguments after `--` are passed directly to vitest (except `--generate`, which is handled by the CLI). The CLI automatically injects the runtime test setup that provides WIT interface shims, no manual setup file needed in your project.
 
 `--generate` creates a basic test file with the source imports and a placeholder test for each source missing a `.test.ts` file. Useful after adding several sources with `glyph add`.
 
@@ -246,11 +246,13 @@ sources/mysite/
 ```
 sources/mysite/
 ├── Cargo.toml           # With [package.metadata.component] for WIT
-├── source.json          # Extension metadata
+├── source.json          # Extension metadata (incl. capabilities array)
 ├── static/
 └── src/
     └── lib.rs           # Stub Guest implementation
 ```
+
+See [Rust Extensions](/docs/rust-extensions) for the full Rust workflow (prerequisites, `source.json` fields, the `Guest` trait, and current limitations).
 
 ### `glyph --version`
 

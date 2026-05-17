@@ -1,17 +1,17 @@
 ---
 title: Helpers & Utilities
-order: 8
+order: 19
 section: 'SDK Reference'
 description: SDK utilities for HTML parsing with Cheerio, pagination, cookies, and content-rating tagging.
 ---
 
 # Helpers & Utilities
 
-Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and content rating. All functions are **synchronous** — no `async`/`await` needed.
+Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and content rating. All functions are **synchronous**, no `async`/`await` needed.
 
 ## HTML Parsing
 
-The SDK provides a jQuery-style HTML parsing API backed by the host's native HTML parser (SwiftSoup on iOS) via the WIT `glyph:extension/html@0.1.0` interface. No JS HTML parser is bundled — parsing happens natively on the device, which is faster and keeps bundle sizes small. In tests and dev mode, a cheerio-based shim is used instead; the API is identical, so you don't need to think about the difference.
+The SDK provides a jQuery-style HTML parsing API backed by the host's native HTML parser (SwiftSoup on iOS) via the WIT `glyph:extension/html@0.1.0` interface. No JS HTML parser is bundled, parsing happens natively on the device, which is faster and keeps bundle sizes small. In tests and dev mode, a cheerio-based shim is used instead; the API is identical, so you don't need to think about the difference.
 
 ```typescript
 import { load } from '@glyphmoe/sdk'
@@ -42,7 +42,7 @@ $('.novel-card').each((_, el) => {
 ### Tips
 
 - Always call `.trim()` on text content, since HTML often has whitespace
-- Use `.attr('href')` for attributes — the API doesn't resolve relative URLs
+- Use `.attr('href')` for attributes, the API doesn't resolve relative URLs
 - Check for `data-src` or `data-lazy` attributes for lazy-loaded images
 - Use `.html()` to get inner HTML (for chapter content), `.text()` for plain text
 - Use `.find()` to query within a matched element's subtree
@@ -83,7 +83,7 @@ const allChapters = fetchAllPages((page, accumulated) => {
 
 ## Cookies
 
-Read and write cookies for the current source via the WIT `glyph:extension/host@0.1.0` interface. Per-source cookie isolation is enforced by the host — one extension can't access another's cookies. Both `getCookies()` and `setCookie()` are synchronous.
+Read and write cookies for the current source via the WIT `glyph:extension/host@0.1.0` interface. Per-source cookie isolation is enforced by the host, one extension can't access another's cookies. Both `getCookies()` and `setCookie()` are synchronous.
 
 ```typescript
 import { getCookies, setCookie } from '@glyphmoe/sdk'

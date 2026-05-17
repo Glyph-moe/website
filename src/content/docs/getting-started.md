@@ -13,6 +13,11 @@ Welcome to Glyph! This guide covers everything you need to start reading.
 
 Glyph doesn't come with built-in novel sources. You add them through extensions, small plugins that connect the app to novel websites.
 
+<figure class="docs-clip">
+  <video src="/clips/add-extension.mp4" autoplay muted loop playsinline preload="metadata" width="956" height="720" aria-label="Adding a repository in Glyph: open Extensions, tap plus, paste URL, fetch, install selected sources"></video>
+  <figcaption>Adding a repository, the whole flow from empty state to installed sources.</figcaption>
+</figure>
+
 1. Open **Settings → Extensions**
 2. Tap the **+** button
 3. Enter a repository URL (you'll find these shared by the community)

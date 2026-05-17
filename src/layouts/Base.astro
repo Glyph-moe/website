@@ -7,8 +7,8 @@ interface Props {
 }
 
 const {
-  title = 'Glyph — Free iOS Web Novel Reader with Extensions',
-  description = 'Glyph is a free iOS web novel reader with community-built extensions. Browse dozens of novel sources, read offline, and customize your reading experience — no accounts, no tracking.',
+  title = 'Glyph: Free iOS Web Novel Reader with Extensions',
+  description = 'Glyph is a free iOS web novel reader with community-built extensions. Browse dozens of novel sources, read offline, and customize your reading experience. No accounts, no tracking.',
 } = Astro.props
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
@@ -38,7 +38,7 @@ const ogImage = new URL('/og-image.png', Astro.site)
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Glyph — An iOS reader for web novels" />
+    <meta property="og:image:alt" content="Glyph: An iOS reader for web novels" />
     <meta property="og:site_name" content="Glyph" />
     <meta property="og:locale" content="en_US" />
 
@@ -47,7 +47,7 @@ const ogImage = new URL('/og-image.png', Astro.site)
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
-    <meta name="twitter:image:alt" content="Glyph — An iOS reader for web novels" />
+    <meta name="twitter:image:alt" content="Glyph: An iOS reader for web novels" />
 
     <title>{title}</title>
 

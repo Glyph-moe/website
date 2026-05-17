@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+
+const lastUpdated = '17 May 2026'
+---
+
+<Base
+  title="Privacy Policy, Glyph"
+  description="Glyph's privacy policy. We don't collect personal data, don't track you, and don't use third-party analytics."
+>
+  <Nav />
+  <main class="legal">
+    <article class="legal-article">
+      <h1>Privacy Policy</h1>
+      <p class="legal-updated">Last updated: {lastUpdated}</p>
+
+      <p>
+        Glyph is a free iOS reader for web novels. We've designed it to need as little of your data
+        as possible. This page explains exactly what we collect, what we don't, and what happens
+        when extensions you install connect to third-party websites.
+      </p>
+
+      <h2>The short version</h2>
+      <ul>
+        <li>We don't collect any personal data.</li>
+        <li>We don't track you or use analytics.</li>
+        <li>You don't need an account.</li>
+        <li>
+          Your library and reading progress are stored on your device and synced via your personal
+          iCloud. We never see them.
+        </li>
+        <li>
+          Extensions make HTTP requests to third-party novel websites. Those sites have their own
+          privacy policies, we have no control over what they log.
+        </li>
+      </ul>
+
+      <h2>What stays on your device</h2>
+      <p>
+        Your library, reading history, bookmarks, downloaded chapters, reader preferences, and
+        installed extension sources are stored locally on your device using Apple's SwiftData. None
+        of this is transmitted to Glyph.
+      </p>
+
+      <h2>iCloud sync</h2>
+      <p>
+        If you're signed into iCloud and iCloud Drive is enabled for Glyph, your library and reading
+        progress sync between your devices through Apple's CloudKit service. This data is encrypted
+        in transit and at rest, and is stored in your private iCloud container, Glyph (the app) has
+        access to it on your devices, but the Glyph project (us) does not. Apple's privacy policy
+        applies to this data:
+        <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener"
+          >apple.com/legal/privacy</a
+        >.
+      </p>
+      <p>
+        You can disable iCloud sync at any time in Settings → iCloud. Disabling sync does not delete
+        your local data.
+      </p>
+
+      <h2>Third-party novel sources (extensions)</h2>
+      <p>
+        Glyph extensions connect to websites you choose to install. When you browse, search, or read
+        on a source, Glyph makes HTTP requests directly to that website on your behalf. These
+        requests carry the same information any browser would send (User-Agent, IP address, cookies
+        set by that site, etc.) and are subject to the site's own privacy policy.
+      </p>
+      <p>
+        Glyph isolates each source with its own cookie storage and restricts network access to the
+        source's declared domain. Extensions cannot read cookies or data from other sources. Cookies
+        are kept in memory and discarded when the app restarts.
+      </p>
+
+      <h2>Extension repository URLs</h2>
+      <p>
+        When you add a repository URL (for example, a GitHub Pages site that hosts an extension's
+        manifest), Glyph fetches that URL directly from your device. We don't proxy, log, or track
+        which repositories you add.
+      </p>
+
+      <h2>Diagnostic information</h2>
+      <p>
+        Glyph keeps a local log of network requests and app events for debugging. You can view it in
+        Settings → Developer Tools and share a diagnostic report by tapping <em
+          >Share Diagnostic Report</em
+        >. Reports are never sent automatically, only when you explicitly share one, and only to
+        whoever you share it with (typically the Glyph developer via Discord or email when you
+        report a bug).
+      </p>
+      <p>
+        If you enable crash reporting in iOS Settings → Privacy & Security → Analytics &
+        Improvements, anonymized crash reports may be shared with Apple, who passes a subset to
+        developers via Xcode Organizer. These contain no personal data. You can disable this in iOS
+        settings.
+      </p>
+
+      <h2>Beta testing (TestFlight)</h2>
+      <p>
+        While Glyph is in beta, Apple's TestFlight handles distribution. TestFlight collects
+        information about your beta usage and crash reports per Apple's own policy:
+        <a
+          href="https://www.apple.com/legal/internet-services/itunes/testflight/"
+          target="_blank"
+          rel="noopener">apple.com/legal/internet-services/itunes/testflight</a
+        >. Feedback you submit through TestFlight goes to us via Apple. We use it only to fix bugs
+        and improve the app.
+      </p>
+
+      <h2>No third-party services</h2>
+      <p>
+        Glyph does not use any third-party SDKs for analytics, advertising, attribution, A/B
+        testing, or crash reporting beyond Apple's own. There are no trackers in the app.
+      </p>
+
+      <h2>Children's privacy</h2>
+      <p>
+        Glyph is not directed at children under 13. It does not knowingly collect data from anyone,
+        regardless of age. The content displayed by extensions, however, depends on the sources you
+        install, apply the Content Rating filter in Settings if appropriate.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        If we change this policy in a way that affects what we collect or share, we'll update the
+        date above and announce the change in our Discord. Material changes will also be mentioned
+        in app release notes.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions or concerns? Email <a href="mailto:contact@glyph.moe">contact@glyph.moe</a> or reach
+        out in our
+        <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener">Discord</a>.
+      </p>
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 120px 24px 80px;
+  }
+
+  .legal-article h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+
+  .legal-updated {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .legal-article h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 40px;
+    margin-bottom: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .legal-article p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .legal-article ul {
+    padding-left: 24px;
+    margin-bottom: 16px;
+  }
+
+  .legal-article li {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .legal-article a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .legal-article a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .legal {
+      padding: 96px 16px 60px;
+    }
+
+    .legal-article h1 {
+      font-size: 32px;
+    }
+  }
+</style>

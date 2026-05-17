@@ -1,8 +1,8 @@
 ---
 title: Debugging
-order: 9
+order: 20
 section: 'SDK Reference'
-description: Diagnose Glyph extension issues — inspecting requests, reading logs, validating selectors, and common failure modes.
+description: Diagnose Glyph extension issues, inspecting requests, reading logs, validating selectors, and common failure modes.
 ---
 
 # Debugging Extensions
@@ -35,10 +35,10 @@ You can filter by level (Info, Warn, Error) and search by keyword. Look for entr
 
 Common log patterns:
 
-- `[Extensions] callMethod START: fetchNovelDetails` — an extension method was called
-- `[Extensions] callMethod END: fetchNovelDetails` — the method returned
-- `[Extensions] Section 'popular' failed: JS error: ...` — a discover section failed to load
-- `[Extensions] BUNDLE LOAD ERROR: ...` — the extension bundle couldn't be parsed
+- `[Extensions] callMethod START: fetchNovelDetails`, an extension method was called
+- `[Extensions] callMethod END: fetchNovelDetails`, the method returned
+- `[Extensions] Section 'popular' failed: JS error: ...`, a discover section failed to load
+- `[Extensions] BUNDLE LOAD ERROR: ...`, the extension bundle couldn't be parsed
 
 ## Diagnostic Report
 
@@ -65,7 +65,7 @@ These appear in **App Logs** with the `Extension` category and the corresponding
 
 ## Remote Log Streaming
 
-When the app installs a repo from an HTTP dev server, it automatically enables remote log forwarding. All app logs — extensions, network, lifecycle — are POSTed to `{devServerUrl}/api/log` as JSON batches every 500ms. The dev server prints these in the terminal with timestamps and color-coded levels.
+When the app installs a repo from an HTTP dev server, it automatically enables remote log forwarding. All app logs, extensions, network, lifecycle, are POSTed to `{devServerUrl}/api/log` as JSON batches every 500ms. The dev server prints these in the terminal with timestamps and color-coded levels.
 
 This means you can watch logs scroll in your terminal as you interact with the app on your phone. No need to go back and forth between the app's Developer Tools and your code.
 
@@ -76,7 +76,7 @@ This means you can watch logs scroll in your terminal as you interact with the a
 [12:04:32] INFO  [Extensions] callMethod END: fetchNovelDetails
 ```
 
-Log streaming starts automatically when you add a dev server URL in the app. No extra configuration needed — just run `npm run dev` and add the URL.
+Log streaming starts automatically when you add a dev server URL in the app. No extra configuration needed, just run `npm run dev` and add the URL.
 
 ### `glyph logcat`
 

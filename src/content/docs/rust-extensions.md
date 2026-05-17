@@ -1,0 +1,211 @@
+---
+title: Rust Extensions
+order: 13
+section: 'Building Extensions'
+description: Build Glyph extensions in Rust, prerequisites, the Guest trait, source.json, build pipeline, and current limitations.
+---
+
+# Rust Extensions
+
+Glyph extensions can be written in Rust and compiled to WebAssembly Components. Rust extensions implement the same [WIT contract](/docs/wit-contract) as JavaScript extensions and run on the same iOS host, `cargo component` compiles to WASM, [`jco`](https://github.com/bytecodealliance/jco) transpiles to a JS shim, and the app loads the result in WKWebView's JavaScript engine (which has had WebAssembly support since 2017).
+
+> **Status (current):** Rust support is **experimental**. JS extensions are the recommended path. The Rust pipeline works end-to-end, but the developer experience is bare metal compared to JS, there is no `glyph-rs` SDK crate yet, no test runner, and the example below is the only working reference. The intent is for the community to flesh out helper crates.
+
+## Prerequisites
+
+```bash
+# Rust toolchain (use rustup, not Homebrew, wasm targets aren't bundled there)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup target add wasm32-wasip2
+
+# Cargo-component (generates WIT bindings + builds WASM components)
+cargo install cargo-component
+
+# JCO (transpiles WASM components to JS for WKWebView)
+npm install -g @bytecodealliance/jco
+```
+
+Verify:
+
+```bash
+cargo component --version    # should print cargo-component-component 0.21+
+jco --version                # should print 1.x+
+```
+
+## Scaffold a Rust source
+
+In an existing Glyph project (one with `repo.json`):
+
+```bash
+npx glyph add -l rust mysite
+```
+
+This creates `sources/mysite/`:
+
+```
+sources/mysite/
+├── Cargo.toml         # [package.metadata.component] target.world = "extension"
+├── source.json        # Extension metadata (analog of `info` for JS)
+├── static/
+└── src/
+    └── lib.rs         # Stub Guest implementation
+```
+
+## source.json
+
+This is the manifest the CLI reads at build time. It maps to the JS `info` object:
+
+```json
+{
+  "id": "mysite",
+  "name": "My Site",
+  "version": "0.1.0",
+  "baseUrl": "https://mysite.com",
+  "icon": "https://mysite.com/favicon.ico",
+  "language": "en",
+  "nsfw": false,
+  "dev": "your-name",
+  "sourceType": "reader",
+  "capabilities": ["discover"]
+}
+```
+
+| Field          | Required                 | Notes                                                                                                                                                                                |
+| -------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`           | yes                      | URL-safe identifier; matches the directory name                                                                                                                                      |
+| `name`         | yes                      | Display name                                                                                                                                                                         |
+| `version`      | yes                      | Semver                                                                                                                                                                               |
+| `baseUrl`      | yes                      | Used for domain-restriction policy on HTTP                                                                                                                                           |
+| `icon`         | yes                      | Fallback icon URL (overridden by `static/icon.png` if present)                                                                                                                       |
+| `language`     | yes                      | ISO 639-1, e.g. `en`, `fr`, `ja`                                                                                                                                                     |
+| `sourceType`   | recommended              | `reader` (default) or `download`                                                                                                                                                     |
+| `nsfw`         | optional                 | Default `false`                                                                                                                                                                      |
+| `dev`          | optional                 | Author handle                                                                                                                                                                        |
+| `capabilities` | optional but recommended | See [Capabilities](/docs/sdk-capabilities). Unlike JS, **Rust must declare these manually**: the WIT contract requires every method to be exported, so auto-detection isn't possible |
+
+## Implementing the Guest trait
+
+`cargo component build` generates `src/bindings.rs` from `wit/glyph.wit`. Your `lib.rs` implements the `Guest` trait that file defines.
+
+```rust
+#[allow(warnings)]
+mod bindings;
+
+use bindings::exports::glyph::extension::source::Guest;
+use bindings::glyph::extension::html;
+use bindings::glyph::extension::http::{self, Method, Request};
+use bindings::glyph::extension::types::*;
+
+struct MySite;
+
+impl Guest for MySite {
+    fn get_source_type() -> SourceType {
+        SourceType::Reader
+    }
+
+    fn search_novels(query: String, _page: u32, _filters: Vec<FilterValue>) -> SearchResult {
+        let url = format!("https://mysite.com/search?q={query}");
+        let resp = http::fetch(&Request {
+            url, method: Method::Get, headers: vec![], body: None,
+        });
+        let cards = html::select_all(&resp.body, ".result");
+        let items = cards.iter().filter_map(|el| {
+            let href = el.attrs.iter().find(|(k, _)| k == "href").map(|(_, v)| v.clone())?;
+            let title = html::select_text(&el.inner_html, ".title").into_iter().next()?;
+            Some(Novel {
+                id: href.clone(),
+                title,
+                url: href,
+                cover: None, author: None, description: None,
+                tags: None, status: None, content_rating: None,
+            })
+        }).collect();
+        SearchResult { items, has_next_page: false }
+    }
+
+    fn fetch_novel_details(url: String) -> NovelDetails { /* ... */ }
+
+    fn fetch_chapter_content(url: String) -> Option<ChapterContent> {
+        let resp = http::fetch(&Request { url, method: Method::Get, headers: vec![], body: None });
+        Some(ChapterContent::Html(
+            html::select_html(&resp.body, ".content").unwrap_or_default()
+        ))
+    }
+
+    // Stubs for unused optional methods, return None
+    fn get_download_links(_url: String) -> Option<DownloadInfo> { None }
+    fn get_discover_sections() -> Option<Vec<DiscoverSection>> { None }
+    fn get_discover_section_items(_id: String, _page: u32) -> Option<DiscoverSectionResults> { None }
+    fn get_discover_items(_page: u32) -> Option<SearchResult> { None }
+    fn fetch_chapters_list(_url: String, _page: u32) -> Option<ChaptersResult> { None }
+    fn get_filters() -> Option<Vec<Filter>> { None }
+}
+
+bindings::export!(MySite with_types_in bindings);
+```
+
+Two things to note:
+
+1. **Every method on `Guest` must be implemented**, even if it returns `None`. Unlike JS where you omit methods you don't need, Rust's trait completeness rule forces explicit stubs. The host treats `None` as "not supported", same semantics as omitting in JS.
+2. **All methods are synchronous.** No `async`. The host blocks on HTTP via the WIT import.
+
+## Build pipeline
+
+From the source directory:
+
+```bash
+cargo component build --release
+jco transpile target/wasm32-wasip2/release/mysite.wasm \
+    -o dist/ --name ext --instantiation sync
+```
+
+Or, from the project root, use the CLI:
+
+```bash
+npm run build
+```
+
+Which for each Rust source runs `cargo component build`, transpiles via `jco`, and inlines the resulting WASM modules as base64 into a single `dist/<id>/ext.js` IIFE. The bundle is detected on the iOS side by the `// @glyph-wasm-extension` marker comment, after which it loads exactly like a JS extension.
+
+## Capabilities for Rust sources
+
+The JS SDK auto-detects capabilities from which methods you defined. Rust can't do this, the trait forces every method to exist. So you declare them yourself in `source.json`:
+
+```json
+{
+  "capabilities": ["discover", "filters", "login"]
+}
+```
+
+The CLI propagates the array into `dist/index.json`, and the iOS app uses it to gate features. See [Capabilities](/docs/sdk-capabilities) for the full list and what each key means.
+
+If you forget to declare a capability that your code supports, the host falls back to runtime probing, which is **broken for Rust extensions** because the `jco` wrapper always defines every method. Always declare capabilities for Rust sources.
+
+## Current limitations
+
+Things that work in JS but not (yet) in Rust:
+
+| Thing                                               | Status                                                                                                          |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Cookies (host imports `get-cookies` / `set-cookie`) | Works                                                                                                           |
+| HTML parsing (host imports)                         | Works                                                                                                           |
+| Synchronous HTTP                                    | Works                                                                                                           |
+| Discover sections                                   | Works                                                                                                           |
+| Filters                                             | Works (declare via `get_filters` + `capabilities: ["filters"]`)                                                 |
+| Settings                                            | Works (declare via `get_settings` + `capabilities: ["settings"]`)                                               |
+| WASI features (`std::time`, `std::fs`, `std::env`)  | **No-op stubs**. `wasi:clocks/wall-clock` returns 0, no filesystem, no env. Stick to the WIT-imported host APIs |
+| Scaffolder                                          | One example (`glyph-rust-extension`), no community templates yet                                                |
+| Rust SDK crate                                      | Doesn't exist. You import bindings directly. Help wanted                                                        |
+| Test runner                                         | None. `cargo test` runs unit tests but there's no integration harness equivalent to JS `glyph test`             |
+
+The base64-inlined WASM bundle is **~33% larger** than the raw `.wasm` because of the base64 encoding. For an 80 KB Rust source this is ~25 KB extra. If bundle size matters and your logic fits, JS is smaller.
+
+## Reference example
+
+A complete working Rust source lives at [`glyph-rust-extension`](https://github.com/your-org/novel/tree/main/glyph-rust-extension). It targets the [`glyph.moe/template/example`](https://glyph.moe/template/example) mock site and implements search, novel details, chapter content, and three discover sections.
+
+## See also
+
+- [WIT Contract](/docs/wit-contract): the source-of-truth interface
+- [Capabilities](/docs/sdk-capabilities): manual declaration for Rust
+- [CLI Reference](/docs/cli): `glyph add -l rust`, `glyph build`, `glyph dev`

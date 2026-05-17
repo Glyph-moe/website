@@ -2,18 +2,22 @@
 import '../styles/global.css'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
-import { getCollection } from 'astro:content'
+import { getCollection, type MarkdownHeading } from 'astro:content'
 
 interface Props {
   title: string
   currentSlug: string
   description?: string
+  headings?: MarkdownHeading[]
 }
 
-const { title, currentSlug, description } = Astro.props
+const { title, currentSlug, description, headings = [] } = Astro.props
+
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3)
+const showToc = tocHeadings.length >= 2
 const pageDescription =
   description ||
-  `${title} — Glyph Documentation. Learn how to use Glyph, build extensions, and explore the SDK reference.`
+  `${title} | Glyph Documentation. Learn how to use Glyph, build extensions, and explore the SDK reference.`
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const ogImage = new URL('/og-image.png', Astro.site)
 
@@ -48,23 +52,23 @@ const sections = sectionOrder
     <!-- Open Graph -->
     <meta property="og:type" content="article" />
     <meta property="og:url" content={canonicalURL.href} />
-    <meta property="og:title" content={`${title} — Glyph Docs`} />
+    <meta property="og:title" content={`${title} | Glyph Docs`} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Glyph — An iOS reader for web novels" />
+    <meta property="og:image:alt" content="Glyph: An iOS reader for web novels" />
     <meta property="og:site_name" content="Glyph" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} — Glyph Docs`} />
+    <meta name="twitter:title" content={`${title} | Glyph Docs`} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage.href} />
-    <meta name="twitter:image:alt" content="Glyph — An iOS reader for web novels" />
+    <meta name="twitter:image:alt" content="Glyph: An iOS reader for web novels" />
 
-    <title>{title} — Glyph Docs</title>
+    <title>{title} | Glyph Docs</title>
 
     <!-- Structured Data -->
     <script
@@ -96,25 +100,28 @@ const sections = sectionOrder
       <div class="docs-sidebar-overlay" id="docs-sidebar-overlay"></div>
       <aside class="docs-sidebar" id="docs-sidebar">
         {
-          sections.map((section, i) => (
-            <>
-              <div class:list={['sidebar-section-title', { first: i === 0 }]}>{section.name}</div>
-              <nav class="sidebar-nav">
-                {section.docs.map(doc => (
-                  <a
-                    href={`/docs/${doc.id}`}
-                    class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
-                  >
-                    {doc.data.title}
-                  </a>
-                ))}
-              </nav>
-            </>
-          ))
+          sections.map(section => {
+            const isCurrent = section.docs.some(d => d.id === currentSlug)
+            return (
+              <details class="sidebar-section" open={isCurrent}>
+                <summary class="sidebar-section-title">{section.name}</summary>
+                <nav class="sidebar-nav">
+                  {section.docs.map(doc => (
+                    <a
+                      href={`/docs/${doc.id}`}
+                      class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
+                    >
+                      {doc.data.title}
+                    </a>
+                  ))}
+                </nav>
+              </details>
+            )
+          })
         }
       </aside>
 
-      <main class="docs-main">
+      <main class:list={['docs-main', { 'has-toc': showToc }]}>
         <div class="docs-mobile-bar" id="docs-mobile-bar">
           <button class="docs-menu-btn" id="docs-menu-btn-inline" aria-label="Toggle docs menu">
             <svg
@@ -165,29 +172,74 @@ const sections = sectionOrder
             }
           </div>
         </div>
-        <article class="docs-article">
-          <slot />
-        </article>
+        <div class="docs-content-row">
+          <article class="docs-article">
+            <slot />
+          </article>
+
+          {
+            showToc && (
+              <aside class="docs-toc" aria-label="On this page">
+                <div class="docs-toc-title">On this page</div>
+                <nav class="docs-toc-nav">
+                  {tocHeadings.map(h => (
+                    <a
+                      href={`#${h.slug}`}
+                      class:list={['docs-toc-link', `depth-${h.depth}`]}
+                      data-slug={h.slug}
+                    >
+                      {h.text}
+                    </a>
+                  ))}
+                </nav>
+              </aside>
+            )
+          }
+        </div>
 
         <nav class="docs-pager">
           {
-            prevDoc ? (
+            prevDoc && (
               <a href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
-                <span class="pager-label">&larr; Previous</span>
+                <span class="pager-label">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                  Previous
+                </span>
                 <span class="pager-title">{prevDoc.data.title}</span>
               </a>
-            ) : (
-              <span />
             )
           }
           {
-            nextDoc ? (
+            nextDoc && (
               <a href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
-                <span class="pager-label">Next &rarr;</span>
+                <span class="pager-label">
+                  Next
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </span>
                 <span class="pager-title">{nextDoc.data.title}</span>
               </a>
-            ) : (
-              <span />
             )
           }
         </nav>
@@ -219,6 +271,10 @@ const sections = sectionOrder
 </html>
 
 <style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+
   .docs-shell {
     display: flex;
     min-height: 100vh;
@@ -237,18 +293,53 @@ const sections = sectionOrder
     overflow-y: auto;
   }
 
+  .sidebar-section {
+    margin-top: 18px;
+  }
+
+  .sidebar-section:first-of-type {
+    margin-top: 0;
+  }
+
   .sidebar-section-title {
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-secondary);
-    margin-bottom: 8px;
-    margin-top: 24px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    user-select: none;
+    transition: color 0.15s;
   }
 
-  .sidebar-section-title:first-child {
-    margin-top: 0;
+  .sidebar-section-title::-webkit-details-marker {
+    display: none;
+  }
+
+  .sidebar-section-title::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.2s;
+    opacity: 0.6;
+  }
+
+  .sidebar-section[open] > .sidebar-section-title::after {
+    transform: rotate(45deg);
+  }
+
+  .sidebar-section-title:hover {
+    color: var(--text);
   }
 
   .sidebar-nav {
@@ -286,6 +377,79 @@ const sections = sectionOrder
     max-width: 760px;
   }
 
+  .docs-main.has-toc {
+    max-width: 1100px;
+  }
+
+  .docs-content-row {
+    display: flex;
+    gap: 56px;
+    align-items: flex-start;
+  }
+
+  .docs-main.has-toc .docs-article {
+    flex: 1;
+    min-width: 0;
+    max-width: 720px;
+  }
+
+  /* TOC sidebar (right) */
+  .docs-toc {
+    position: sticky;
+    top: 96px;
+    width: 220px;
+    flex-shrink: 0;
+    max-height: calc(100vh - 116px);
+    overflow-y: auto;
+    padding-left: 16px;
+  }
+
+  .docs-toc-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-left: 12px;
+  }
+
+  .docs-toc-nav {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+  }
+
+  .docs-toc-link {
+    display: block;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    overflow-wrap: anywhere;
+    transition:
+      color 0.15s,
+      border-color 0.15s;
+  }
+
+  .docs-toc-link.depth-3 {
+    padding-left: 24px;
+    font-size: 12.5px;
+  }
+
+  .docs-toc-link:hover {
+    color: var(--text);
+  }
+
+  .docs-toc-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+
   /* Article typography */
   .docs-article h1 {
     font-size: 32px;
@@ -293,6 +457,7 @@ const sections = sectionOrder
     letter-spacing: -0.03em;
     margin-bottom: 24px;
     line-height: 1.2;
+    scroll-margin-top: 88px;
   }
 
   .docs-article h2 {
@@ -303,6 +468,7 @@ const sections = sectionOrder
     margin-bottom: 16px;
     padding-top: 24px;
     border-top: 1px solid var(--border);
+    scroll-margin-top: 88px;
   }
 
   .docs-article h3 {
@@ -310,6 +476,11 @@ const sections = sectionOrder
     font-weight: 600;
     margin-top: 32px;
     margin-bottom: 12px;
+    scroll-margin-top: 88px;
+  }
+
+  .docs-article h4 {
+    scroll-margin-top: 88px;
   }
 
   .docs-article p {
@@ -386,6 +557,30 @@ const sections = sectionOrder
     font-size: inherit;
   }
 
+  /* Inline video clips (Screen Studio MP4s, etc.) */
+  .docs-article .docs-clip {
+    margin: 28px 0;
+    padding: 0;
+  }
+
+  .docs-article .docs-clip video {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+  }
+
+  .docs-article .docs-clip figcaption {
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    text-align: center;
+    font-style: italic;
+  }
+
   .docs-article table {
     width: 100%;
     border-collapse: collapse;
@@ -413,25 +608,26 @@ const sections = sectionOrder
 
   /* Page navigation */
   .docs-pager {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 48px;
-    padding-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 56px;
+    padding-top: 32px;
     border-top: 1px solid var(--border);
   }
 
   .pager-link {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 14px 18px;
+    gap: 6px;
+    padding: 16px 20px;
     border: 1px solid var(--border);
     border-radius: 10px;
     text-decoration: none;
     transition:
-      border-color 0.2s,
-      background 0.2s;
+      border-color 0.15s,
+      background 0.15s,
+      color 0.15s;
     min-width: 0;
   }
 
@@ -440,23 +636,54 @@ const sections = sectionOrder
     background: var(--accent-dim);
   }
 
+  .pager-link:hover .pager-label {
+    color: var(--accent);
+  }
+
   .pager-prev {
+    grid-column: 1;
     align-items: flex-start;
   }
+
   .pager-next {
+    grid-column: 2;
     align-items: flex-end;
-    margin-left: auto;
+    text-align: right;
   }
 
   .pager-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
+    font-weight: 500;
     color: var(--text-secondary);
+    transition: color 0.15s;
+  }
+
+  .pager-label svg {
+    flex-shrink: 0;
   }
 
   .pager-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 640px) {
+    .docs-pager {
+      grid-template-columns: 1fr;
+    }
+    .pager-prev,
+    .pager-next {
+      grid-column: 1;
+    }
+    .pager-next {
+      align-items: flex-start;
+      text-align: left;
+    }
   }
 
   /* Mobile bar + menu */
@@ -562,4 +789,106 @@ const sections = sectionOrder
       padding: 32px 24px 80px;
     }
   }
+
+  /* Hide TOC on tablet/below; article expands to full width */
+  @media (max-width: 1100px) {
+    .docs-toc {
+      display: none;
+    }
+
+    .docs-main.has-toc {
+      max-width: 760px;
+    }
+
+    .docs-main.has-toc .docs-article {
+      max-width: none;
+    }
+  }
 </style>
+
+<script is:inline>
+  ;(function () {
+    var links = document.querySelectorAll('.docs-toc-link')
+    if (!links.length) return
+
+    var bySlug = {}
+    links.forEach(function (a) {
+      bySlug[a.getAttribute('data-slug')] = a
+    })
+
+    var headings = []
+    Object.keys(bySlug).forEach(function (slug) {
+      var el = document.getElementById(slug)
+      if (el) headings.push(el)
+    })
+    if (!headings.length) return
+
+    function setActive(slug) {
+      links.forEach(function (a) {
+        a.classList.toggle('active', a.getAttribute('data-slug') === slug)
+      })
+    }
+
+    // Clicks on TOC links set the active state immediately. Without this, the
+    // IntersectionObserver lags during smooth scroll and the highlight sticks
+    // on the previous heading until the new one crosses the active band.
+    var clickGuardUntil = 0
+    links.forEach(function (a) {
+      a.addEventListener('click', function () {
+        setActive(a.getAttribute('data-slug'))
+        clickGuardUntil = Date.now() + 700
+      })
+    })
+
+    // IntersectionObserver: mark the heading whose section the user is reading.
+    // rootMargin top -88px accounts for the sticky nav; bottom -65% means the
+    // active heading is the most recent one whose top has crossed ~35% from
+    // the top of the viewport.
+    var observer = new IntersectionObserver(
+      function (entries) {
+        if (Date.now() < clickGuardUntil) return
+        var visible = entries
+          .filter(function (e) {
+            return e.isIntersecting
+          })
+          .map(function (e) {
+            return e.target
+          })
+        if (visible.length) {
+          visible.sort(function (a, b) {
+            return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+          })
+          setActive(visible[0].id)
+        }
+      },
+      { rootMargin: '-88px 0px -65% 0px', threshold: 0 },
+    )
+
+    headings.forEach(function (h) {
+      observer.observe(h)
+    })
+
+    // Initial state: respect URL hash if present; otherwise pick the topmost
+    // heading whose top is above the active band.
+    function syncInitial() {
+      if (location.hash) {
+        var slug = location.hash.slice(1)
+        if (bySlug[slug]) {
+          setActive(slug)
+          return
+        }
+      }
+      var topBand = 88
+      var current = headings[0]
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].getBoundingClientRect().top - topBand <= 0) {
+          current = headings[i]
+        } else {
+          break
+        }
+      }
+      setActive(current.id)
+    }
+    syncInitial()
+  })()
+</script>

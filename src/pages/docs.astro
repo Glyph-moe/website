@@ -1,3 +1,358 @@
 ---
-return Astro.redirect('/docs/getting-started')
+import Base from '../layouts/Base.astro'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
 ---
+
+<Base
+  title="Glyph Documentation"
+  description="Glyph documentation, install the iOS reader, add extensions, and build your own sources in TypeScript or Rust."
+>
+  <Nav />
+  <main class="docs-index">
+    <header class="docs-index-header">
+      <h1>Documentation</h1>
+      <p>Everything you need to use Glyph or build extensions for it.</p>
+    </header>
+
+    <section class="docs-index-section">
+      <div class="docs-index-section-head">
+        <h2>For readers</h2>
+        <p>Install the app, add extensions, organize your library, read offline.</p>
+      </div>
+      <div class="docs-index-grid">
+        <a class="docs-card" href="/docs/getting-started">
+          <h3>Getting Started</h3>
+          <p>Install Glyph, add your first extension, and find your way around the app.</p>
+        </a>
+        <a class="docs-card" href="/docs/library">
+          <h3>Library</h3>
+          <p>Organize novels into folders, sort, badges, and import EPUB &amp; PDF files.</p>
+        </a>
+        <a class="docs-card" href="/docs/browse-and-search">
+          <h3>Browse &amp; Search</h3>
+          <p>Discover novels across all installed sources, with per-source filters.</p>
+        </a>
+        <a class="docs-card" href="/docs/reader">
+          <h3>Reader</h3>
+          <p>Reading modes, themes, fonts, bookmarks, brightness, search-in-chapter.</p>
+        </a>
+        <a class="docs-card" href="/docs/downloads">
+          <h3>Downloads</h3>
+          <p>Save chapters for offline reading. Per-novel, bulk, cancellable, storage controls.</p>
+        </a>
+        <a class="docs-card" href="/docs/customization">
+          <h3>Customization</h3>
+          <p>App appearance, reader themes, importing <code>.glyphtheme</code> files.</p>
+        </a>
+        <a class="docs-card" href="/docs/sync-and-privacy">
+          <h3>Sync &amp; Privacy</h3>
+          <p>How iCloud sync works, incognito mode, content rating controls.</p>
+        </a>
+        <a class="docs-card" href="/docs/insights">
+          <h3>Insights</h3>
+          <p>Reading streaks, monthly chapter counts, total time read, activity heatmap.</p>
+        </a>
+        <a class="docs-card" href="/docs/troubleshooting">
+          <h3>Troubleshooting</h3>
+          <p>Common problems and fixes, extensions, sync, downloads, performance.</p>
+        </a>
+        <a class="docs-card" href="/docs/faq">
+          <h3>FAQ</h3>
+          <p>General questions about Glyph, privacy, and how the app works.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-index-section">
+      <div class="docs-index-section-head">
+        <h2>Build an extension</h2>
+        <p>From zero to a published source. Start here.</p>
+      </div>
+      <div class="docs-index-grid">
+        <a class="docs-card" href="/docs/sdk-overview">
+          <h3>SDK Overview</h3>
+          <p>Architecture, project layout, your first <code>createSource()</code> in TypeScript.</p>
+        </a>
+        <a class="docs-card" href="/docs/cli">
+          <h3>CLI Reference</h3>
+          <p>Every <code>glyph</code> command, dev server, build, validate, test, add, logcat.</p>
+        </a>
+        <a class="docs-card" href="/docs/rust-extensions">
+          <h3>Rust Extensions</h3>
+          <p>
+            WIT bindings, the <code>Guest</code> trait, <code>source.json</code>, and current
+            limitations.
+          </p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-publishing">
+          <h3>Publishing</h3>
+          <p>Build, host on GitHub Pages, share a deep link, version updates.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-index-section">
+      <div class="docs-index-section-head">
+        <h2>Reference</h2>
+        <p>Look up types, methods, and APIs while you build.</p>
+      </div>
+      <div class="docs-index-grid">
+        <a class="docs-card" href="/docs/wit-contract">
+          <h3>WIT Contract</h3>
+          <p>The source-of-truth interface, what the host imports, what extensions export.</p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-source-interface">
+          <h3>Source Interface</h3>
+          <p>Required and optional methods, every type a source touches.</p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-capabilities">
+          <h3>Capabilities</h3>
+          <p>The six capability keys, auto-detection rules, manual Rust declaration.</p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-http">
+          <h3>HTTP &amp; Requests</h3>
+          <p>Synchronous HTTP, rate limiting, retries, cookies, error patterns.</p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-helpers">
+          <h3>Helpers &amp; Utilities</h3>
+          <p>HTML parsing, pagination, discover-section helpers, content-rating tagging.</p>
+        </a>
+        <a class="docs-card" href="/docs/sdk-debugging">
+          <h3>Debugging</h3>
+          <p>Network inspector, log streaming, common failures, playground tips.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-index-section">
+      <div class="docs-index-section-head">
+        <h2>Quick answers</h2>
+        <p>Skip the prose, go straight to what you need.</p>
+      </div>
+      <ul class="docs-index-tasks">
+        <li>
+          <a href="/docs/cli#glyph-dev"
+            ><span>Start the dev server</span><code>npm run dev</code></a>
+        </li>
+        <li>
+          <a href="/docs/cli#glyph-add"
+            ><span>Add a new source to a project</span><code>npx glyph add mysite</code></a>
+        </li>
+        <li>
+          <a href="/docs/rust-extensions"
+            ><span>Add a Rust source</span><code>npx glyph add -l rust mysite</code></a>
+        </li>
+        <li>
+          <a href="/docs/sdk-debugging#playground"
+            ><span>Test methods in a browser</span><code>npm run dev -- --open</code></a>
+        </li>
+        <li>
+          <a href="/docs/sdk-debugging#remote-log-streaming"
+            ><span>Watch logs from your phone in the terminal</span><code>npx glyph logcat</code
+            ></a>
+        </li>
+        <li>
+          <a href="/docs/sdk-publishing#hosting"
+            ><span>Publish to GitHub Pages</span><code>npm run build</code></a>
+        </li>
+        <li>
+          <a href="/docs/sdk-source-interface#searchnovelsquery-page"
+            ><span>Search with filters</span><code>searchNovels(q, page, filters)</code></a>
+        </li>
+        <li>
+          <a href="/docs/sdk-capabilities"
+            ><span>Declare what my source supports</span><code>capabilities: [...]</code></a>
+        </li>
+      </ul>
+    </section>
+
+    <p class="docs-index-footer">
+      Can't find what you need?
+      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener">Ask in Discord</a>
+      or open an issue on GitHub.
+    </p>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .docs-index {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 120px 24px 80px;
+  }
+
+  .docs-index-header {
+    margin-bottom: 56px;
+  }
+
+  .docs-index-header h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+
+  .docs-index-header p {
+    font-size: 17px;
+    color: var(--text-secondary);
+  }
+
+  .docs-index-section {
+    margin-bottom: 64px;
+  }
+
+  .docs-index-section-head {
+    margin-bottom: 20px;
+  }
+
+  .docs-index-section-head h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .docs-index-section-head p {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .docs-index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .docs-card {
+    display: block;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.2s,
+      background 0.2s,
+      transform 0.2s;
+  }
+
+  .docs-card:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+  }
+
+  .docs-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .docs-card p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .docs-card code {
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .docs-index-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .docs-index-tasks li {
+    margin: 0;
+  }
+
+  .docs-index-tasks a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 18px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition:
+      background 0.15s,
+      color 0.15s;
+  }
+
+  .docs-index-tasks a:hover {
+    background: var(--accent-dim);
+    color: var(--text);
+  }
+
+  .docs-index-tasks span {
+    flex: 1;
+  }
+
+  .docs-index-tasks code {
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .docs-index-footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .docs-index-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .docs-index-footer a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .docs-index {
+      padding: 96px 16px 60px;
+    }
+
+    .docs-index-header h1 {
+      font-size: 32px;
+    }
+
+    .docs-index-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .docs-index-tasks a {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>

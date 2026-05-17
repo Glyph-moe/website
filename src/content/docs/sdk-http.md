@@ -1,13 +1,13 @@
 ---
 title: HTTP & Requests
-order: 7
+order: 18
 section: 'SDK Reference'
-description: HTTP helpers in the Glyph SDK — making requests, rate limiting, retries, cookie handling, and error patterns.
+description: HTTP helpers in the Glyph SDK, making requests, rate limiting, retries, cookie handling, and error patterns.
 ---
 
 # HTTP & Requests
 
-All HTTP requests in extensions go through the host runtime via the `glyph:extension/http@0.1.0` WIT interface. The host (iOS app) handles the actual network call using URLSession — extensions just call the SDK helpers. All functions are **synchronous** and return values directly.
+All HTTP requests in extensions go through the host runtime via the `glyph:extension/http@0.1.0` WIT interface. The host (iOS app) handles the actual network call using URLSession, extensions just call the SDK helpers. All functions are **synchronous** and return values directly.
 
 ## Basic Requests
 
