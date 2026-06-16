@@ -1,0 +1,22 @@
+---
+// Output sits below a <CLI> in the same flow, styled as dimmed mono with subtle indent.
+---
+
+<pre class="cli-output"><slot /></pre>
+
+<style>
+  .cli-output {
+    margin: -10px 0 18px;
+    padding: 12px 18px 12px 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    white-space: pre;
+  }
+</style>
