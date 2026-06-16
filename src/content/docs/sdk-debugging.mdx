@@ -5,6 +5,9 @@ section: 'SDK Reference'
 description: Diagnose Glyph extension issues, inspecting requests, reading logs, validating selectors, and common failure modes.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+import CLI from '../../components/docs/CLI.astro'
+
 # Debugging Extensions
 
 When your extension doesn't work as expected, Glyph provides several tools to help you figure out what's going on.
@@ -23,7 +26,9 @@ For each request you can see:
 - Duration in milliseconds
 - Errors (timeouts, TLS failures, etc.)
 
-> **Tip:** If a request shows status `nil`, it means the request failed before reaching the server (DNS failure, TLS error, timeout, or domain blocked by the extension's restriction policy).
+<Callout type="tip">
+If a request shows status `nil`, it means the request failed before reaching the server (DNS failure, TLS error, timeout, or domain blocked by the extension's restriction policy).
+</Callout>
 
 ## App Logs
 
@@ -61,7 +66,9 @@ async searchNovels(query, page) {
 
 These appear in **App Logs** with the `Extension` category and the corresponding level (log = info, warn = warn, error = error). When a dev server is connected, these logs are also forwarded to the remote log stream (see below).
 
-> **Note:** `console.log` calls are visible in the app's Developer Tools and in the remote log stream, but NOT in Xcode's console. The extension runs in the WASM runtime, not in the app's main process.
+<Callout type="note">
+`console.log` calls are visible in the app's Developer Tools and in the remote log stream, but NOT in Xcode's console. The extension runs in the WASM runtime, not in the app's main process.
+</Callout>
 
 ## Remote Log Streaming
 
@@ -209,9 +216,7 @@ This is handy when you need to force a full rebuild or quickly grab the URL to p
 
 The dev server includes a built-in playground for testing your extension methods in the browser. Start the dev server and scroll below the sources list:
 
-```bash
-npm run dev -- --open
-```
+<CLI>npm run dev -- --open</CLI>
 
 You can call `searchNovels`, `fetchNovelDetails`, `fetchChapterContent`, and discover methods interactively. Results are displayed as visual previews (novel cards, chapter reader) and raw JSON. Click through results to navigate the same way users do in the app.
 
