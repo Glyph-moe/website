@@ -25,8 +25,7 @@
     mix-blend-mode: multiply;
   }
 
-  [data-theme='dark'] .grain,
-  :root:not([data-theme='light']) .grain {
+  [data-theme='dark'] .grain {
     /* On warm-dark, multiply gets lost — switch to screen and reduce */
     opacity: 0.06;
     mix-blend-mode: screen;
