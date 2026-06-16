@@ -1,0 +1,105 @@
+---
+interface Props {
+  name: string
+  type: string
+  required?: boolean
+  default?: string
+}
+
+const { name, type, required = false, default: defaultValue } = Astro.props
+---
+
+<div class="param" role="row">
+  <div class="param-head">
+    <code class="param-name">{name}</code>
+    <code class="param-type">{type}</code>
+    {required && <span class="param-required">required</span>}
+    {
+      defaultValue !== undefined && (
+        <span class="param-default">
+          default <code>{defaultValue}</code>
+        </span>
+      )
+    }
+  </div>
+  <div class="param-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .param {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .param-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .param-name {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+    padding: 0;
+  }
+
+  .param-type {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    background: transparent;
+    padding: 0;
+  }
+
+  .param-required {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #b35d1d;
+    padding: 2px 8px;
+    border: 1px solid rgba(179, 93, 29, 0.25);
+    border-radius: 999px;
+  }
+
+  .param-default {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .param-default code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-surface-hover);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .param-body :global(p) {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .param-body :global(p + p) {
+    margin-top: 8px;
+  }
+  .param-body :global(code) {
+    background: var(--bg-surface-hover);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12.5px;
+  }
+</style>
