@@ -186,41 +186,56 @@ import Footer from '../components/Footer.astro'
   .docs-index {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 120px 24px 80px;
+    padding: 140px 24px 96px;
+    position: relative;
+    z-index: 1;
   }
 
   .docs-index-header {
-    margin-bottom: 56px;
+    margin-bottom: 64px;
   }
 
   .docs-index-header h1 {
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(38px, 5.5vw, 48px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--text);
     margin-bottom: 12px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
   }
 
   .docs-index-header p {
+    font-family: var(--font-body);
     font-size: 17px;
+    line-height: 1.55;
     color: var(--text-secondary);
   }
 
   .docs-index-section {
-    margin-bottom: 64px;
+    margin-bottom: 72px;
   }
 
   .docs-index-section-head {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
   }
 
   .docs-index-section-head h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
     font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
+    color: var(--text);
     margin-bottom: 4px;
   }
 
   .docs-index-section-head p {
+    font-family: var(--font-body);
     font-size: 14px;
     color: var(--text-secondary);
   }
@@ -233,41 +248,45 @@ import Footer from '../components/Footer.astro'
 
   .docs-card {
     display: block;
-    padding: 18px 20px;
+    padding: 20px 22px;
     border: 1px solid var(--border);
     border-radius: 12px;
+    background: transparent;
     text-decoration: none;
     color: inherit;
-    transition:
-      border-color 0.2s,
-      background 0.2s,
-      transform 0.2s;
+    transition: border-color 0.18s ease;
   }
 
   .docs-card:hover {
-    border-color: var(--accent);
-    background: var(--accent-dim);
-    transform: translateY(-1px);
+    border-color: var(--text-secondary);
+  }
+
+  .docs-card:hover h3 {
+    color: var(--accent);
   }
 
   .docs-card h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.01em;
     color: var(--text);
+    margin-bottom: 6px;
+    transition: color 0.18s ease;
   }
 
   .docs-card p {
-    font-size: 13px;
-    line-height: 1.5;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.55;
     color: var(--text-secondary);
     margin: 0;
   }
 
   .docs-card code {
-    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.06);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--bg-surface-hover);
     padding: 1px 5px;
     border-radius: 4px;
     color: var(--text);
@@ -279,7 +298,6 @@ import Footer from '../components/Footer.astro'
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1px;
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
@@ -287,6 +305,10 @@ import Footer from '../components/Footer.astro'
 
   .docs-index-tasks li {
     margin: 0;
+    border-top: 1px solid var(--border);
+  }
+  .docs-index-tasks li:first-child {
+    border-top: 0;
   }
 
   .docs-index-tasks a {
@@ -294,18 +316,20 @@ import Footer from '../components/Footer.astro'
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 18px;
+    padding: 14px 18px;
+    font-family: var(--font-body);
     font-size: 14px;
     color: var(--text-secondary);
     text-decoration: none;
-    transition:
-      background 0.15s,
-      color 0.15s;
+    transition: color 0.15s;
   }
 
   .docs-index-tasks a:hover {
-    background: var(--accent-dim);
     color: var(--text);
+  }
+
+  .docs-index-tasks a:hover code {
+    color: var(--accent);
   }
 
   .docs-index-tasks span {
@@ -313,19 +337,21 @@ import Footer from '../components/Footer.astro'
   }
 
   .docs-index-tasks code {
-    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.06);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--bg-surface-hover);
     padding: 3px 8px;
     border-radius: 5px;
     color: var(--text);
     white-space: nowrap;
+    transition: color 0.15s;
   }
 
   .docs-index-footer {
-    margin-top: 64px;
+    margin-top: 72px;
     padding-top: 32px;
     border-top: 1px solid var(--border);
+    font-family: var(--font-body);
     font-size: 14px;
     color: var(--text-secondary);
     text-align: center;
@@ -334,17 +360,18 @@ import Footer from '../components/Footer.astro'
   .docs-index-footer a {
     color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
+    border-bottom: 1px dotted var(--accent);
+    padding-bottom: 1px;
+    transition: border-bottom-style 0.18s ease;
   }
 
   .docs-index-footer a:hover {
-    border-bottom-color: var(--accent);
+    border-bottom-style: solid;
   }
 
   @media (max-width: 640px) {
     .docs-index {
-      padding: 96px 16px 60px;
+      padding: 100px 16px 60px;
     }
 
     .docs-index-header h1 {
