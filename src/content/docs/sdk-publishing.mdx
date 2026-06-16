@@ -5,15 +5,16 @@ section: 'Building Extensions'
 description: Build, version, and publish your Glyph extension so others can install it from a repository URL.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+import CLI from '../../components/docs/CLI.astro'
+
 # Publishing Your Extension
 
 Once your extension works locally, publish it so others can install it in Glyph.
 
 ## Build
 
-```bash
-npm run build
-```
+<CLI>npm run build</CLI>
 
 This creates optimized, minified bundles in `dist/`:
 
@@ -49,7 +50,9 @@ Host the `dist/` folder on any static HTTPS host. The app fetches `index.json` t
 
 Netlify, Vercel, Cloudflare Pages, or any static file server.
 
-> **Important:** HTTPS is required. HTTP is only allowed for `localhost` during development.
+<Callout type="warning" title="Important">
+HTTPS is required. HTTP is only allowed for `localhost` during development.
+</Callout>
 
 ## Installing in Glyph
 
