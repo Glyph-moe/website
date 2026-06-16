@@ -5,9 +5,12 @@ section: 'SDK Reference'
 description: Capability keys let the host know what your source supports without probing every optional method. Auto-detected for JS, manually declared for Rust.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+import Capability from '../../components/docs/Capability.astro'
+
 # Capabilities
 
-The capability system tells the iOS host what each extension can do, discover, filters, login, etc., by writing a small array into `dist/index.json` at build time. The app uses this to pre-filter sources and gate features without having to load the bundle into a WebView and probe every optional method.
+The capability system tells the iOS host what each extension can do, <Capability name="discover" />, <Capability name="filters" />, <Capability name="login" />, etc., by writing a small array into `dist/index.json` at build time. The app uses this to pre-filter sources and gate features without having to load the bundle into a WebView and probe every optional method.
 
 ## The six capability keys
 
