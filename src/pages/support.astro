@@ -164,78 +164,86 @@ import Footer from '../components/Footer.astro'
   .support {
     max-width: 880px;
     margin: 0 auto;
-    padding: 120px 24px 80px;
+    padding: 140px 24px 80px;
+    position: relative;
+    z-index: 1;
   }
 
   .support-header {
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
 
   .support-header h1 {
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(38px, 5.5vw, 48px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
   }
 
   .support-header p {
+    font-family: var(--font-body);
     font-size: 17px;
+    line-height: 1.55;
     color: var(--text-secondary);
   }
 
   .support-channels {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 12px;
-    margin-bottom: 64px;
+    gap: 14px;
+    margin-bottom: 72px;
   }
 
   .support-card {
     display: block;
-    padding: 24px;
+    padding: 22px;
     border: 1px solid var(--border);
     border-radius: 12px;
     text-decoration: none;
     color: inherit;
-    transition:
-      border-color 0.2s,
-      background 0.2s,
-      transform 0.2s;
+    background: var(--bg-surface);
+    transition: border-color 0.18s ease;
   }
 
   .support-card:hover {
-    border-color: var(--accent);
-    background: var(--accent-dim);
-    transform: translateY(-1px);
+    border-color: var(--text-secondary);
   }
 
   .support-card-icon {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
-    background: var(--accent-dim);
     color: var(--accent);
     margin-bottom: 14px;
   }
 
   .support-card h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.01em;
     color: var(--text);
+    margin-bottom: 6px;
   }
 
   .support-card p {
-    font-size: 13px;
-    line-height: 1.55;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.6;
     color: var(--text-secondary);
     margin-bottom: 14px;
   }
 
   .support-card-cta {
+    font-family: var(--font-body);
     font-size: 13px;
     font-weight: 500;
     color: var(--accent);
@@ -246,28 +254,32 @@ import Footer from '../components/Footer.astro'
   }
 
   .support-block h2 {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-    padding-top: 24px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin-bottom: 14px;
+    padding-top: 28px;
     border-top: 1px solid var(--border);
   }
 
   .support-block p {
-    font-size: 15px;
+    font-family: var(--font-body);
+    font-size: 16px;
     line-height: 1.7;
     color: var(--text-secondary);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .support-block ul {
-    padding-left: 24px;
-    margin-bottom: 12px;
+    padding-left: 22px;
+    margin-bottom: 14px;
   }
 
   .support-block li {
-    font-size: 15px;
+    font-family: var(--font-body);
+    font-size: 16px;
     line-height: 1.7;
     color: var(--text-secondary);
     margin-bottom: 6px;
@@ -276,18 +288,18 @@ import Footer from '../components/Footer.astro'
   .support-block a {
     color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
+    border-bottom: 1px dotted var(--accent);
+    padding-bottom: 1px;
+    transition: border-bottom-style 0.18s ease;
   }
-
   .support-block a:hover {
-    border-bottom-color: var(--accent);
+    border-bottom-style: solid;
   }
 
   .support-block code {
-    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.06);
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    background: var(--bg-surface-hover);
     padding: 2px 6px;
     border-radius: 4px;
     color: var(--text);
@@ -295,9 +307,8 @@ import Footer from '../components/Footer.astro'
 
   @media (max-width: 640px) {
     .support {
-      padding: 96px 16px 60px;
+      padding: 100px 16px 60px;
     }
-
     .support-header h1 {
       font-size: 32px;
     }
