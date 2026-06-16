@@ -1,0 +1,58 @@
+---
+// Final beat before footer. Big quiet sentence + single text link.
+---
+
+<section class="closing">
+  <div class="container">
+    <p class="closing-line">Coming to TestFlight. Be there when it ships.</p>
+    <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="closing-link">
+      Join Discord <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .closing {
+    padding: 140px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .closing-line {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    max-width: 18ch;
+    margin: 0 auto 28px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
+  }
+
+  .closing-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent);
+    border-bottom: 1px dotted var(--accent);
+    padding-bottom: 2px;
+    transition: border-bottom-style 0.18s ease;
+  }
+
+  .closing-link:hover {
+    border-bottom-style: solid;
+  }
+
+  @media (max-width: 640px) {
+    .closing {
+      padding: 80px 0;
+    }
+  }
+</style>
