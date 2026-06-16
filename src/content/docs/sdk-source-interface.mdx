@@ -5,6 +5,8 @@ section: 'SDK Reference'
 description: The Source interface, required methods, types, and patterns for searching, fetching novels, and loading chapter content.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+
 # Source Interface
 
 A source is the core of every extension. It tells Glyph how to search, fetch novel details, and load chapter content from a website.
@@ -95,7 +97,9 @@ fetchChapterContent(chapterUrl: string): string
 
 **Returns:** HTML string of the chapter content.
 
-> **Note:** The app automatically sanitizes chapter HTML before displaying it. Scripts, event handlers, iframes, and inline styles are stripped for security.
+<Callout type="note">
+The app automatically sanitizes chapter HTML before displaying it. Scripts, event handlers, iframes, and inline styles are stripped for security.
+</Callout>
 
 **Example:**
 
@@ -152,7 +156,9 @@ Items can be:
 - `ChapterUpdateItem`: Cover + title + latest chapter (type: `'chapterUpdate'`)
 - `GenreItem`: Genre tag (type: `'genre'`)
 
-> **Important:** Include `tags` in your items so the app can filter by content rating. Without tags, the app cannot detect adult/mature content.
+<Callout type="warning" title="Important">
+Include `tags` in your items so the app can filter by content rating. Without tags, the app cannot detect adult/mature content.
+</Callout>
 
 ```typescript
 items.push({
