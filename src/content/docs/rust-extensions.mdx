@@ -5,11 +5,19 @@ section: 'Building Extensions'
 description: Build Glyph extensions in Rust, prerequisites, the Guest trait, source.json, build pipeline, and current limitations.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+import CLI from '../../components/docs/CLI.astro'
+import Platform from '../../components/docs/Platform.astro'
+
+<Platform>Rust · WebAssembly Component</Platform>
+
 # Rust Extensions
 
 Glyph extensions can be written in Rust and compiled to WebAssembly Components. Rust extensions implement the same [WIT contract](/docs/wit-contract) as JavaScript extensions and run on the same iOS host, `cargo component` compiles to WASM, [`jco`](https://github.com/bytecodealliance/jco) transpiles to a JS shim, and the app loads the result in WKWebView's JavaScript engine (which has had WebAssembly support since 2017).
 
-> **Status (current):** Rust support is **experimental**. JS extensions are the recommended path. The Rust pipeline works end-to-end, but the developer experience is bare metal compared to JS, there is no `glyph-rs` SDK crate yet, no test runner, and the example below is the only working reference. The intent is for the community to flesh out helper crates.
+<Callout type="warning" title="Status (current)">
+Rust support is **experimental**. JS extensions are the recommended path. The Rust pipeline works end-to-end, but the developer experience is bare metal compared to JS, there is no `glyph-rs` SDK crate yet, no test runner, and the example below is the only working reference. The intent is for the community to flesh out helper crates.
+</Callout>
 
 ## Prerequisites
 
@@ -36,9 +44,7 @@ jco --version                # should print 1.x+
 
 In an existing Glyph project (one with `repo.json`):
 
-```bash
-npx glyph add -l rust mysite
-```
+<CLI>npx glyph add -l rust mysite</CLI>
 
 This creates `sources/mysite/`:
 
@@ -161,9 +167,7 @@ jco transpile target/wasm32-wasip2/release/mysite.wasm \
 
 Or, from the project root, use the CLI:
 
-```bash
-npm run build
-```
+<CLI>npm run build</CLI>
 
 Which for each Rust source runs `cargo component build`, transpiles via `jco`, and inlines the resulting WASM modules as base64 into a single `dist/<id>/ext.js` IIFE. The bundle is detected on the iOS side by the `// @glyph-wasm-extension` marker comment, after which it loads exactly like a JS extension.
 
