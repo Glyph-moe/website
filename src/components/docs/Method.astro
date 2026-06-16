@@ -1,0 +1,89 @@
+---
+interface Props {
+  name: string
+  returns?: string
+  badges?: string[]
+}
+
+const { name, returns, badges = [] } = Astro.props
+---
+
+<div class="method" role="region" aria-label={`Method ${name}`}>
+  <div class="method-row">
+    <code class="method-name">{name}</code>
+    {
+      returns && (
+        <>
+          <span class="method-arrow" aria-hidden="true">
+            →
+          </span>
+          <code class="method-returns">{returns}</code>
+        </>
+      )
+    }
+    {
+      badges.length > 0 && (
+        <div class="method-badges">
+          {badges.map(b => (
+            <span class="method-badge">{b}</span>
+          ))}
+        </div>
+      )
+    }
+  </div>
+  <div class="method-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .method {
+    margin: 28px 0;
+  }
+  .method-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    margin-bottom: 16px;
+  }
+  .method-name {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+    padding: 0;
+  }
+  .method-arrow {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  .method-returns {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--accent);
+    background: transparent;
+    padding: 0;
+  }
+  .method-badges {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .method-badge {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-secondary);
+  }
+</style>
