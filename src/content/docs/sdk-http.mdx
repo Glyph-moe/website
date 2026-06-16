@@ -5,6 +5,8 @@ section: 'SDK Reference'
 description: HTTP helpers in the Glyph SDK, making requests, rate limiting, retries, cookie handling, and error patterns.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+
 # HTTP & Requests
 
 All HTTP requests in extensions go through the host runtime via the `glyph:extension/http@0.1.0` WIT interface. The host (iOS app) handles the actual network call using URLSession, extensions just call the SDK helpers. All functions are **synchronous** and return values directly.
@@ -95,7 +97,9 @@ console.log(response.headers) // { 'content-type': 'text/html', ... }
 
 ## Rate Limiting
 
-> **Tip:** Always set a rate limit. Sites will block your extension if it sends too many requests too fast.
+<Callout type="tip">
+Always set a rate limit. Sites will block your extension if it sends too many requests too fast.
+</Callout>
 
 Prevent getting blocked by setting a rate limit. The SDK uses a **token bucket** algorithm: the first N requests go through instantly (burst), then throttled to maintain the rate.
 
