@@ -66,9 +66,6 @@ import Logo from './Logo.astro'
           ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg
         >
       </button>
-      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="nav-cta">
-        Join Discord
-      </a>
     </div>
 
     <!-- Mobile: theme + burger -->
@@ -180,7 +177,7 @@ import Logo from './Logo.astro'
     left: 0;
     right: 0;
     z-index: 100;
-    padding: 16px 0;
+    padding: 14px 0;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     background: var(--nav-bg);
@@ -200,53 +197,60 @@ import Logo from './Logo.astro'
   }
 
   .nav-name {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
 
-  /* Desktop links */
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 22px;
   }
 
-  .nav-links a:not(.nav-cta) {
+  .nav-links a:not(.nav-social) {
+    font-family: var(--font-body);
     font-size: 14px;
     color: var(--text-secondary);
-    transition: color 0.2s;
+    transition: color 0.18s ease;
   }
 
-  .nav-links a:not(.nav-cta):hover {
+  .nav-links a:not(.nav-social):hover {
     color: var(--text);
   }
 
   .nav-social {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    color: var(--text-secondary);
+    transition: color 0.18s ease;
   }
 
-  /* Theme toggle */
+  .nav-social:hover {
+    color: var(--text);
+  }
+
   .theme-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--bg-surface);
+    background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
     transition:
-      color 0.2s,
-      border-color 0.2s;
+      color 0.18s ease,
+      border-color 0.18s ease;
   }
 
   .theme-toggle:hover {
     color: var(--text);
-    border-color: var(--text-secondary);
+    border-color: var(--border-strong);
   }
 
   .icon-moon {
@@ -255,41 +259,21 @@ import Logo from './Logo.astro'
   .icon-sun {
     display: block;
   }
-  :root[data-theme='light'] .icon-sun {
+  :root[data-theme='dark'] .icon-sun {
     display: none;
   }
-  :root[data-theme='light'] .icon-moon {
+  :root[data-theme='dark'] .icon-moon {
     display: block;
   }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) .icon-sun {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .icon-sun {
       display: none;
     }
-    :root:not([data-theme='dark']) .icon-moon {
+    :root:not([data-theme='light']) .icon-moon {
       display: block;
     }
   }
 
-  /* CTA */
-  .nav-cta {
-    font-family: var(--font);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 20px;
-    border-radius: 8px;
-    border: none;
-    background: var(--accent);
-    color: #0e0e12;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    display: inline-flex;
-    align-items: center;
-  }
-  .nav-cta:hover {
-    opacity: 0.92;
-  }
-
-  /* Burger (mobile only) */
   .nav-mobile-actions {
     display: none;
     align-items: center;
@@ -305,7 +289,7 @@ import Logo from './Logo.astro'
     height: 32px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--bg-surface);
+    background: transparent;
     cursor: pointer;
     padding: 7px;
   }
@@ -314,13 +298,12 @@ import Logo from './Logo.astro'
     height: 2px;
     border-radius: 1px;
     background: var(--text-secondary);
-    transition: background 0.2s;
+    transition: background 0.18s;
   }
   .burger:hover span {
     background: var(--text);
   }
 
-  /* Drawer */
   .drawer-overlay {
     display: none;
     position: fixed;
@@ -342,7 +325,7 @@ import Logo from './Logo.astro'
     border-left: 1px solid var(--border);
     z-index: 201;
     transform: translateX(100%);
-    transition: transform 0.25s ease;
+    transition: transform 0.22s ease;
     padding: 72px 20px 24px;
   }
   .drawer.open {
@@ -359,6 +342,7 @@ import Logo from './Logo.astro'
     display: flex;
     align-items: center;
     gap: 10px;
+    font-family: var(--font-body);
     font-size: 15px;
     font-weight: 500;
     color: var(--text);
@@ -380,7 +364,6 @@ import Logo from './Logo.astro'
     margin: 8px 0;
   }
 
-  /* Responsive */
   @media (max-width: 640px) {
     .nav-links {
       display: none;
