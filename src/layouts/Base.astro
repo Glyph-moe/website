@@ -79,45 +79,6 @@ const ogImage = new URL('/og-image.png', Astro.site)
   </head>
   <body>
     <Grain />
-    <noscript
-      ><style>
-        [data-animate] {
-          opacity: 1 !important;
-          transform: none !important;
-        }
-      </style></noscript
-    >
     <slot />
-
-    <script>
-      import Lenis from 'lenis'
-
-      // Smooth scroll
-      const lenis = new Lenis({ duration: 1.2 })
-      function raf(time: number) {
-        lenis.raf(time)
-        requestAnimationFrame(raf)
-      }
-      requestAnimationFrame(raf)
-
-      // Fade-up: IntersectionObserver toggles .is-visible; CSS handles the transition.
-      const fadeObserver = new IntersectionObserver(
-        entries => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              const el = entry.target as HTMLElement
-              const delay = parseFloat(el.getAttribute('data-delay') || '0')
-              el.style.transitionDelay = `${delay}s`
-              el.classList.add('is-visible')
-              fadeObserver.unobserve(el)
-            }
-          }
-        },
-        { rootMargin: '0px 0px -10% 0px' },
-      )
-      document
-        .querySelectorAll<HTMLElement>('[data-animate="fade-up"]')
-        .forEach(el => fadeObserver.observe(el))
-    </script>
   </body>
 </html>
