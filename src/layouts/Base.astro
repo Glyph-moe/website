@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import Grain from '../components/Grain.astro'
 
 interface Props {
   title?: string
@@ -77,6 +78,7 @@ const ogImage = new URL('/og-image.png', Astro.site)
     </script>
   </head>
   <body>
+    <Grain />
     <noscript
       ><style>
         [data-animate] {

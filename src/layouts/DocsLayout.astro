@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import Grain from '../components/Grain.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import { getCollection, type MarkdownHeading } from 'astro:content'
@@ -94,6 +95,7 @@ const sections = sectionOrder
     </script>
   </head>
   <body>
+    <Grain />
     <Nav />
 
     <div class="docs-shell">
