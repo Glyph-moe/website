@@ -5,6 +5,8 @@ section: 'SDK Reference'
 description: SDK utilities for HTML parsing with Cheerio, pagination, cookies, and content-rating tagging.
 ---
 
+import Callout from '../../components/docs/Callout.astro'
+
 # Helpers & Utilities
 
 Additional SDK tools for common tasks: HTML parsing, pagination, cookies, and content rating. All functions are **synchronous**, no `async`/`await` needed.
@@ -96,7 +98,9 @@ console.log(cookies['session_id']) // 'abc123'
 setCookie('https://example.com', 'auth_token', 'xyz789')
 ```
 
-> **Note:** Cookies are stored in memory and lost when the app restarts. This is by design for privacy. If a site requires login, the user will need to re-authenticate each session.
+<Callout type="note">
+Cookies are stored in memory and lost when the app restarts. This is by design for privacy. If a site requires login, the user will need to re-authenticate each session.
+</Callout>
 
 ## Content Rating
 
