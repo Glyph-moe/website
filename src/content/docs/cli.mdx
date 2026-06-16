@@ -5,6 +5,11 @@ section: 'Building Extensions'
 description: Every command in the Glyph CLI, scaffolding new extensions, running the dev server, building, validating, and testing.
 ---
 
+import CLI from '../../components/docs/CLI.astro'
+import Platform from '../../components/docs/Platform.astro'
+
+<Platform>CLI · Node.js</Platform>
+
 # CLI Reference
 
 The Glyph CLI provides all the tools you need to create, develop, build, test, and validate extensions.
@@ -119,9 +124,7 @@ Each entry includes a category tag so you can tell which source or subsystem pro
 
 Build all extensions for production.
 
-```bash
-npm run build
-```
+<CLI>npm run build</CLI>
 
 Creates optimized ESM bundles in `dist/`. For each source:
 
