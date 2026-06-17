@@ -1,0 +1,137 @@
+---
+import Logo from './Logo.astro'
+---
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a href="/" class="topbar-brand">
+      <Logo size={22} />
+      <span>Glyph</span>
+    </a>
+    <button class="topbar-toggle" id="topbar-theme-toggle" aria-label="Toggle theme" type="button">
+      <svg
+        class="icon-sun"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="5"></circle>
+        <path
+          d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+        ></path>
+      </svg>
+      <svg
+        class="icon-moon"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 14px 0;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    transition: color 0.18s ease;
+  }
+  .topbar-brand:hover {
+    color: var(--accent);
+  }
+
+  .topbar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .topbar-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .icon-moon {
+    display: none;
+  }
+  .icon-sun {
+    display: block;
+  }
+  :root[data-theme='dark'] .icon-sun {
+    display: none;
+  }
+  :root[data-theme='dark'] .icon-moon {
+    display: block;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .icon-sun {
+      display: none;
+    }
+    :root:not([data-theme='light']) .icon-moon {
+      display: block;
+    }
+  }
+</style>
+
+<script is:inline>
+  ;(function () {
+    var btn = document.getElementById('topbar-theme-toggle')
+    if (!btn) return
+    var root = document.documentElement
+    btn.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme')
+      var isDark =
+        current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      var next = isDark ? 'light' : 'dark'
+      root.setAttribute('data-theme', next)
+      localStorage.setItem('theme', next)
+    })
+  })()
+</script>
