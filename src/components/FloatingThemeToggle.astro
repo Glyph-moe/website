@@ -1,0 +1,114 @@
+---
+// Fixed top-right theme toggle. Replaces nav-embedded toggle.
+// Persists choice to localStorage. Reads on Base layout via the existing
+// inline pre-paint script that applies the saved attribute.
+---
+
+<button class="float-toggle" id="float-theme-toggle" aria-label="Toggle theme" type="button">
+  <svg
+    class="icon-sun"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="5"></circle>
+    <path
+      d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+    ></path>
+  </svg>
+  <svg
+    class="icon-moon"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    aria-hidden="true"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<style>
+  .float-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .float-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .icon-moon {
+    display: none;
+  }
+  .icon-sun {
+    display: block;
+  }
+  :root[data-theme='dark'] .icon-sun {
+    display: none;
+  }
+  :root[data-theme='dark'] .icon-moon {
+    display: block;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .icon-sun {
+      display: none;
+    }
+    :root:not([data-theme='light']) .icon-moon {
+      display: block;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .float-toggle {
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>
+
+<script is:inline>
+  ;(function () {
+    var btn = document.getElementById('float-theme-toggle')
+    if (!btn) return
+    var root = document.documentElement
+    btn.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme')
+      var isDark =
+        current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      var next = isDark ? 'light' : 'dark'
+      root.setAttribute('data-theme', next)
+      localStorage.setItem('theme', next)
+    })
+  })()
+</script>
