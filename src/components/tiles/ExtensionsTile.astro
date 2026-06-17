@@ -1,0 +1,161 @@
+---
+// Supporting bento tile. 3 source-logo chips, puzzle-piece icon swap in title.
+---
+
+<article class="tile">
+  <div class="tile-text">
+    <span class="eyebrow">Extensions</span>
+    <h3 class="title">
+      Bring your own
+      <span class="title-icon" aria-label="sources">
+        <svg
+          width="0.9em"
+          height="0.9em"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="m15.39 4.39 5.22 5.22a2.5 2.5 0 0 1-3.54 3.54l-.86-.86a1 1 0 0 0-1.42 0l-2.83 2.83a1 1 0 0 0 0 1.42l.86.86a2.5 2.5 0 0 1-3.54 3.54L4.06 16.61a2.5 2.5 0 0 1 3.54-3.54l.86.86a1 1 0 0 0 1.42 0l2.83-2.83a1 1 0 0 0 0-1.42l-.86-.86a2.5 2.5 0 0 1 3.54-3.54Z"
+          ></path>
+        </svg>
+      </span>.
+    </h3>
+    <p class="body">Community-built sources. Add a repo URL, browse across all of them.</p>
+  </div>
+  <div class="tile-viz tile-viz-extensions">
+    <div class="source-chip">
+      <span class="chip-icon" style="background:#1a1612;color:#fff;">A</span>
+      <div class="chip-meta">
+        <span class="chip-name">Anna's Archive</span>
+        <span class="chip-ver">v1.1.0</span>
+      </div>
+    </div>
+    <div class="source-chip">
+      <span class="chip-icon" style="background:#b45309;color:#fff;">NO</span>
+      <div class="chip-meta">
+        <span class="chip-name">NovelHaven</span>
+        <span class="chip-ver">v1.1.0</span>
+      </div>
+    </div>
+    <div class="source-chip">
+      <span
+        class="chip-icon"
+        style="background:#5b21b6;color:#fff;font-family:var(--font-mono);font-size:11px;">N(</span
+      >
+      <div class="chip-meta">
+        <span class="chip-name">NovelHaven (Rust)</span>
+        <span class="chip-ver">v1.0.0</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    height: 100%;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin: 0 0 8px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
+  }
+
+  .title-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: -0.1em;
+    color: var(--accent);
+  }
+
+  .body {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .tile-viz-extensions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  .source-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+  }
+
+  .chip-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .chip-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .chip-name {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chip-ver {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+</style>
