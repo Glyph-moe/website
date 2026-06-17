@@ -1,185 +1,136 @@
 ---
-import { Image } from 'astro:assets'
-import ReaderDemo from './ReaderDemo.astro'
-import extensionsShot from '../assets/screens/screen-extensions.png'
-import downloadsShot from '../assets/screens/screen-downloads.png'
-import settingsShot from '../assets/screens/screen-settings.png'
-
-const rows = [
-  {
-    id: 'reading',
-    eyebrow: 'Reading',
-    title: 'Made for reading',
-    body: 'Four themes, fine-grained typography, paginated or scroll. Tap below and try it — the reader gets out of the way and lets the prose breathe.',
-    media: 'demo',
-  },
-  {
-    id: 'extensions',
-    eyebrow: 'Extensions',
-    title: 'Bring your own sources',
-    body: 'Community-built sources for any novel site. Add a repo URL, browse and search across all of them at once.',
-    media: 'extensions',
-  },
-  {
-    id: 'offline',
-    eyebrow: 'Offline',
-    title: 'Read anywhere',
-    body: 'Download chapters once, read them anywhere. On a plane, in the subway, or in bed with no signal.',
-    media: 'downloads',
-  },
-  {
-    id: 'privacy',
-    eyebrow: 'Privacy',
-    title: 'Private by default',
-    body: 'No accounts, no tracking, no ads. Your reading data stays on your device. Extensions run sandboxed with domain restrictions.',
-    media: 'settings',
-  },
-]
+import ReaderPhone from './ReaderPhone.astro'
+import ExtensionsTile from './tiles/ExtensionsTile.astro'
+import OfflineTile from './tiles/OfflineTile.astro'
+import PrivacyTile from './tiles/PrivacyTile.astro'
 ---
 
 <section class="features" id="features">
   <div class="container">
     <h2 class="visually-hidden">Features</h2>
 
-    {
-      rows.map((row, i) => (
-        <div class={`feature-row ${i % 2 === 0 ? 'media-right' : 'media-left'}`}>
-          <div class="feature-text">
-            <span class="feature-eyebrow">{row.eyebrow}</span>
-            <h3 class="feature-title">{row.title}</h3>
-            <p class="feature-body">{row.body}</p>
-          </div>
-          <div class="feature-media">
-            {row.media === 'demo' && <ReaderDemo />}
-            {row.media === 'extensions' && (
-              <div class="shot">
-                <Image
-                  src={extensionsShot}
-                  alt="Extensions list in Glyph showing three installed sources."
-                  widths={[280, 360, 480]}
-                  sizes="(min-width: 768px) 360px, 80vw"
-                />
-              </div>
-            )}
-            {row.media === 'downloads' && (
-              <div class="shot">
-                <Image
-                  src={downloadsShot}
-                  alt="Manage Downloads screen showing 10 chapters available offline."
-                  widths={[280, 360, 480]}
-                  sizes="(min-width: 768px) 360px, 80vw"
-                />
-              </div>
-            )}
-            {row.media === 'settings' && (
-              <div class="shot">
-                <Image
-                  src={settingsShot}
-                  alt="Settings screen showing incognito mode, extensions, appearance, and reader themes."
-                  widths={[280, 360, 480]}
-                  sizes="(min-width: 768px) 360px, 80vw"
-                />
-              </div>
-            )}
-          </div>
+    <div class="bento">
+      <article class="tile tile-hero">
+        <div class="tile-hero-text">
+          <span class="eyebrow">Reading</span>
+          <h3 class="title">Made for reading.</h3>
+          <p class="body">
+            Four themes, fine-grained typography, paginated or scroll. Tap
+            <span class="kbd">Aa</span> in the screen below to try it.
+          </p>
         </div>
-      ))
-    }
+        <div class="tile-hero-phone">
+          <ReaderPhone />
+        </div>
+      </article>
+
+      <div class="bento-side">
+        <ExtensionsTile />
+        <OfflineTile />
+        <PrivacyTile />
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
   .features {
-    padding: 60px 0 120px;
+    padding: 80px 0 120px;
     position: relative;
     z-index: 1;
   }
 
-  .feature-row {
+  .bento {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    padding: 80px 0;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
   }
 
-  .feature-row.media-left {
-    direction: rtl;
-  }
-  .feature-row.media-left > * {
-    direction: ltr;
-  }
-
-  .feature-eyebrow {
-    display: inline-block;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
+  .tile-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 28px 28px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    min-height: 560px;
   }
 
-  .feature-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(26px, 3.4vw, 34px);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 16px;
-    font-variation-settings:
-      'SOFT' 30,
-      'opsz' 144;
+  .tile-hero-text {
+    display: flex;
+    flex-direction: column;
   }
 
-  .feature-body {
-    font-size: 16px;
-    line-height: 1.65;
-    color: var(--text-secondary);
-    max-width: 36ch;
-  }
-
-  .feature-media {
+  .tile-hero-phone {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .shot {
-    max-width: 320px;
-    width: 100%;
+  .bento-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .shot :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 28px;
-    box-shadow:
-      0 1px 2px rgba(26, 22, 18, 0.04),
-      0 16px 40px rgba(26, 22, 18, 0.12);
-    display: block;
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0 0 10px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
+  }
+
+  .body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 38ch;
+  }
+
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 5px;
     border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: -0.05em;
   }
 
-  @media (max-width: 768px) {
-    .feature-row,
-    .feature-row.media-left {
+  @media (max-width: 880px) {
+    .bento {
       grid-template-columns: 1fr;
-      direction: ltr;
-      gap: 32px;
-      padding: 48px 0;
-      text-align: left;
     }
-    .feature-row .feature-media {
-      order: -1;
-    }
-    .feature-body {
-      max-width: none;
+    .tile-hero {
+      min-height: 0;
     }
     .features {
-      padding: 32px 0 80px;
+      padding: 48px 0 80px;
     }
   }
 </style>
