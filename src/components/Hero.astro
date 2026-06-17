@@ -1,10 +1,13 @@
 ---
-import { Image } from 'astro:assets'
-import readerShot from '../assets/screens/screen-reader.png'
+import Logo from './Logo.astro'
 ---
 
 <section class="hero">
   <div class="container hero-inner">
+    <a href="/" class="hero-brand" aria-label="Glyph home">
+      <Logo size={34} />
+      <span>Glyph</span>
+    </a>
     <h1 class="hero-title">A reader, not a feed.</h1>
     <p class="hero-subtitle">
       Glyph is a free iOS app for web novels. Bring your own sources, read offline, customize every
@@ -12,29 +15,18 @@ import readerShot from '../assets/screens/screen-reader.png'
     </p>
     <div class="hero-actions">
       <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="btn-outline">
-        Join the Discord
+        Coming soon on TestFlight
       </a>
       <a href="/docs/getting-started" class="text-link">
         Read the docs <span aria-hidden="true">→</span>
       </a>
-    </div>
-    <p class="hero-note">TestFlight invites coming soon.</p>
-
-    <div class="hero-shot">
-      <Image
-        src={readerShot}
-        alt="The Glyph reader showing a chapter of a novel on iPhone."
-        widths={[320, 480, 640]}
-        sizes="(min-width: 768px) 320px, 80vw"
-        loading="eager"
-      />
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    padding: 140px 0 80px;
+    padding: 160px 0 80px;
     position: relative;
     z-index: 1;
   }
@@ -47,10 +39,26 @@ import readerShot from '../assets/screens/screen-reader.png'
     gap: 22px;
   }
 
+  .hero-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    transition: color 0.18s ease;
+  }
+  .hero-brand:hover {
+    color: var(--accent);
+  }
+
   .hero-title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(48px, 8vw, 80px);
+    font-size: clamp(48px, 8vw, 84px);
     letter-spacing: -0.035em;
     line-height: 1.02;
     color: var(--text);
@@ -61,6 +69,7 @@ import readerShot from '../assets/screens/screen-reader.png'
   }
 
   .hero-subtitle {
+    font-family: var(--font-body);
     font-size: clamp(16px, 2.2vw, 19px);
     color: var(--text-secondary);
     max-width: 540px;
@@ -80,6 +89,7 @@ import readerShot from '../assets/screens/screen-reader.png'
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 500;
+    font-style: italic;
     padding: 11px 22px;
     border-radius: 999px;
     border: 1px solid var(--accent);
@@ -117,36 +127,16 @@ import readerShot from '../assets/screens/screen-reader.png'
     border-bottom-color: var(--text);
   }
 
-  .hero-note {
-    font-size: 13px;
-    color: var(--text-secondary);
-    opacity: 0.75;
-    margin-top: 4px;
-  }
-
-  .hero-shot {
-    margin-top: 56px;
-    max-width: 320px;
-    width: 100%;
-  }
-
-  .hero-shot :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 28px;
-    box-shadow:
-      0 1px 2px rgba(26, 22, 18, 0.04),
-      0 24px 56px rgba(26, 22, 18, 0.18);
-    display: block;
-  }
-
   @media (max-width: 640px) {
     .hero {
       padding: 110px 0 40px;
     }
-    .hero-shot {
-      margin-top: 40px;
-      max-width: 240px;
+    .hero-brand {
+      font-size: 19px;
+    }
+    .hero-brand :global(svg) {
+      width: 28px;
+      height: 28px;
     }
   }
 </style>
