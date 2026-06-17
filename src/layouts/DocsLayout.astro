@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css'
 import Grain from '../components/Grain.astro'
-import Nav from '../components/Nav.astro'
+import DocsTopBar from '../components/DocsTopBar.astro'
 import Footer from '../components/Footer.astro'
 import { getCollection, type MarkdownHeading } from 'astro:content'
 
@@ -96,7 +96,7 @@ const sections = sectionOrder
   </head>
   <body>
     <Grain />
-    <Nav />
+    <DocsTopBar />
 
     <div class="docs-shell">
       <div class="docs-sidebar-overlay" id="docs-sidebar-overlay"></div>
