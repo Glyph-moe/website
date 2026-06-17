@@ -1,0 +1,333 @@
+---
+// iPhone 16 Max frame (via @sneas/telephone) wrapping an interactive reader demo.
+// Aa button in top-right of screen toggles in-screen popover with theme + size controls.
+---
+
+<div class="reader-phone-wrap" data-theme="sepia" data-size="medium" data-menu-open="false">
+  <iphone-16-max mode="dark" class="reader-phone-frame">
+    <div class="reader-screen">
+      <div class="r-topbar">
+        <span class="r-chapter">Chapter 14</span>
+        <span class="r-progress">14 / 142</span>
+        <button type="button" class="r-aa-btn" aria-label="Reader settings" data-aa-toggle>
+          Aa
+        </button>
+      </div>
+      <div class="r-body">
+        <p>
+          The rain hadn't stopped for three days. Elias sat at the window watching it streak down
+          the glass, each drop catching the lamplight before disappearing into the dark below.
+        </p>
+        <p>
+          He thought about what the merchant had said. Not the warning — that part was easy to
+          dismiss. It was the other thing. The way the man's eyes had moved when&hellip;
+        </p>
+      </div>
+
+      <div class="r-popover" role="dialog" aria-label="Reader settings" aria-hidden="true">
+        <div class="r-popover-row">
+          <span class="r-popover-label">Size</span>
+          <div class="r-sizes" role="group" aria-label="Font size">
+            <button type="button" class="size-btn" data-size="small" aria-label="Small text">
+              <span class="size-small">A</span>
+            </button>
+            <button type="button" class="size-btn" data-size="medium" aria-label="Medium text">
+              <span class="size-medium">A</span>
+            </button>
+            <button type="button" class="size-btn" data-size="large" aria-label="Large text">
+              <span class="size-large">A</span>
+            </button>
+          </div>
+        </div>
+        <div class="r-popover-row">
+          <span class="r-popover-label">Theme</span>
+          <div class="r-themes" role="group" aria-label="Reader theme">
+            <button
+              type="button"
+              class="theme-btn"
+              data-theme="white"
+              aria-label="White"
+              style="--swatch:#ffffff;--swatch-border:#e0d8c8;"></button>
+            <button
+              type="button"
+              class="theme-btn"
+              data-theme="sepia"
+              aria-label="Sepia"
+              style="--swatch:#f5ecd9;--swatch-border:#d9c9a8;"></button>
+            <button
+              type="button"
+              class="theme-btn"
+              data-theme="warm-dark"
+              aria-label="Warm dark"
+              style="--swatch:#1a1612;--swatch-border:#1a1612;"></button>
+            <button
+              type="button"
+              class="theme-btn"
+              data-theme="black"
+              aria-label="Black"
+              style="--swatch:#000000;--swatch-border:#000000;"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </iphone-16-max>
+</div>
+
+<style>
+  .reader-phone-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .reader-phone-frame {
+    --width: 280px;
+    width: 280px;
+  }
+
+  .reader-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 56px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  /* Theme-driven background + ink colors on the screen surface */
+  .reader-phone-wrap[data-theme='white'] .reader-screen {
+    background: #ffffff;
+    color: #1d1d1f;
+  }
+  .reader-phone-wrap[data-theme='sepia'] .reader-screen {
+    background: #f5ecd9;
+    color: #3a2e20;
+  }
+  .reader-phone-wrap[data-theme='warm-dark'] .reader-screen {
+    background: #1a1612;
+    color: #ece6dc;
+  }
+  .reader-phone-wrap[data-theme='black'] .reader-screen {
+    background: #000000;
+    color: #c8c8c8;
+  }
+
+  .r-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    margin-bottom: 14px;
+  }
+
+  .r-aa-btn {
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 13px;
+    font-weight: 500;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    padding: 4px 6px;
+    opacity: 0.75;
+    transition: opacity 0.15s ease;
+  }
+  .r-aa-btn:hover {
+    opacity: 1;
+  }
+
+  .r-body {
+    font-family: 'Iowan Old Style', 'Charter', Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: font-size 0.2s ease;
+  }
+
+  .reader-phone-wrap[data-size='small'] .r-body {
+    font-size: 13px;
+  }
+  .reader-phone-wrap[data-size='medium'] .r-body {
+    font-size: 14px;
+  }
+  .reader-phone-wrap[data-size='large'] .r-body {
+    font-size: 16px;
+  }
+
+  .r-body p {
+    margin: 0;
+  }
+
+  /* Popover */
+  .r-popover {
+    position: absolute;
+    right: 14px;
+    top: 50px;
+    width: calc(100% - 28px);
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(247, 244, 238, 0.96);
+    color: #1a1612;
+    border: 1px solid rgba(26, 22, 18, 0.08);
+    box-shadow: 0 10px 30px rgba(26, 22, 18, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .reader-phone-wrap[data-menu-open='true'] .r-popover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .reader-phone-wrap[data-menu-open='true'] .r-popover {
+    /* keep popover ink dark for legibility regardless of reader theme */
+  }
+
+  .r-popover[aria-hidden='true'] {
+    /* keyed via JS below */
+  }
+
+  .r-popover-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .r-popover-label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  .r-sizes,
+  .r-themes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .size-btn {
+    background: transparent;
+    border: 0;
+    padding: 4px 6px;
+    cursor: pointer;
+    color: #6b6259;
+    font-family: 'Iowan Old Style', Georgia, serif;
+    line-height: 1;
+    border-radius: 6px;
+    transition: color 0.18s ease;
+  }
+  .size-btn:hover {
+    color: #1a1612;
+  }
+  .reader-phone-wrap[data-size='small'] .size-btn[data-size='small'],
+  .reader-phone-wrap[data-size='medium'] .size-btn[data-size='medium'],
+  .reader-phone-wrap[data-size='large'] .size-btn[data-size='large'] {
+    color: var(--accent);
+  }
+  .size-small {
+    font-size: 11px;
+  }
+  .size-medium {
+    font-size: 14px;
+  }
+  .size-large {
+    font-size: 18px;
+  }
+
+  .theme-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--swatch);
+    border: 1px solid var(--swatch-border);
+    cursor: pointer;
+    padding: 0;
+    transition: box-shadow 0.18s ease;
+  }
+  .reader-phone-wrap[data-theme='white'] .theme-btn[data-theme='white'],
+  .reader-phone-wrap[data-theme='sepia'] .theme-btn[data-theme='sepia'],
+  .reader-phone-wrap[data-theme='warm-dark'] .theme-btn[data-theme='warm-dark'],
+  .reader-phone-wrap[data-theme='black'] .theme-btn[data-theme='black'] {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .reader-phone-frame {
+      --width: 240px;
+      width: 240px;
+    }
+    .reader-screen {
+      padding: 52px 18px 18px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.reader-phone-wrap').forEach(root => {
+    const aaBtn = root.querySelector<HTMLButtonElement>('[data-aa-toggle]')
+    const popover = root.querySelector<HTMLElement>('.r-popover')
+
+    function setMenu(open: boolean) {
+      root.setAttribute('data-menu-open', String(open))
+      if (popover) popover.setAttribute('aria-hidden', String(!open))
+    }
+
+    aaBtn?.addEventListener('click', e => {
+      e.stopPropagation()
+      const isOpen = root.getAttribute('data-menu-open') === 'true'
+      setMenu(!isOpen)
+    })
+
+    root.querySelectorAll<HTMLButtonElement>('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-theme')
+        if (theme) root.setAttribute('data-theme', theme)
+      })
+    })
+    root.querySelectorAll<HTMLButtonElement>('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const size = btn.getAttribute('data-size')
+        if (size) root.setAttribute('data-size', size)
+      })
+    })
+
+    // Dismiss popover on outside click within the wrap
+    document.addEventListener('click', e => {
+      if (!root.contains(e.target as Node)) return
+      const target = e.target as HTMLElement
+      if (target.closest('[data-aa-toggle]')) return
+      if (target.closest('.r-popover')) return
+      setMenu(false)
+    })
+  })
+</script>
