@@ -20,6 +20,10 @@ const items = [
     q: 'Does it track me?',
     a: 'No analytics, no accounts, no tracking. Your reading data lives on your device, syncing to iCloud only if you’re signed in. Extensions run sandboxed with domain restrictions.',
   },
+  {
+    q: 'Why the name Glyph?',
+    a: 'A glyph is a single mark of meaning — the smallest unit of a written thing. It felt right for a reader.',
+  },
 ]
 ---
 
@@ -29,16 +33,13 @@ const items = [
 
     <ol class="faq-list">
       {
-        items.map(it => (
+        items.map((it, i) => (
           <li class="faq-item">
-            <p class="faq-q">
-              <span class="faq-marker">Q.</span>
-              <span class="faq-text">{it.q}</span>
-            </p>
-            <p class="faq-a">
-              <span class="faq-marker faq-marker-a">A.</span>
-              <span class="faq-text">{it.a}</span>
-            </p>
+            <span class="faq-num">{String(i + 1).padStart(2, '0')}.</span>
+            <div class="faq-pair">
+              <p class="faq-q">{it.q}</p>
+              <p class="faq-a">{it.a}</p>
+            </div>
           </li>
         ))
       }
@@ -73,66 +74,61 @@ const items = [
 
   .faq-list {
     list-style: none;
-    max-width: 680px;
+    max-width: 720px;
     margin: 0 auto;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 44px;
   }
 
   .faq-item {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+    align-items: baseline;
   }
 
-  .faq-q,
-  .faq-a {
-    display: grid;
-    grid-template-columns: 32px 1fr;
-    gap: 8px;
+  .faq-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    font-variation-settings:
+      'SOFT' 50,
+      'opsz' 144,
+      'WONK' 0;
+  }
+
+  .faq-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .faq-q {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.35;
+    color: var(--text);
+    letter-spacing: -0.01em;
     margin: 0;
   }
 
-  .faq-q .faq-text {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 19px;
-    line-height: 1.4;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
-
-  .faq-a .faq-text {
+  .faq-a {
     font-family: var(--font-body);
     font-size: 15.5px;
     line-height: 1.65;
     color: var(--text-secondary);
-  }
-
-  .faq-marker {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 18px;
-    color: var(--accent);
-    line-height: 1.4;
-    font-variation-settings: 'SOFT' 70;
-  }
-
-  .faq-marker-a {
-    font-family: var(--font-body);
-    font-style: normal;
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding-top: 4px;
+    margin: 0;
   }
 
   .faq-more {
     text-align: center;
-    margin-top: 56px;
+    margin-top: 64px;
+    font-family: var(--font-body);
     font-size: 14px;
     color: var(--text-secondary);
   }
@@ -151,14 +147,20 @@ const items = [
     .faq {
       padding: 56px 0;
     }
-    .faq-q,
+    .faq-list {
+      gap: 36px;
+    }
+    .faq-item {
+      grid-template-columns: 44px 1fr;
+      gap: 12px;
+    }
+    .faq-num {
+      font-size: 24px;
+    }
+    .faq-q {
+      font-size: 18px;
+    }
     .faq-a {
-      grid-template-columns: 26px 1fr;
-    }
-    .faq-q .faq-text {
-      font-size: 17px;
-    }
-    .faq-a .faq-text {
       font-size: 14.5px;
     }
   }
