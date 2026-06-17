@@ -6,8 +6,7 @@ import Icon from './Icon.astro'
 ---
 
 <button class="float-toggle" id="float-theme-toggle" aria-label="Toggle theme" type="button">
-  <Icon name="sun" class="icon-sun" size={16} />
-  <Icon name="moon" class="icon-moon" size={16} />
+  <Icon name="sun-moon" size={16} />
 </button>
 
 <style>
@@ -37,27 +36,6 @@ import Icon from './Icon.astro'
   .float-toggle:hover {
     color: var(--text);
     border-color: var(--border-strong);
-  }
-
-  .icon-moon {
-    display: none;
-  }
-  .icon-sun {
-    display: block;
-  }
-  :root[data-theme='dark'] .icon-sun {
-    display: none;
-  }
-  :root[data-theme='dark'] .icon-moon {
-    display: block;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) .icon-sun {
-      display: none;
-    }
-    :root:not([data-theme='light']) .icon-moon {
-      display: block;
-    }
   }
 
   @media (max-width: 640px) {
