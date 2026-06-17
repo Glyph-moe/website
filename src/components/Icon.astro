@@ -1,0 +1,45 @@
+---
+import { icons } from 'lucide-static'
+
+interface Props {
+  name: keyof typeof icons | string
+  size?: number | string
+  strokeWidth?: number | string
+  class?: string
+  ariaLabel?: string
+}
+
+const { name, size = '1em', strokeWidth = 2, class: className, ariaLabel } = Astro.props
+
+const raw = (icons as Record<string, string>)[name as string]
+
+if (!raw) {
+  throw new Error(`Icon "${name}" not found in lucide-static`)
+}
+
+// lucide-static gives us full <svg ...>...</svg> markup. We rewrite the opening
+// tag to apply size + strokeWidth + accessibility attrs while keeping the inner
+// paths verbatim. Pattern: capture inner content between <svg ...> and </svg>.
+const innerMatch = raw.match(/<svg[^>]*>([\s\S]*)<\/svg>/)
+const inner = innerMatch ? innerMatch[1] : raw
+
+const sizeAttr = typeof size === 'number' ? `${size}` : size
+const sw = typeof strokeWidth === 'number' ? `${strokeWidth}` : strokeWidth
+const hidden = ariaLabel ? undefined : 'true'
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={sizeAttr}
+  height={sizeAttr}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={sw}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-label={ariaLabel}
+  aria-hidden={hidden}
+  set:html={inner}
+/>
