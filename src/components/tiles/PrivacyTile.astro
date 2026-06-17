@@ -1,0 +1,115 @@
+---
+// Supporting bento tile. Lock icon + display copy. No widget.
+---
+
+<article class="tile">
+  <div class="tile-text">
+    <span class="eyebrow">Privacy</span>
+    <h3 class="title">
+      <span class="title-icon" aria-label="Private">
+        <svg
+          width="0.95em"
+          height="0.95em"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </span>
+      Private by default.
+    </h3>
+    <p class="body">No accounts. No analytics. No tracking. Reading data stays on your device.</p>
+  </div>
+  <div class="tile-viz tile-viz-privacy">
+    <p class="big-claim">No accounts.<br />No tracking.</p>
+  </div>
+</article>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    height: 100%;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin: 0 0 8px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25em;
+  }
+
+  .title-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: -0.1em;
+    color: var(--accent);
+  }
+
+  .body {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .tile-viz-privacy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    margin-top: auto;
+    min-height: 96px;
+  }
+
+  .big-claim {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+    font-style: italic;
+    font-variation-settings:
+      'SOFT' 50,
+      'opsz' 144;
+  }
+</style>
