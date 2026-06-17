@@ -1,5 +1,6 @@
 ---
 // Supporting bento tile. Lock icon + display copy. No widget.
+import Icon from '../Icon.astro'
 ---
 
 <article class="tile">
@@ -7,20 +8,7 @@
     <span class="eyebrow">Privacy</span>
     <h3 class="title">
       <span class="title-icon" aria-label="Private">
-        <svg
-          width="0.95em"
-          height="0.95em"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
+        <Icon name="lock" size="0.95em" />
       </span>
       Private by default.
     </h3>

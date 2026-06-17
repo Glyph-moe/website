@@ -1,8 +1,8 @@
 ---
-import { icons } from 'lucide-static'
+import * as lucideIcons from 'lucide-static'
 
 interface Props {
-  name: keyof typeof icons | string
+  name: string
   size?: number | string
   strokeWidth?: number | string
   class?: string
@@ -11,7 +11,16 @@ interface Props {
 
 const { name, size = '1em', strokeWidth = 2, class: className, ariaLabel } = Astro.props
 
-const raw = (icons as Record<string, string>)[name as string]
+// lucide-static exports each icon as a PascalCase named export (e.g. `Sun`,
+// `Moon`, `Puzzle`). Map a kebab-case `name` prop (e.g. "arrow-down") to that
+// PascalCase key.
+const pascal = name
+  .split('-')
+  .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+  .join('')
+
+const icons = lucideIcons as unknown as Record<string, string>
+const raw = icons[pascal] ?? icons[name]
 
 if (!raw) {
   throw new Error(`Icon "${name}" not found in lucide-static`)

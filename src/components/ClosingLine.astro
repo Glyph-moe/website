@@ -1,13 +1,15 @@
 ---
 // Final beat before footer. Big quiet sentence + single text link.
+import Icon from './Icon.astro'
 ---
 
 <section class="closing">
   <div class="container">
-    <p class="closing-line">Coming to TestFlight. Be there when it ships.</p>
-    <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="closing-link">
-      Join Discord <span aria-hidden="true">→</span>
-    </a>
+    <p class="closing-line">
+      Coming to TestFlight. Be there when it <span class="ship-icon" aria-label="ships">
+        <Icon name="ship" size="1em" />
+      </span>.
+    </p>
   </div>
 </section>
 
@@ -31,6 +33,18 @@
     font-variation-settings:
       'SOFT' 30,
       'opsz' 144;
+  }
+
+  .ship-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: -0.15em;
+    color: var(--accent);
+  }
+
+  .ship-icon svg {
+    width: 0.95em;
+    height: 0.95em;
   }
 
   .closing-link {
