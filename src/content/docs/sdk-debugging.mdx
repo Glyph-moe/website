@@ -27,7 +27,8 @@ For each request you can see:
 - Errors (timeouts, TLS failures, etc.)
 
 <Callout type="tip">
-If a request shows status `nil`, it means the request failed before reaching the server (DNS failure, TLS error, timeout, or domain blocked by the extension's restriction policy).
+  If a request shows status `nil`, it means the request failed before reaching the server (DNS
+  failure, TLS error, timeout, or domain blocked by the extension's restriction policy).
 </Callout>
 
 ## App Logs
@@ -67,7 +68,8 @@ async searchNovels(query, page) {
 These appear in **App Logs** with the `Extension` category and the corresponding level (log = info, warn = warn, error = error). When a dev server is connected, these logs are also forwarded to the remote log stream (see below).
 
 <Callout type="note">
-`console.log` calls are visible in the app's Developer Tools and in the remote log stream, but NOT in Xcode's console. The extension runs in the WASM runtime, not in the app's main process.
+  `console.log` calls are visible in the app's Developer Tools and in the remote log stream, but NOT
+  in Xcode's console. The extension runs in the WASM runtime, not in the app's main process.
 </Callout>
 
 ## Remote Log Streaming

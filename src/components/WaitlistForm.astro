@@ -1,0 +1,174 @@
+---
+// Email waitlist, pre-launch. Netlify form, no backend.
+// variant: 'hero' (prominent, in hero/closing)
+interface Props {
+  variant?: 'hero'
+}
+const { variant = 'hero' } = Astro.props
+---
+
+<form
+  name="waitlist"
+  method="POST"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class:list={['waitlist', `waitlist--${variant}`]}
+  id={variant === 'hero' ? 'waitlist' : undefined}
+  aria-label="Join the Glyph launch waitlist"
+>
+  <input type="hidden" name="form-name" value="waitlist" />
+  <p class="waitlist-honeypot" aria-hidden="true">
+    <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+  </p>
+
+  <div class="waitlist-row">
+    <input
+      type="email"
+      name="email"
+      required
+      autocomplete="email"
+      placeholder="you@example.com"
+      aria-label="Email address"
+      class="waitlist-input"
+    />
+    <button type="submit" class="waitlist-btn">
+      Notify me at launch
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
+
+  <p class="waitlist-note">One email when Glyph ships on TestFlight. No spam, ever.</p>
+  <p class="waitlist-success" role="status" aria-live="polite" hidden>
+    You're on the list. See you at launch.
+  </p>
+</form>
+
+<style>
+  .waitlist {
+    width: 100%;
+  }
+
+  .waitlist-honeypot {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .waitlist-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .waitlist-input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 11px 18px;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+  .waitlist-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+  .waitlist-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .waitlist-btn {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fffdf8;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      opacity 0.18s ease;
+  }
+  .waitlist-btn:hover {
+    opacity: 0.92;
+  }
+
+  .waitlist-note {
+    margin: 10px 0 0;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    opacity: 0.85;
+  }
+
+  .waitlist-success {
+    margin: 10px 0 0;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .waitlist.sent .waitlist-row {
+    display: none;
+  }
+  .waitlist.sent .waitlist-note {
+    display: none;
+  }
+  .waitlist.sent .waitlist-success {
+    display: block;
+  }
+
+  @media (max-width: 640px) {
+    .waitlist-row {
+      flex-direction: column;
+      max-width: 100%;
+    }
+    .waitlist-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  ;(function () {
+    document.querySelectorAll('form[name="waitlist"]').forEach(function (form) {
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault()
+        var btn = form.querySelector('.waitlist-btn')
+        if (btn) btn.disabled = true
+        try {
+          var data = new URLSearchParams(new FormData(form))
+          await fetch(window.location.href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data.toString(),
+          })
+          form.classList.add('sent')
+          var ok = form.querySelector('.waitlist-success')
+          if (ok) ok.hidden = false
+        } catch (err) {
+          if (btn) btn.disabled = false
+        }
+      })
+    })
+  })()
+</script>

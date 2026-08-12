@@ -26,3 +26,8 @@ pnpm-debug.log*
 
 # Local Netlify folder
 .netlify
+
+# Local agent / tooling artifacts (not for public)
+.pi-subagents/
+.claude/
+docs/superpowers/

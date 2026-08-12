@@ -1,12 +1,38 @@
 ---
+import Icon from './Icon.astro'
+
+// Order leads with the trust/continuity questions readers ask first, then
+// mechanics, then the soft stuff. The first item ships open so the section
+// leads with an answer instead of a wall of closed rows.
 const items = [
   {
     q: 'What is Glyph?',
     a: 'An iOS app for reading web novels. It has no content of its own; it connects to novel sites through community-built extensions. Think of it as a browser made for reading.',
+    open: true,
   },
   {
     q: 'Is it free?',
-    a: 'Yes. Free, no ads, no subscriptions, no in-app purchases.',
+    a: 'Yes. Free, no ads, no subscriptions, no in-app purchases. Not "free with a pro tier", just free.',
+  },
+  {
+    q: 'Does it track me?',
+    a: 'No analytics, no accounts, no tracking. Your reading data lives on your device, syncing to iCloud only if you’re signed in. Extensions run sandboxed with domain restrictions.',
+  },
+  {
+    q: 'What if Apple pulls it from the store?',
+    a: 'TestFlight first, and we’re building for sideloading too. More importantly, the extension SDK and format are open. The ecosystem doesn’t depend on any single app staying listed.',
+  },
+  {
+    q: 'What if you stop working on it?',
+    a: 'The SDK is open and the source format is documented. Sources keep working as long as sites do, and anyone can build or maintain extensions without us. The goal is something that survives its maker.',
+  },
+  {
+    q: 'Is it open source?',
+    a: 'The app itself isn’t, but the extension SDK, the WIT contract, and the docs are fully open. That’s the part that matters for keeping the ecosystem alive.',
+  },
+  {
+    q: 'Can I import my library from another reader?',
+    a: 'Not yet. Glyph is a novel reader, not a scan reader, so a library from something like Aidoku or Paperback isn’t a 1:1 match, different content entirely. What we’re working on is import by title: paste a list of novel names and Glyph will match them against your installed sources. No ETA, but it’s on the roadmap.',
   },
   {
     q: 'Where do extensions come from?',
@@ -17,150 +43,226 @@ const items = [
     a: 'Yes. Download any chapter (or all of them) from a novel’s detail page. Downloads stay on your device and read without a connection.',
   },
   {
-    q: 'Does it track me?',
-    a: 'No analytics, no accounts, no tracking. Your reading data lives on your device, syncing to iCloud only if you’re signed in. Extensions run sandboxed with domain restrictions.',
+    q: 'When does it ship?',
+    a: 'TestFlight in 2026–2027. Join the waitlist to get the link the day it goes out. One email, no spam.',
   },
   {
     q: 'Why the name Glyph?',
-    a: 'A glyph is a single mark of meaning — the smallest unit of a written thing. It felt right for a reader.',
+    a: 'A glyph is a single mark of meaning, the smallest unit of a written thing. It felt right for a reader.',
   },
 ]
 ---
 
 <section class="faq" id="faq">
-  <div class="container">
-    <h2 class="faq-title">Questions</h2>
+  <div class="container faq-grid">
+    <aside class="faq-rail">
+      <h2 class="faq-title">Questions</h2>
+      <p class="faq-intro">
+        Everything you might want to know before it ships. Real answers, no marketing.
+      </p>
+      <p class="faq-handoff">
+        More in the <a href="/docs/faq">full FAQ</a>, or ask in
+        <a href="https://github.com/Glyph-moe" target="_blank" rel="noopener">
+          GitHub Discussions</a
+        >.
+      </p>
+    </aside>
 
-    <ol class="faq-list">
+    <div class="faq-list">
       {
         items.map((it, i) => (
-          <li class="faq-item">
-            <span class="faq-num">{String(i + 1).padStart(2, '0')}.</span>
-            <div class="faq-pair">
-              <p class="faq-q">{it.q}</p>
-              <p class="faq-a">{it.a}</p>
+          <details class="faq-item" open={it.open}>
+            <summary class="faq-q">
+              <span class="faq-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="faq-q-text">{it.q}</span>
+              <span class="faq-chevron" aria-hidden="true">
+                <Icon name="chevron-down" size={18} />
+              </span>
+            </summary>
+            <div class="faq-a">
+              <p>{it.a}</p>
             </div>
-          </li>
+          </details>
         ))
       }
-    </ol>
-
-    <p class="faq-more">
-      More questions in the <a href="/docs/faq">full FAQ</a>, or on
-      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener">Discord</a>.
-    </p>
+    </div>
   </div>
 </section>
 
 <style>
   .faq {
-    padding: 80px 0;
+    padding: 96px 0;
     position: relative;
     z-index: 1;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* --- Left rail: heading + intro + handoff ----------------------------- */
+  .faq-rail {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   .faq-title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(24px, 3vw, 30px);
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     color: var(--text);
-    text-align: center;
-    margin-bottom: 56px;
-    letter-spacing: -0.015em;
+    margin: 0;
     font-variation-settings:
       'SOFT' 30,
       'opsz' 144;
   }
 
+  .faq-intro {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 32ch;
+    margin: 0;
+  }
+
+  .faq-handoff {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 8px 0 0;
+    max-width: 32ch;
+  }
+  .faq-handoff a {
+    color: var(--accent);
+    border-bottom: 1px dotted var(--accent);
+    padding-bottom: 1px;
+    transition: border-bottom-style 0.18s ease;
+  }
+  .faq-handoff a:hover {
+    border-bottom-style: solid;
+  }
+
+  /* --- Accordion -------------------------------------------------------- */
   .faq-list {
-    list-style: none;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 44px;
   }
 
   .faq-item {
+    border-top: 1px solid var(--border);
+  }
+  .faq-item:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-q {
     display: grid;
-    grid-template-columns: 56px 1fr;
-    gap: 16px;
+    grid-template-columns: 44px 1fr 24px;
+    gap: 14px;
     align-items: baseline;
+    padding: 20px 4px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color 0.18s ease;
+  }
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-q:hover .faq-q-text {
+    color: var(--accent);
   }
 
   .faq-num {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 28px;
-    color: var(--accent);
+    font-size: 20px;
     line-height: 1;
+    color: var(--accent);
     font-variation-settings:
       'SOFT' 50,
       'opsz' 144,
       'WONK' 0;
   }
 
-  .faq-pair {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .faq-q {
+  .faq-q-text {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 20px;
+    font-size: 19px;
     line-height: 1.35;
-    color: var(--text);
     letter-spacing: -0.01em;
-    margin: 0;
+    color: var(--text);
+    transition: color 0.18s ease;
+  }
+
+  .faq-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition:
+      transform 0.22s ease,
+      color 0.18s ease;
+  }
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
   }
 
   .faq-a {
+    padding: 0 4px 22px 58px;
+    max-width: 62ch;
+  }
+  .faq-a p {
     font-family: var(--font-body);
-    font-size: 15.5px;
+    font-size: 15px;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
   }
 
-  .faq-more {
-    text-align: center;
-    margin-top: 64px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-
-  .faq-more a {
-    color: var(--accent);
-    border-bottom: 1px dotted var(--accent);
-    padding-bottom: 1px;
-    transition: border-bottom-style 0.18s ease;
-  }
-  .faq-more a:hover {
-    border-bottom-style: solid;
+  @media (max-width: 880px) {
+    .faq {
+      padding: 64px 0;
+    }
+    .faq-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .faq-rail {
+      position: static;
+    }
+    .faq-intro {
+      max-width: none;
+    }
   }
 
   @media (max-width: 640px) {
-    .faq {
-      padding: 56px 0;
-    }
-    .faq-list {
-      gap: 36px;
-    }
-    .faq-item {
-      grid-template-columns: 44px 1fr;
-      gap: 12px;
+    .faq-q {
+      grid-template-columns: 32px 1fr 22px;
+      gap: 10px;
+      padding: 18px 2px;
     }
     .faq-num {
-      font-size: 24px;
-    }
-    .faq-q {
       font-size: 18px;
     }
+    .faq-q-text {
+      font-size: 16.5px;
+    }
     .faq-a {
+      padding: 0 2px 18px 44px;
+    }
+    .faq-a p {
       font-size: 14.5px;
     }
   }

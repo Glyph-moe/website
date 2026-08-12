@@ -1,0 +1,822 @@
+---
+// Frame-less live reader screen mirroring the iOS reader chrome: top bar,
+// reading body, stagger pill menu, progress bar, and the Theme & Settings
+// bottom sheet. Retints/resizes live via data attributes. Meant to be
+// embedded inside a phone frame (see ReaderPhone.astro).
+import Icon from './Icon.astro'
+
+type ThemeId = 'white' | 'sepia' | 'gray' | 'slate' | 'dark' | 'black'
+
+const themes: { id: ThemeId; label: string; bg: string; ink: string }[] = [
+  { id: 'white', label: 'White', bg: '#FFFFFF', ink: '#121212' },
+  { id: 'sepia', label: 'Sepia', bg: '#F8EDDC', ink: '#47331F' },
+  { id: 'gray', label: 'Gray', bg: '#E8E8ED', ink: '#2C2C2E' },
+  { id: 'slate', label: 'Slate', bg: '#2C2C2E', ink: '#DADADF' },
+  { id: 'dark', label: 'Dark', bg: '#1A1A1E', ink: '#D9D9E0' },
+  { id: 'black', label: 'Black', bg: '#000000', ink: '#A0A0A5' },
+]
+
+const menuItems = [
+  { icon: 'rotate-cw', label: 'Lock rotation', active: false },
+  { icon: 'bookmark', label: 'Bookmark chapter', active: false },
+  { icon: 'plus', label: 'Add to library', active: false },
+  { icon: 'search', label: 'Search in chapter', active: false },
+  { icon: 'share-2', label: 'Share chapter', active: false },
+]
+---
+
+<div
+  class="reader-phone-wrap"
+  data-theme="sepia"
+  data-size="medium"
+  data-direction="vertical"
+  data-menu-open="false"
+  data-sheet-open="false"
+>
+  <div class="reader-screen">
+    <div class="reader-top">
+      <button type="button" class="reader-back" aria-label="Back">
+        <Icon name="chevron-left" size={17} />
+      </button>
+      <button type="button" class="reader-chapter" aria-label="Go to chapter">
+        Ch. 14 <span class="reader-dot">·</span>
+        <span class="reader-pct">10%</span>
+      </button>
+    </div>
+
+    <div class="reader-body">
+      <p class="reader-chap-title">The Last Cartographer</p>
+      <p>
+        The rain had not stopped for three days. Elias sat at the window watching it streak down the
+        glass, each drop catching the lamplight before disappearing into the dark below.
+      </p>
+      <p>
+        He thought about what the merchant had said. Not the warning. That part was easy to dismiss.
+        It was the other thing. The way the man's eyes had moved when he spoke of the coast road,
+        and the faint smell of salt that clung to his coat.
+      </p>
+      <p>
+        Somewhere beyond the harbour wall, a bell began to toll. Twice. Elias counted the seconds
+        between the strokes and felt the floor of the inn shift beneath his boots, the way it did
+        when a ship was coming in on the tide.
+      </p>
+      <p>
+        He had come this far to find a map that did not exist. Or rather, one that everyone swore
+        had existed, and that no one could now recall drawing.
+      </p>
+    </div>
+
+    <div class="reader-pills" role="menu" aria-label="Reader menu">
+      {
+        menuItems.map((it, i) => (
+          <button
+            type="button"
+            class="reader-pill"
+            style={`transition-delay: ${(i * 40) / 1000}s`}
+            role="menuitem"
+          >
+            <Icon name={it.icon} size={15} />
+            <span>{it.label}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="reader-bottom">
+      <div class="reader-toolbar">
+        <button type="button" class="reader-tool-btn" aria-label="Reader settings" data-aa-toggle>
+          Aa
+        </button>
+        <button type="button" class="reader-tool-btn" aria-label="Toggle menu" data-menu-toggle>
+          <Icon name="ellipsis" size={16} />
+        </button>
+      </div>
+
+      <div class="reader-progressbar">
+        <button type="button" class="reader-nav-btn" aria-label="Previous chapter">
+          <Icon name="chevron-left" size={15} />
+        </button>
+        <div class="reader-progress-meta">
+          <div class="reader-progress" aria-hidden="true">
+            <div class="reader-progress-fill"></div>
+            <span class="reader-progress-thumb"></span>
+          </div>
+          <div class="reader-meta">
+            <span>14 of 142</span>
+            <span>~2 min left</span>
+          </div>
+        </div>
+        <button type="button" class="reader-nav-btn" aria-label="Next chapter">
+          <Icon name="chevron-right" size={15} />
+        </button>
+      </div>
+    </div>
+
+    <div class="reader-sheet" role="dialog" aria-label="Theme and settings">
+      <div class="reader-sheet-header">
+        <span>Theme &amp; Settings</span>
+        <button type="button" class="reader-sheet-close" aria-label="Close" data-sheet-close>
+          <Icon name="x" size={17} />
+        </button>
+      </div>
+
+      <div class="reader-sheet-scroll">
+        <div class="reader-sheet-row">
+          <button type="button" class="reader-size-btn" data-size="small" aria-label="Smaller text">
+            A
+          </button>
+          <span class="reader-size-sep"></span>
+          <button type="button" class="reader-size-btn" data-size="large" aria-label="Larger text">
+            A
+          </button>
+        </div>
+
+        <div class="reader-bright-row">
+          <span aria-hidden="true"><Icon name="sun" size={13} /></span>
+          <input
+            type="range"
+            class="reader-bright"
+            min="60"
+            max="120"
+            step="1"
+            value="100"
+            aria-label="Brightness"
+          />
+          <span aria-hidden="true"><Icon name="sun-medium" size={17} /></span>
+        </div>
+
+        <div class="reader-sheet-label">Reading Mode</div>
+        <div class="reader-mode-row">
+          <button type="button" class="reader-mode" data-direction="vertical">
+            <Icon name="arrow-up-down" size={18} />
+            <span>Scroll</span>
+          </button>
+          <button type="button" class="reader-mode" data-direction="horizontal">
+            <Icon name="book-open" size={18} />
+            <span>Paginated</span>
+          </button>
+        </div>
+
+        <div class="reader-sheet-label">Themes</div>
+        <div class="reader-theme-grid">
+          {
+            themes.map(t => (
+              <button
+                type="button"
+                class="reader-theme-card"
+                data-theme={t.id}
+                aria-label={t.label}
+              >
+                <span class="reader-theme-swatch" style={`background:${t.bg};color:${t.ink};`}>
+                  Aa
+                </span>
+                <span class="reader-theme-name">{t.label}</span>
+              </button>
+            ))
+          }
+        </div>
+
+        <button type="button" class="reader-customize">
+          <Icon name="paintbrush" size={15} />
+          <span>Customize</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .reader-phone-wrap {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* --- Theme palette (real NovelReader values) ---------------------------- */
+  .reader-phone-wrap[data-theme='white'] .reader-screen {
+    --bg: #ffffff;
+    --ink: #121212;
+    --theme-accent: #007aff;
+  }
+  .reader-phone-wrap[data-theme='sepia'] .reader-screen {
+    --bg: #f8eddc;
+    --ink: #47331f;
+    --theme-accent: #b5651d;
+  }
+  .reader-phone-wrap[data-theme='gray'] .reader-screen {
+    --bg: #e8e8ed;
+    --ink: #2c2c2e;
+    --theme-accent: #636366;
+  }
+  .reader-phone-wrap[data-theme='slate'] .reader-screen {
+    --bg: #2c2c2e;
+    --ink: #dadadf;
+    --theme-accent: #64d2ff;
+  }
+  .reader-phone-wrap[data-theme='dark'] .reader-screen {
+    --bg: #1a1a1e;
+    --ink: #d9d9e0;
+    --theme-accent: #0a84ff;
+  }
+  .reader-phone-wrap[data-theme='black'] .reader-screen {
+    --bg: #000000;
+    --ink: #a0a0a5;
+    --theme-accent: #5e5ce6;
+  }
+
+  /* --- Screen surface ------------------------------------------------------ */
+  .reader-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    --glass: color-mix(in oklab, var(--bg) 72%, transparent);
+    --glass-strong: color-mix(in oklab, var(--bg) 88%, transparent);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  /* --- Top chrome: [←] ......... [Ch. 14 · 10%] --------------------------- */
+  .reader-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 12px 16px;
+  }
+
+  .reader-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--bg) 52%, transparent);
+    color: var(--ink);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .reader-chapter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink);
+    background: color-mix(in oklab, var(--bg) 52%, transparent);
+    border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+    border-radius: 999px;
+    padding: 7px 13px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    white-space: nowrap;
+  }
+  .reader-dot {
+    opacity: 0.45;
+  }
+  .reader-pct {
+    opacity: 0.72;
+  }
+
+  /* --- Reading body -------------------------------------------------------- */
+  .reader-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 80px 20px 132px;
+    color: var(--ink);
+    font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    word-spacing: 0.02em;
+    filter: brightness(var(--reader-brightness, 100%));
+    scrollbar-width: none;
+    transition:
+      font-size 0.2s ease,
+      filter 0.15s ease;
+  }
+  .reader-body::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reader-chap-title {
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    font-size: 1.18em;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    margin: 0 0 0.85em;
+    line-height: 1.3;
+  }
+
+  .reader-phone-wrap[data-size='small'] .reader-body {
+    font-size: 15px;
+  }
+  .reader-phone-wrap[data-size='medium'] .reader-body {
+    font-size: 17px;
+  }
+  .reader-phone-wrap[data-size='large'] .reader-body {
+    font-size: 20px;
+  }
+
+  /* Scroll = vertical mode; Paginated clips to one page */
+  .reader-phone-wrap[data-direction='horizontal'] .reader-body {
+    overflow-y: hidden;
+  }
+
+  .reader-body p {
+    margin: 0 0 0.9em;
+  }
+  .reader-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* --- Stagger pill menu --------------------------------------------------- */
+  .reader-pills {
+    position: absolute;
+    right: 12px;
+    bottom: 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .reader-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 172px;
+    padding: 0 14px;
+    height: 42px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--glass-strong);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+  .reader-phone-wrap[data-menu-open='true'] .reader-pill {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* --- Bottom region: floating frosted chrome over the text ------------ */
+  .reader-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 12px 12px;
+  }
+
+  .reader-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .reader-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--bg) 52%, transparent);
+    color: var(--ink);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* --- Progress bar: [‹] [====● 14 of 142 · ~2 min] [›] ------------------- */
+  .reader-progressbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 4px;
+    border-radius: 16px;
+    background: color-mix(in oklab, var(--bg) 55%, transparent);
+    border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .reader-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .reader-progress-meta {
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px;
+  }
+
+  .reader-progress {
+    position: relative;
+    height: 4px;
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--ink) 14%, transparent);
+    margin-bottom: 6px;
+  }
+  .reader-progress-fill {
+    width: 10%;
+    height: 100%;
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--ink) 90%, transparent);
+  }
+  .reader-progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ink);
+    transform: translate(-50%, -50%);
+  }
+
+  .reader-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--ink) 55%, transparent);
+  }
+
+  /* --- Theme & Settings bottom sheet -------------------------------------- */
+  .reader-sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 72%;
+    border-radius: 20px 20px 0 0;
+    background: color-mix(in oklab, var(--bg) 82%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(105%);
+    transition: transform 0.26s ease;
+    z-index: 5;
+  }
+  .reader-phone-wrap[data-sheet-open='true'] .reader-sheet {
+    transform: translateY(0);
+  }
+
+  .reader-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 12px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .reader-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--ink) 8%, transparent);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .reader-sheet-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 16px 16px;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .reader-sheet-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reader-sheet-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: color-mix(in oklab, var(--ink) 55%, transparent);
+    letter-spacing: 0.02em;
+  }
+
+  .reader-sheet-row {
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    background: color-mix(in oklab, var(--ink) 7%, transparent);
+    overflow: hidden;
+  }
+  .reader-size-btn {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    height: 42px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .reader-size-btn:last-child {
+    font-size: 22px;
+  }
+  .reader-size-sep {
+    width: 1px;
+    height: 24px;
+    background: color-mix(in oklab, var(--ink) 14%, transparent);
+  }
+
+  .reader-bright-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: color-mix(in oklab, var(--ink) 65%, transparent);
+  }
+  .reader-bright {
+    flex: 1;
+    appearance: none;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--ink) 22%, transparent);
+    outline: none;
+    cursor: pointer;
+  }
+  .reader-bright::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: none;
+  }
+
+  .reader-mode-row {
+    display: flex;
+    gap: 10px;
+  }
+  .reader-mode {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 4px;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: color-mix(in oklab, var(--ink) 7%, transparent);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      color 0.18s ease,
+      background 0.18s ease;
+  }
+  .reader-mode svg {
+    width: 20px;
+    height: 20px;
+  }
+  .reader-phone-wrap[data-direction='vertical'] .reader-mode[data-direction='vertical'],
+  .reader-phone-wrap[data-direction='horizontal'] .reader-mode[data-direction='horizontal'] {
+    border-color: var(--theme-accent);
+    background: color-mix(in oklab, var(--theme-accent) 14%, transparent);
+    color: var(--theme-accent);
+  }
+
+  .reader-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .reader-theme-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  .reader-theme-swatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    border-radius: 12px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: 500;
+    border: 1px solid color-mix(in oklab, var(--ink) 14%, transparent);
+    transition:
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .reader-phone-wrap[data-theme='white']
+    .reader-theme-card[data-theme='white']
+    .reader-theme-swatch,
+  .reader-phone-wrap[data-theme='sepia']
+    .reader-theme-card[data-theme='sepia']
+    .reader-theme-swatch,
+  .reader-phone-wrap[data-theme='gray'] .reader-theme-card[data-theme='gray'] .reader-theme-swatch,
+  .reader-phone-wrap[data-theme='slate']
+    .reader-theme-card[data-theme='slate']
+    .reader-theme-swatch,
+  .reader-phone-wrap[data-theme='dark'] .reader-theme-card[data-theme='dark'] .reader-theme-swatch,
+  .reader-phone-wrap[data-theme='black']
+    .reader-theme-card[data-theme='black']
+    .reader-theme-swatch {
+    box-shadow: 0 0 0 2.5px var(--theme-accent);
+  }
+  .reader-theme-name {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: color-mix(in oklab, var(--ink) 60%, transparent);
+    line-height: 1.2;
+  }
+  .reader-phone-wrap[data-theme='white'] .reader-theme-card[data-theme='white'] .reader-theme-name,
+  .reader-phone-wrap[data-theme='sepia'] .reader-theme-card[data-theme='sepia'] .reader-theme-name,
+  .reader-phone-wrap[data-theme='gray'] .reader-theme-card[data-theme='gray'] .reader-theme-name,
+  .reader-phone-wrap[data-theme='slate'] .reader-theme-card[data-theme='slate'] .reader-theme-name,
+  .reader-phone-wrap[data-theme='dark'] .reader-theme-card[data-theme='dark'] .reader-theme-name,
+  .reader-phone-wrap[data-theme='black'] .reader-theme-card[data-theme='black'] .reader-theme-name {
+    color: var(--theme-accent);
+    font-weight: 600;
+  }
+
+  .reader-customize {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border-radius: 12px;
+    border: 0;
+    background: color-mix(in oklab, var(--ink) 7%, transparent);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .reader-screen {
+      padding: 42px 0 0;
+    }
+    .reader-body {
+      padding: 4px 16px 8px;
+    }
+    .reader-pill {
+      min-width: 152px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.reader-phone-wrap').forEach(root => {
+    const aaBtn = root.querySelector<HTMLButtonElement>('[data-aa-toggle]')
+    const menuBtn = root.querySelector<HTMLButtonElement>('[data-menu-toggle]')
+    const sheet = root.querySelector<HTMLElement>('.reader-sheet')
+
+    function setSheet(open: boolean) {
+      root.setAttribute('data-sheet-open', String(open))
+      if (sheet) sheet.setAttribute('aria-hidden', String(!open))
+    }
+    function setMenu(open: boolean) {
+      root.setAttribute('data-menu-open', String(open))
+    }
+
+    aaBtn?.addEventListener('click', e => {
+      e.stopPropagation()
+      setMenu(false)
+      setSheet(root.getAttribute('data-sheet-open') !== 'true')
+    })
+
+    menuBtn?.addEventListener('click', e => {
+      e.stopPropagation()
+      setSheet(false)
+      setMenu(root.getAttribute('data-menu-open') !== 'true')
+    })
+
+    root.querySelectorAll<HTMLButtonElement>('[data-sheet-close]').forEach(btn => {
+      btn.addEventListener('click', () => setSheet(false))
+    })
+
+    // Theme cards retint the whole device.
+    root.querySelectorAll<HTMLButtonElement>('.reader-theme-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-theme')
+        if (theme) root.setAttribute('data-theme', theme)
+      })
+    })
+
+    // Font size A/A stepper: small / medium / large.
+    root.querySelectorAll<HTMLButtonElement>('.reader-size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const size = btn.getAttribute('data-size')
+        if (!size) return
+        const cur = root.getAttribute('data-size')
+        const order = ['small', 'medium', 'large']
+        const idx = order.indexOf(cur ?? 'medium')
+        root.setAttribute(
+          'data-size',
+          size === 'large' ? order[Math.min(2, idx + 1)] : order[Math.max(0, idx - 1)],
+        )
+      })
+    })
+
+    // Reading mode: Scroll / Paginated.
+    root.querySelectorAll<HTMLButtonElement>('.reader-mode').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.getAttribute('data-direction')
+        if (dir) root.setAttribute('data-direction', dir)
+      })
+    })
+
+    // Brightness slider → reader-body brightness filter.
+    const bright = root.querySelector<HTMLInputElement>('.reader-bright')
+    const body = root.querySelector<HTMLElement>('.reader-body')
+    if (bright && body) {
+      bright.addEventListener('input', () => {
+        body.style.setProperty('--reader-brightness', bright.value + '%')
+      })
+    }
+
+    // Close sheet/menu on outside click within the phone.
+    document.addEventListener('click', e => {
+      if (!root.contains(e.target as Node)) return
+      const t = e.target as HTMLElement
+      if (t.closest('[data-aa-toggle]')) return
+      if (t.closest('[data-menu-toggle]')) return
+      if (t.closest('.reader-sheet')) return
+      if (t.closest('.reader-pill')) return
+      setSheet(false)
+      setMenu(false)
+    })
+  })
+</script>

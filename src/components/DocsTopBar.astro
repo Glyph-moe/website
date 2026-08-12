@@ -1,6 +1,7 @@
 ---
 import Logo from './Logo.astro'
 import Icon from './Icon.astro'
+import BrandIcon from './BrandIcon.astro'
 ---
 
 <header class="topbar">
@@ -9,9 +10,25 @@ import Icon from './Icon.astro'
       <Logo size={22} />
       <span>Glyph</span>
     </a>
-    <button class="topbar-toggle" id="topbar-theme-toggle" aria-label="Toggle theme" type="button">
-      <Icon name="sun-moon" size={16} />
-    </button>
+    <div class="topbar-actions">
+      <a
+        class="topbar-github"
+        href="https://github.com/Glyph-moe"
+        target="_blank"
+        rel="noopener"
+        aria-label="Glyph on GitHub"
+      >
+        <BrandIcon name="github" size={17} ariaLabel="GitHub" />
+      </a>
+      <button
+        class="topbar-toggle"
+        id="topbar-theme-toggle"
+        aria-label="Toggle theme"
+        type="button"
+      >
+        <Icon name="sun-moon" size={16} />
+      </button>
+    </div>
   </div>
 </header>
 
@@ -33,6 +50,29 @@ import Icon from './Icon.astro'
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .topbar-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .topbar-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    transition:
+      color 0.18s ease,
+      background 0.18s ease;
+  }
+  .topbar-github:hover {
+    color: var(--text);
+    background: var(--bg-surface-hover);
   }
 
   .topbar-brand {

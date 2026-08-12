@@ -13,29 +13,21 @@
 ## Stack
 
 - **[Astro](https://astro.build)** with static output + Netlify adapter
-- **[Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk)** for typography
-- **[GSAP](https://gsap.com) + ScrollTrigger** for scroll animations
-- **[Lenis](https://lenis.darkroom.engineering)** for smooth scrolling
+- **[Fraunces](https://fonts.google.com/specimen/Fraunces)** (display) + **[Geist](https://fonts.google.com/specimen/Geist)** (body), via Fontsource
 - **[Shiki](https://shiki.matsu.io)** for code syntax highlighting (via Astro MDX)
-- **CSS variables**, no component library
+- **CSS variables**, no component library, no JS framework
+- **[@sneas/telephone](https://github.com/sneas/telephone)** web component for the iPhone reader mockup
 
 ## Pages
 
-| Route | What it does |
-|-------|--------------|
-| `/` | Landing page with hero, feature showcase, interactive phone mockup |
-| `/docs/getting-started` | User guide: how to use the app, add extensions, reader features |
-| `/docs/faq` | Frequently asked questions |
-| `/docs/sdk-overview` | SDK architecture, quick start, project structure |
-| `/docs/sdk-source-interface` | Source methods, types, examples |
-| `/docs/sdk-http` | HTTP helpers, rate limiting, retries, error handling |
-| `/docs/sdk-helpers` | Cheerio, pagination, cookies, content rating |
-| `/docs/sdk-publishing` | Build, deploy, versioning, testing |
-| `/template/example` | Mock novel site (NovelHaven) for extension development |
-| `/template/example/novel/:id` | Novel detail pages with scrapeable selectors |
-| `/template/example/novel/:id/:chapter` | Chapter content pages |
-| `/template/example/genre/:genre` | Genre filtering with tag chips |
-| `/template/example/search?q=...` | Search results |
+| Route               | What it does                                                           |
+| ------------------- | ---------------------------------------------------------------------- |
+| `/`                 | Landing: hero (tagline + waitlist + reader mockup), feature tiles, FAQ |
+| `/docs`             | Documentation index (readers, extension builders, reference)           |
+| `/docs/:slug`       | Individual docs pages (getting started, SDK, CLI, WIT, Rust, FAQ, …)   |
+| `/support`          | Support channels (GitHub Issues, Discussions, email)                   |
+| `/privacy`          | Privacy policy                                                         |
+| `/template/example` | Mock novel site (NovelHaven) for extension development                 |
 
 ## Development
 
@@ -53,37 +45,43 @@ npm run build
 ```
 
 Static output to `dist/`. Deploys to Netlify automatically via `netlify.toml`.
+The waitlist form (`form name="waitlist"`) is a Netlify form — submissions land in the Netlify dashboard.
 
 ## Structure
 
 ```
 src/
-├── components/         # Astro components (Nav, Hero, Features, Footer)
+├── components/         # Astro components (Hero, Features, Faq, Footer, ReaderPhone, tiles, WaitlistForm)
+│   └── tiles/          # Bento supporting tiles (Extensions, Offline, Privacy)
 ├── layouts/
-│   ├── Base.astro      # Landing layout (GSAP + Lenis)
-│   ├── DocsLayout.astro # Docs layout with sidebar navigation
+│   ├── Base.astro      # Landing layout (head, OG, structured data, Grain)
+│   ├── DocsLayout.astro # Docs layout with sidebar, TOC, pager
 │   └── MockSite.astro  # NovelHaven mock site layout
-├── content/docs/       # Markdown documentation (7 pages)
-├── data/
-│   └── mock-novels.ts  # 6 novels, 591 chapters of test data
+├── content/docs/       # Markdown / MDX documentation
 ├── pages/
 │   ├── index.astro     # Landing
-│   ├── docs/           # Documentation
-│   └── template/       # Mock novel site
+│   ├── docs.astro       # Docs index
+│   ├── docs/[slug].astro
+│   ├── support.astro
+│   ├── privacy.astro
+│   └── template/        # Mock novel site
 └── styles/
     └── global.css      # Design tokens + reset
 ```
 
 ## Design
 
-| Token | Value |
-|-------|-------|
-| Background | `#0E0E12` |
-| Surface | `#16161D` |
-| Accent | `#EF9F27` (gold) |
-| Text | `#E8E6E3` |
-| Font | Space Grotesk |
-| Radius | 12px |
+| Token        | Value                  |
+| ------------ | ---------------------- |
+| Background   | `#faf7f2` (warm paper) |
+| Surface      | `#fffdf8`              |
+| Accent       | `#b35d1d` (orange)     |
+| Text         | `#1a1612`              |
+| Display font | Fraunces Variable      |
+| Body font    | Geist Variable         |
+| Radius       | 12px / 16px            |
+
+Dark mode via explicit `data-theme` toggle (`#15110d` background, `#d48a1a` accent).
 
 ## License
 

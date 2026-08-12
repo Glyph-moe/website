@@ -2,7 +2,7 @@
 @import '@fontsource-variable/geist';
 
 :root {
-  /* Color — warm paper (light, default) */
+  /* Color: warm paper (light, default) */
   --bg: #faf7f2;
   --bg-surface: #fffdf8;
   --bg-surface-hover: #f3eee5;
@@ -15,7 +15,7 @@
   --nav-bg: rgba(250, 247, 242, 0.85);
   --logo-stroke: #1a1612;
 
-  /* Reader demo / phone palette — used inside ReaderDemo + any product surfaces */
+  /* Reader demo / phone palette used by the phone mockups */
   --reader-paper: #f5ecd9;
   --reader-ink: #3a2e20;
 
@@ -34,33 +34,33 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #15110d;
-    --bg-surface: #1d1812;
-    --bg-surface-hover: #261f17;
-    --text: #ece6dc;
-    --text-secondary: #8c8275;
-    --border: rgba(236, 230, 220, 0.07);
-    --border-strong: rgba(236, 230, 220, 0.16);
-    --accent: #d48a1a;
-    --accent-dim: rgba(212, 138, 26, 0.1);
-    --nav-bg: rgba(21, 17, 13, 0.85);
-    --logo-stroke: #ece6dc;
+    --bg: #0f0f11;
+    --bg-surface: #18181b;
+    --bg-surface-hover: #232328;
+    --text: #ededf0;
+    --text-secondary: #9b9ba4;
+    --border: rgba(237, 237, 240, 0.08);
+    --border-strong: rgba(237, 237, 240, 0.16);
+    --accent: #e0922a;
+    --accent-dim: rgba(224, 146, 42, 0.12);
+    --nav-bg: rgba(15, 15, 17, 0.85);
+    --logo-stroke: #ededf0;
     color-scheme: dark;
   }
 }
 
 [data-theme='dark'] {
-  --bg: #15110d;
-  --bg-surface: #1d1812;
-  --bg-surface-hover: #261f17;
-  --text: #ece6dc;
-  --text-secondary: #8c8275;
-  --border: rgba(236, 230, 220, 0.07);
-  --border-strong: rgba(236, 230, 220, 0.16);
-  --accent: #d48a1a;
-  --accent-dim: rgba(212, 138, 26, 0.1);
-  --nav-bg: rgba(21, 17, 13, 0.85);
-  --logo-stroke: #ece6dc;
+  --bg: #0f0f11;
+  --bg-surface: #18181b;
+  --bg-surface-hover: #232328;
+  --text: #ededf0;
+  --text-secondary: #9b9ba4;
+  --border: rgba(237, 237, 240, 0.08);
+  --border-strong: rgba(237, 237, 240, 0.16);
+  --accent: #e0922a;
+  --accent-dim: rgba(224, 146, 42, 0.12);
+  --nav-bg: rgba(15, 15, 17, 0.85);
+  --logo-stroke: #ededf0;
   color-scheme: dark;
 }
 

@@ -1,54 +1,63 @@
 ---
 import Logo from './Logo.astro'
+import ReaderPhone from './ReaderPhone.astro'
+import WaitlistForm from './WaitlistForm.astro'
 ---
 
 <section class="hero">
   <div class="container hero-inner">
-    <a href="/" class="hero-brand" aria-label="Glyph home">
-      <Logo size={34} />
-      <span>Glyph</span>
-    </a>
-    <h1 class="hero-title">A reader, not a feed.</h1>
-    <p class="hero-subtitle">
-      Glyph is a free iOS app for web novels. Bring your own sources, read offline, customize every
-      detail. No accounts, no tracking.
-    </p>
-    <div class="hero-actions">
-      <a href="https://discord.gg/hvA2sMRwxC" target="_blank" rel="noopener" class="btn-outline">
-        Coming soon on TestFlight
+    <div class="hero-text">
+      <a href="/" class="hero-brand" aria-label="Glyph home">
+        <Logo size={30} />
+        <span>Glyph</span>
       </a>
-      <a href="/docs/getting-started" class="text-link">
-        Read the docs <span aria-hidden="true">→</span>
+      <h1 class="hero-title">A reader,<br />not a feed.</h1>
+      <p class="hero-subtitle">
+        The iOS reader for people who actually read web novels. Community sources, offline
+        downloads, full customization, and it's not going to disappear on you.
+      </p>
+      <WaitlistForm variant="hero" />
+      <a class="hero-secondary" href="https://github.com/Glyph-moe" target="_blank" rel="noopener">
+        or watch on GitHub <span aria-hidden="true">→</span>
       </a>
+    </div>
+    <div class="hero-phone">
+      <ReaderPhone />
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    padding: 160px 0 80px;
+    padding: 140px 0 80px;
     position: relative;
     z-index: 1;
   }
 
   .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .hero-text {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 22px;
+    align-items: flex-start;
+    gap: 18px;
   }
 
   .hero-brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 10px;
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 500;
     letter-spacing: -0.01em;
     color: var(--text);
+    margin-bottom: 6px;
     transition: color 0.18s ease;
   }
   .hero-brand:hover {
@@ -58,85 +67,62 @@ import Logo from './Logo.astro'
   .hero-title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(48px, 8vw, 84px);
+    font-size: clamp(44px, 7vw, 76px);
     letter-spacing: -0.035em;
     line-height: 1.02;
     color: var(--text);
     font-variation-settings:
       'SOFT' 30,
       'opsz' 144;
-    max-width: 16ch;
+    max-width: 14ch;
   }
 
   .hero-subtitle {
     font-family: var(--font-body);
-    font-size: clamp(16px, 2.2vw, 19px);
+    font-size: clamp(16px, 2vw, 18px);
     color: var(--text-secondary);
-    max-width: 540px;
+    max-width: 44ch;
     line-height: 1.55;
   }
 
-  .hero-actions {
+  .hero-secondary {
+    margin-top: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .hero-secondary:hover {
+    color: var(--text);
+  }
+
+  .hero-phone {
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-top: 8px;
-    flex-wrap: wrap;
     justify-content: center;
+    flex-shrink: 0;
   }
 
-  .btn-outline {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    font-style: italic;
-    padding: 11px 22px;
-    border-radius: 999px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    background: transparent;
-    transition:
-      border-color 0.18s ease,
-      background 0.18s ease,
-      color 0.18s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .btn-outline:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .text-link {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    border-bottom: 1px dotted var(--border-strong);
-    padding-bottom: 2px;
-    transition:
-      color 0.18s ease,
-      border-color 0.18s ease;
-  }
-
-  .text-link:hover {
-    color: var(--text);
-    border-bottom-color: var(--text);
+  @media (max-width: 920px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .hero-phone {
+      order: 2;
+    }
+    .hero {
+      padding: 110px 0 56px;
+    }
   }
 
   @media (max-width: 640px) {
     .hero {
-      padding: 110px 0 40px;
+      padding: 96px 0 48px;
     }
     .hero-brand {
-      font-size: 19px;
-    }
-    .hero-brand :global(svg) {
-      width: 28px;
-      height: 28px;
+      font-size: 18px;
     }
   }
 </style>

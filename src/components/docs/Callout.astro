@@ -1,4 +1,6 @@
 ---
+import Icon from '../Icon.astro'
+
 type CalloutType = 'note' | 'tip' | 'warning' | 'info'
 
 interface Props {
@@ -15,68 +17,69 @@ const defaultTitle: Record<CalloutType, string> = {
   info: 'Info',
 }
 
+const iconFor: Record<CalloutType, string> = {
+  note: 'info',
+  tip: 'lightbulb',
+  warning: 'triangle-alert',
+  info: 'circle-alert',
+}
+
 const label = title ?? defaultTitle[type]
+const icon = iconFor[type]
+// Show a visible title only when the author passed one explicitly. Default
+// callouts rely on the icon + color to convey type.
+const showTitle = title !== undefined
 ---
 
-<aside class:list={['callout', `callout-${type}`]} role="note">
-  <span class="callout-label">{label}</span>
-  <div class="callout-body">
-    <slot />
+<aside class:list={['callout', `callout-${type}`]} role="note" aria-label={label}>
+  <span class="callout-icon" aria-hidden="true">
+    <Icon name={icon} size={18} />
+  </span>
+  <div class="callout-content">
+    {showTitle && <p class="callout-title">{label}</p>}
+    <div class="callout-body">
+      <slot />
+    </div>
   </div>
 </aside>
 
 <style>
   .callout {
-    position: relative;
-    margin: 24px 0;
-    padding: 18px 22px 18px 22px;
-    border-radius: 10px;
-    border-left: 3px solid var(--accent);
-    background: var(--accent-dim);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 22px 0;
+    padding: 14px 16px;
+    border: 1px solid var(--c-border);
+    border-radius: 14px;
+    background: var(--c-bg);
   }
 
-  .callout-note {
-    border-left-color: var(--accent);
-    background: var(--accent-dim);
-  }
-  .callout-tip {
-    border-left-color: #2e7d57;
-    background: rgba(46, 125, 87, 0.1);
-  }
-  .callout-warning {
-    border-left-color: #b35d1d;
-    background: rgba(179, 93, 29, 0.12);
-  }
-  .callout-info {
-    border-left-color: #2d6cb0;
-    background: rgba(45, 108, 176, 0.1);
+  .callout-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--c-icon);
+    display: inline-flex;
+    align-items: center;
   }
 
-  .callout-label {
-    display: inline-block;
-    font-family: var(--font-display);
+  .callout-content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .callout-title {
+    font-family: var(--font-body);
     font-weight: 600;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text);
-    margin-bottom: 8px;
-    font-variation-settings: 'SOFT' 30;
-  }
-
-  .callout-tip .callout-label {
-    color: #2e7d57;
-  }
-  .callout-warning .callout-label {
-    color: #b35d1d;
-  }
-  .callout-info .callout-label {
-    color: #2d6cb0;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: var(--c-icon);
+    margin: 0 0 4px;
   }
 
   .callout-body :global(p) {
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.65;
     color: var(--text);
     margin: 0;
@@ -85,9 +88,71 @@ const label = title ?? defaultTitle[type]
     margin-top: 10px;
   }
   .callout-body :global(code) {
-    background: var(--bg-surface-hover);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: color-mix(in oklab, var(--c-icon) 14%, transparent);
     padding: 1px 5px;
-    border-radius: 3px;
-    font-size: 13px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+  .callout-body :global(a) {
+    color: var(--c-icon);
+    border-bottom: 1px dotted var(--c-icon);
+    text-decoration: none;
+  }
+  .callout-body :global(a:hover) {
+    border-bottom-style: solid;
+  }
+  .callout-body :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Light (default) palette per type */
+  .callout-note {
+    --c-icon: #1d4ed8;
+    --c-bg: color-mix(in oklab, #2563eb 7%, transparent);
+    --c-border: color-mix(in oklab, #2563eb 28%, transparent);
+  }
+  .callout-tip {
+    --c-icon: #047857;
+    --c-bg: color-mix(in oklab, #059669 7%, transparent);
+    --c-border: color-mix(in oklab, #059669 28%, transparent);
+  }
+  .callout-warning {
+    --c-icon: #b45309;
+    --c-bg: color-mix(in oklab, #d97706 8%, transparent);
+    --c-border: color-mix(in oklab, #d97706 30%, transparent);
+  }
+  .callout-info {
+    --c-icon: #6d28d9;
+    --c-bg: color-mix(in oklab, #7c3aed 7%, transparent);
+    --c-border: color-mix(in oklab, #7c3aed 28%, transparent);
+  }
+
+  /* Dark palette */
+  [data-theme='dark'] .callout-note,
+  :root:not([data-theme='light']) .callout-note {
+    --c-icon: #93c5fd;
+    --c-bg: color-mix(in oklab, #2563eb 16%, transparent);
+    --c-border: color-mix(in oklab, #60a5fa 26%, transparent);
+  }
+  [data-theme='dark'] .callout-tip,
+  :root:not([data-theme='light']) .callout-tip {
+    --c-icon: #6ee7b7;
+    --c-bg: color-mix(in oklab, #059669 16%, transparent);
+    --c-border: color-mix(in oklab, #34d399 26%, transparent);
+  }
+  [data-theme='dark'] .callout-warning,
+  :root:not([data-theme='light']) .callout-warning {
+    --c-icon: #fcd34d;
+    --c-bg: color-mix(in oklab, #d97706 18%, transparent);
+    --c-border: color-mix(in oklab, #fbbf24 28%, transparent);
+  }
+  [data-theme='dark'] .callout-info,
+  :root:not([data-theme='light']) .callout-info {
+    --c-icon: #c4b5fd;
+    --c-bg: color-mix(in oklab, #7c3aed 18%, transparent);
+    --c-border: color-mix(in oklab, #a78bfa 28%, transparent);
   }
 </style>

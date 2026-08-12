@@ -29,7 +29,7 @@ Custom reader themes can be exported and shared.
 - **Export**: Theme & Settings → tap your custom theme → **Share**. Produces a `.glyphtheme` file.
 - **Import**: open any `.glyphtheme` file in Mail, Messages, Files, or AirDrop and select "Open in Glyph". The theme is added to your collection.
 
-The format is a plain JSON document, community themes can be posted to GitHub, Discord, or anywhere people share files.
+The format is a plain JSON document, community themes can be shared on GitHub, GitHub Discussions, or anywhere people share files.
 
 ## Library badges
 

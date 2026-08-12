@@ -2,17 +2,19 @@
 import '../styles/global.css'
 import Grain from '../components/Grain.astro'
 import DocsTopBar from '../components/DocsTopBar.astro'
-import Footer from '../components/Footer.astro'
+import Icon from '../components/Icon.astro'
 import { getCollection, type MarkdownHeading } from 'astro:content'
+import { getSearchIndex } from '../lib/searchIndex.ts'
 
 interface Props {
   title: string
   currentSlug: string
   description?: string
   headings?: MarkdownHeading[]
+  editUrl?: string
 }
 
-const { title, currentSlug, description, headings = [] } = Astro.props
+const { title, currentSlug, description, headings = [], editUrl } = Astro.props
 
 const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3)
 const showToc = tocHeadings.length >= 2
@@ -33,6 +35,11 @@ const sectionOrder = ['Using Glyph', 'Building Extensions', 'SDK Reference']
 const sections = sectionOrder
   .map(name => ({ name, docs: sorted.filter(d => d.data.section === name) }))
   .filter(s => s.docs.length > 0)
+
+// Local search index (no backend): title + section + description + headings
+// per doc. Headings give the search body coverage the title-only index lacked.
+// The client reads this via #search-index and does substring matching.
+const searchIndex = await getSearchIndex()
 ---
 
 <!doctype html>
@@ -42,7 +49,7 @@ const sections = sectionOrder
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={pageDescription} />
     <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15110d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
@@ -90,9 +97,13 @@ const sections = sectionOrder
     <script is:inline>
       ;(function () {
         var t = localStorage.getItem('theme')
+        // Docs default to dark (landing follows prefers-color-scheme). A saved
+        // choice always wins so the toggle persists across the site.
         if (t) document.documentElement.setAttribute('data-theme', t)
+        else document.documentElement.setAttribute('data-theme', 'dark')
       })()
     </script>
+    <script type="application/json" id="search-index" set:html={JSON.stringify(searchIndex)} />
   </head>
   <body>
     <Grain />
@@ -101,25 +112,27 @@ const sections = sectionOrder
     <div class="docs-shell">
       <div class="docs-sidebar-overlay" id="docs-sidebar-overlay"></div>
       <aside class="docs-sidebar" id="docs-sidebar">
+        <button class="docs-search-trigger" id="docs-search-trigger" type="button">
+          <Icon name="search" size={14} />
+          <span>Search docs…</span>
+          <kbd>⌘K</kbd>
+        </button>
         {
-          sections.map(section => {
-            const isCurrent = section.docs.some(d => d.id === currentSlug)
-            return (
-              <details class="sidebar-section" open={isCurrent}>
-                <summary class="sidebar-section-title">{section.name}</summary>
-                <nav class="sidebar-nav">
-                  {section.docs.map(doc => (
-                    <a
-                      href={`/docs/${doc.id}`}
-                      class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
-                    >
-                      {doc.data.title}
-                    </a>
-                  ))}
-                </nav>
-              </details>
-            )
-          })
+          sections.map(section => (
+            <div class="sidebar-section">
+              <div class="sidebar-section-title">{section.name}</div>
+              <nav class="sidebar-nav">
+                {section.docs.map(doc => (
+                  <a
+                    href={`/docs/${doc.id}`}
+                    class={`sidebar-link ${doc.id === currentSlug ? 'active' : ''}`}
+                  >
+                    {doc.data.title}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          ))
         }
       </aside>
 
@@ -199,48 +212,57 @@ const sections = sectionOrder
           }
         </div>
 
-        <nav class="docs-pager">
+        {
+          editUrl && (
+            <div class="docs-page-meta">
+              <a href={editUrl} target="_blank" rel="noopener" class="docs-meta-link">
+                <Icon name="pencil" size={14} />
+                Edit this page on GitHub
+              </a>
+              <a
+                href="https://github.com/Glyph-moe/website/issues/new"
+                target="_blank"
+                rel="noopener"
+                class="docs-meta-link"
+              >
+                <Icon name="circle-help" size={14} />
+                Report an issue
+              </a>
+            </div>
+          )
+        }
+
+        <nav class="docs-pager" aria-label="Pagination">
           {
             prevDoc && (
-              <a href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
-                <span class="pager-label">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M15 18l-6-6 6-6" />
-                  </svg>
-                  Previous
+              <a
+                rel="prev"
+                href={`/docs/${prevDoc.id}`}
+                class="pager-cell pager-prev"
+                aria-label={`Previous: ${prevDoc.data.title}`}
+              >
+                <span class="pager-chevron" aria-hidden="true">
+                  <Icon name="chevron-left" size={18} />
                 </span>
-                <span class="pager-title">{prevDoc.data.title}</span>
+                <span class="pager-label">Previous</span>
               </a>
             )
           }
           {
             nextDoc && (
-              <a href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
-                <span class="pager-label">
-                  Next
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
+              <a
+                rel="next"
+                href={`/docs/${nextDoc.id}`}
+                class="pager-cell pager-next"
+                aria-label={`Next: ${nextDoc.data.title}`}
+              >
+                <span class="pager-stack">
+                  <span class="pager-label">Next</span>
+                  <span class="pager-title">{nextDoc.data.title}</span>
                 </span>
-                <span class="pager-title">{nextDoc.data.title}</span>
+                <span class="pager-chevron" aria-hidden="true">
+                  <Icon name="chevron-right" size={18} />
+                </span>
               </a>
             )
           }
@@ -248,7 +270,22 @@ const sections = sectionOrder
       </main>
     </div>
 
-    <Footer />
+    <div class="docs-search-overlay" id="docs-search-overlay" hidden>
+      <div class="docs-search-modal" role="dialog" aria-modal="true" aria-label="Search docs">
+        <div class="docs-search-input-row">
+          <Icon name="search" size={16} />
+          <input
+            id="docs-search-input"
+            type="text"
+            placeholder="Search docs…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <kbd>Esc</kbd>
+        </div>
+        <ul class="docs-search-results" id="docs-search-results"></ul>
+      </div>
+    </div>
     <script is:inline>
       ;(function () {
         var btn = document.getElementById('docs-menu-btn-inline')
@@ -266,6 +303,236 @@ const sections = sectionOrder
         overlay.addEventListener('click', close)
         sidebar.querySelectorAll('a').forEach(function (a) {
           a.addEventListener('click', close)
+        })
+      })()
+    </script>
+    <script is:inline>
+      ;(function () {
+        // ---- ⌘K search (local, no backend) ----
+        var overlay = document.getElementById('docs-search-overlay')
+        var trigger = document.getElementById('docs-search-trigger')
+        var input = document.getElementById('docs-search-input')
+        var resultsEl = document.getElementById('docs-search-results')
+        var index = []
+        var raw = document.getElementById('search-index')
+        if (raw) {
+          try {
+            index = JSON.parse(raw.textContent || '[]')
+          } catch (e) {
+            index = []
+          }
+        }
+        var active = -1
+        var current = []
+
+        function open() {
+          if (!overlay) return
+          overlay.hidden = false
+          if (input)
+            setTimeout(function () {
+              input.focus()
+            }, 10)
+          if (input && !input.value) render('')
+        }
+        function close() {
+          if (!overlay) return
+          overlay.hidden = true
+          if (input) input.value = ''
+          active = -1
+        }
+        function score(item, q) {
+          if (!q) return 1
+          var t = item.title.toLowerCase()
+          var d = (item.description || '').toLowerCase()
+          var s = (item.section || '').toLowerCase()
+          var h = (item.headings || '').toLowerCase()
+          var qi = q.toLowerCase()
+          if (t === qi) return 100
+          if (t.indexOf(qi) === 0) return 80
+          if (t.indexOf(qi) > -1) return 60
+          if (h.indexOf(qi) > -1) return 55
+          if (d.indexOf(qi) > -1) return 40
+          if (s.indexOf(qi) > -1) return 30
+          // token all-present across the whole blob
+          var parts = qi.split(/\s+/).filter(Boolean)
+          if (parts.length > 1) {
+            var blob = t + ' ' + d + ' ' + s + ' ' + h
+            if (
+              parts.every(function (p) {
+                return blob.indexOf(p) > -1
+              })
+            )
+              return 20
+          }
+          return 0
+        }
+        function render(q) {
+          if (!resultsEl) return
+          var qs = q.trim()
+          current = index
+            .map(function (it) {
+              return { it: it, s: score(it, qs) }
+            })
+            .filter(function (x) {
+              return x.s > 0
+            })
+            .sort(function (a, b) {
+              return b.s - a.s
+            })
+            .slice(0, 12)
+            .map(function (x) {
+              return x.it
+            })
+          active = current.length ? 0 : -1
+          resultsEl.innerHTML = ''
+          if (!current.length) {
+            var li = document.createElement('li')
+            li.className = 'docs-search-empty'
+            li.textContent = qs ? 'No results for “' + qs + '”' : 'Type to search the docs…'
+            resultsEl.appendChild(li)
+            return
+          }
+          current.forEach(function (it, i) {
+            var li = document.createElement('li')
+            var a = document.createElement('a')
+            a.href = '/docs/' + it.slug
+            a.className = 'docs-search-item' + (i === active ? ' active' : '')
+            var t = document.createElement('span')
+            t.className = 'dsi-title'
+            t.textContent = it.title
+            var sec = document.createElement('span')
+            sec.className = 'dsi-section'
+            sec.textContent = it.section
+            a.appendChild(t)
+            a.appendChild(sec)
+            a.addEventListener('mouseenter', function () {
+              active = i
+              updateActive()
+            })
+            li.appendChild(a)
+            resultsEl.appendChild(li)
+          })
+        }
+        function updateActive() {
+          var items = resultsEl.querySelectorAll('.docs-search-item')
+          items.forEach(function (el, i) {
+            el.classList.toggle('active', i === active)
+          })
+          if (active >= 0 && items[active]) items[active].scrollIntoView({ block: 'nearest' })
+        }
+        function step(dir) {
+          if (!current.length) return
+          active = (active + dir + current.length) % current.length
+          updateActive()
+        }
+        function choose() {
+          if (active >= 0 && current[active]) window.location.href = '/docs/' + current[active].slug
+        }
+
+        if (trigger)
+          trigger.addEventListener('click', function (e) {
+            e.preventDefault()
+            open()
+          })
+        if (overlay)
+          overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) close()
+          })
+        if (input)
+          input.addEventListener('input', function () {
+            render(input.value)
+          })
+        if (input)
+          input.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault()
+              step(1)
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault()
+              step(-1)
+            } else if (e.key === 'Enter') {
+              e.preventDefault()
+              choose()
+            } else if (e.key === 'Escape') {
+              e.preventDefault()
+              close()
+            }
+          })
+        document.addEventListener('keydown', function (e) {
+          var mod = e.metaKey || e.ctrlKey
+          if (mod && e.key.toLowerCase() === 'k') {
+            e.preventDefault()
+            overlay && overlay.hidden ? open() : close()
+          }
+          if (e.key === 'Escape' && overlay && !overlay.hidden) close()
+        })
+
+        // ---- Copy buttons + language header on code blocks ----
+        document.querySelectorAll('.docs-article pre').forEach(function (pre) {
+          if (pre.closest('.docs-pre-wrap')) return
+          var wrap = document.createElement('div')
+          wrap.className = 'docs-pre-wrap'
+          pre.parentNode.insertBefore(wrap, pre)
+
+          // Detect language from the code/pre class (shiki adds language-*)
+          var code = pre.querySelector('code')
+          var lang = ''
+          var m = code && code.className.match(/language-([\w-]+)/)
+          if (m) lang = m[1]
+          if (!lang) {
+            var m2 = pre.className.match(/language-([\w-]+)/)
+            if (m2) lang = m2[1]
+          }
+          var pretty = {
+            typescript: 'TypeScript',
+            ts: 'TypeScript',
+            javascript: 'JavaScript',
+            js: 'JavaScript',
+            bash: 'bash',
+            shell: 'shell',
+            sh: 'shell',
+            text: 'text',
+            plaintext: 'text',
+            json: 'json',
+            rust: 'rust',
+            toml: 'toml',
+            yaml: 'yaml',
+            yml: 'yaml',
+            md: 'markdown',
+            markdown: 'markdown',
+            html: 'html',
+            css: 'css',
+            wit: 'wit',
+          }
+          var label = pretty[lang] || lang || 'code'
+
+          var header = document.createElement('div')
+          header.className = 'docs-pre-header'
+          var langEl = document.createElement('span')
+          langEl.className = 'docs-pre-lang'
+          langEl.textContent = label
+          header.appendChild(langEl)
+          wrap.appendChild(header)
+          wrap.appendChild(pre)
+
+          var btn = document.createElement('button')
+          btn.type = 'button'
+          btn.className = 'docs-copy-btn'
+          btn.setAttribute('aria-label', 'Copy code')
+          btn.textContent = 'Copy'
+          btn.addEventListener('click', function () {
+            var c = pre.querySelector('code')
+            var text = c ? c.textContent : pre.textContent
+            try {
+              navigator.clipboard.writeText(text).then(function () {
+                btn.textContent = 'Copied'
+                setTimeout(function () {
+                  btn.textContent = 'Copy'
+                }, 1400)
+              })
+            } catch (err) {}
+          })
+          header.appendChild(btn)
         })
       })()
     </script>
@@ -300,9 +567,6 @@ const sections = sectionOrder
   .sidebar-section {
     margin-top: 24px;
   }
-  .sidebar-section:first-of-type {
-    margin-top: 0;
-  }
 
   .sidebar-section-title {
     font-family: var(--font-body);
@@ -311,34 +575,45 @@ const sections = sectionOrder
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-secondary);
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding: 6px 4px;
     margin-bottom: 6px;
-    user-select: none;
-    transition: color 0.15s;
   }
-  .sidebar-section-title::-webkit-details-marker {
-    display: none;
+
+  .docs-search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      color 0.18s ease;
   }
-  .sidebar-section-title::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: rotate(-45deg);
-    transition: transform 0.2s;
-    opacity: 0.6;
-  }
-  .sidebar-section[open] > .sidebar-section-title::after {
-    transform: rotate(45deg);
-  }
-  .sidebar-section-title:hover {
+  .docs-search-trigger:hover {
+    border-color: var(--border-strong);
     color: var(--text);
+  }
+  .docs-search-trigger span {
+    flex: 1;
+    text-align: left;
+  }
+  .docs-search-trigger kbd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    line-height: 1;
   }
 
   .sidebar-nav {
@@ -464,42 +739,37 @@ const sections = sectionOrder
 
   /* Article typography */
   .docs-article h1 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 38px;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
     color: var(--text);
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     scroll-margin-top: 88px;
-    font-variation-settings:
-      'SOFT' 30,
-      'opsz' 144;
   }
 
   .docs-article h2 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 24px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 22px;
     letter-spacing: -0.015em;
     color: var(--text);
-    margin-top: 56px;
-    margin-bottom: 16px;
-    padding-top: 32px;
+    margin-top: 48px;
+    margin-bottom: 14px;
+    padding-top: 28px;
     border-top: 1px solid var(--border);
     scroll-margin-top: 88px;
-    font-variation-settings:
-      'SOFT' 30,
-      'opsz' 144;
   }
 
   .docs-article h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 18px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.01em;
     color: var(--text);
-    margin-top: 36px;
-    margin-bottom: 12px;
+    margin-top: 32px;
+    margin-bottom: 10px;
     scroll-margin-top: 88px;
   }
 
@@ -540,16 +810,18 @@ const sections = sectionOrder
   }
 
   .docs-article blockquote {
-    margin: 20px 0;
-    padding: 14px 20px;
+    margin: 22px 0;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
     border-left: 3px solid var(--accent);
-    background: var(--accent-dim);
-    border-radius: 0 8px 8px 0;
+    background: var(--bg-surface);
+    border-radius: 14px;
   }
   .docs-article blockquote p {
     color: var(--text);
     margin-bottom: 0;
-    font-size: 15px;
+    font-size: 14.5px;
+    line-height: 1.65;
   }
   .docs-article blockquote code {
     background: var(--bg-surface-hover);
@@ -626,80 +898,141 @@ const sections = sectionOrder
     font-size: 12.5px;
   }
 
-  /* Pager */
+  /* Pager: single rounded container, capped at 60% width so it doesn't span
+     the whole content column. Prev is compact (chevron + label, no title);
+     Next takes the remainder with the page title. */
   .docs-pager {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 64px;
-    padding-top: 36px;
-    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 4px;
+    max-width: 60%;
+    margin: 48px auto 0;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: color-mix(in oklab, var(--bg-surface) 55%, transparent);
   }
 
-  .pager-link {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 16px 20px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: transparent;
-    transition:
-      border-color 0.18s ease,
-      color 0.18s ease;
+  .pager-cell {
     min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
   }
-  .pager-link:hover {
-    border-color: var(--text-secondary);
+  .pager-cell:hover {
+    background: transparent;
   }
-  .pager-link:hover .pager-title {
+  .pager-next:hover {
+    background: var(--bg-surface);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+  [data-theme='light'] .pager-next:hover {
+    border-color: rgba(26, 22, 18, 0.14);
+  }
+  .pager-prev:hover .pager-chevron {
+    color: var(--accent);
+    opacity: 1;
+  }
+  .pager-prev:hover .pager-label {
     color: var(--accent);
   }
 
   .pager-prev {
-    grid-column: 1;
-    align-items: flex-start;
+    flex: 0 0 auto;
+    justify-content: flex-start;
   }
   .pager-next {
-    grid-column: 2;
-    align-items: flex-end;
+    flex: 1 1 auto;
+    justify-content: flex-end;
     text-align: right;
+    background: #ece5da;
+    border: 1px solid transparent;
+  }
+  [data-theme='dark'] .pager-next,
+  :root:not([data-theme='light']) .pager-next {
+    background: #121214;
+  }
+
+  .pager-chevron {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    opacity: 0.55;
+    display: inline-flex;
+    transition:
+      color 0.15s ease,
+      opacity 0.15s ease;
+  }
+  .pager-cell:hover .pager-chevron {
+    color: var(--accent);
+    opacity: 1;
+  }
+
+  .pager-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .pager-next .pager-stack {
+    align-items: flex-end;
   }
 
   .pager-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
     font-family: var(--font-body);
     font-size: 12px;
     font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--text-secondary);
-  }
-  .pager-label svg {
-    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .pager-title {
-    font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 500;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--text);
-    line-height: 1.4;
-    transition: color 0.18s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s ease;
   }
-
   @media (max-width: 640px) {
     .docs-pager {
-      grid-template-columns: 1fr;
-    }
-    .pager-prev,
-    .pager-next {
-      grid-column: 1;
+      max-width: 100%;
+      flex-direction: column;
     }
     .pager-next {
-      align-items: flex-start;
+      justify-content: flex-start;
       text-align: left;
     }
+    .pager-next .pager-stack {
+      align-items: flex-start;
+    }
+  }
+
+  .docs-page-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin-top: 48px;
+  }
+  .docs-meta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .docs-meta-link:hover {
+    color: var(--accent);
   }
 
   /* Mobile bar + drawer */
@@ -795,16 +1128,166 @@ const sections = sectionOrder
     }
   }
 
-  @media (max-width: 1100px) {
+  /* The right TOC only shows on large external displays. MacBook Pro screens
+     (and smaller) drop it and let the article take the freed width. */
+  @media (max-width: 1700px) {
     .docs-toc {
       display: none;
     }
+    .docs-content-row {
+      gap: 0;
+    }
     .docs-main.has-toc {
-      max-width: 780px;
+      max-width: 1080px;
     }
     .docs-main.has-toc .docs-article {
       max-width: none;
     }
+  }
+
+  /* Code blocks: Mintlify-style framed block with language header + copy */
+  .docs-pre-wrap {
+    position: relative;
+    margin-bottom: 22px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .docs-pre-wrap pre {
+    margin-bottom: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .docs-pre-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px 8px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+  }
+  [data-theme='dark'] .docs-pre-header,
+  :root:not([data-theme='light']) .docs-pre-header {
+    background: #0d1117;
+  }
+  .docs-pre-lang {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+  .docs-copy-btn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 9px;
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .docs-copy-btn:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  /* ⌘K search overlay */
+  .docs-search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(26, 22, 18, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 14vh;
+  }
+  .docs-search-overlay[hidden] {
+    display: none;
+  }
+  .docs-search-modal {
+    width: 92%;
+    max-width: 560px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+  }
+  .docs-search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .docs-search-input-row input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+  }
+  .docs-search-input-row kbd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+  .docs-search-results {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    max-height: 56vh;
+    overflow-y: auto;
+  }
+  .docs-search-empty {
+    padding: 18px 14px;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+  .docs-search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .docs-search-item:hover,
+  .docs-search-item.active {
+    background: var(--bg-surface-hover);
+  }
+  .dsi-title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .dsi-section {
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
   }
 </style>
 

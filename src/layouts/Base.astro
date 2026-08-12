@@ -5,11 +5,13 @@ import Grain from '../components/Grain.astro'
 interface Props {
   title?: string
   description?: string
+  defaultTheme?: 'dark' | 'light'
 }
 
 const {
   title = 'Glyph: Free iOS Web Novel Reader with Extensions',
   description = 'Glyph is a free iOS web novel reader with community-built extensions. Browse dozens of novel sources, read offline, and customize your reading experience. No accounts, no tracking.',
+  defaultTheme,
 } = Astro.props
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
@@ -23,7 +25,7 @@ const ogImage = new URL('/og-image.png', Astro.site)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15110d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
@@ -70,12 +72,14 @@ const ogImage = new URL('/og-image.png', Astro.site)
         },
       })}
     />
-    <script is:inline>
-      ;(function () {
+    <script
+      is:inline
+      set:html={`;(function () {
         var t = localStorage.getItem('theme')
         if (t) document.documentElement.setAttribute('data-theme', t)
-      })()
-    </script>
+        else if (${defaultTheme === 'dark' ? 'true' : 'false'}) document.documentElement.setAttribute('data-theme', 'dark')
+      })()`}
+    />
     <script>
       import '@sneas/telephone'
     </script>

@@ -20,13 +20,13 @@
     ]
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.3",
-    "@astrojs/netlify": "^7.0.6",
-    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/netlify": "^8.2.0",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/fraunces": "^5.2.9",
     "@fontsource-variable/geist": "^5.2.9",
     "@sneas/telephone": "^1.1.2",
-    "astro": "^6.1.5",
+    "astro": "^7.2.0",
     "lucide-static": "^1.20.0"
   },
   "devDependencies": {

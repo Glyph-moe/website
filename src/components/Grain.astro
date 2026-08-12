@@ -26,13 +26,13 @@
   }
 
   [data-theme='dark'] .grain {
-    /* On warm-dark, multiply gets lost — switch to screen and reduce */
-    opacity: 0.06;
+    /* On dark, multiply gets lost; switch to screen and reduce */
+    opacity: 0.05;
     mix-blend-mode: screen;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='light']) .grain {
-      opacity: 0.06;
+      opacity: 0.05;
       mix-blend-mode: screen;
     }
   }

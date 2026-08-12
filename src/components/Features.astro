@@ -1,124 +1,67 @@
 ---
-import ReaderPhone from './ReaderPhone.astro'
 import ExtensionsTile from './tiles/ExtensionsTile.astro'
 import OfflineTile from './tiles/OfflineTile.astro'
 import PrivacyTile from './tiles/PrivacyTile.astro'
+import SyncTile from './tiles/SyncTile.astro'
+import CustomizationTile from './tiles/CustomizationTile.astro'
 ---
 
 <section class="features" id="features">
   <div class="container">
-    <h2 class="visually-hidden">Features</h2>
-
-    <div class="bento">
-      <article class="tile tile-hero">
-        <div class="tile-hero-text">
-          <h3 class="title">Made for reading.</h3>
-          <p class="body">
-            Four themes, fine-grained typography, paginated or scroll. Tap
-            <span class="kbd">Aa</span> in the screen below to try it.
-          </p>
-        </div>
-        <div class="tile-hero-phone">
-          <ReaderPhone />
-        </div>
-      </article>
-
-      <div class="bento-side">
-        <ExtensionsTile />
-        <OfflineTile />
-        <PrivacyTile />
-      </div>
+    <h2 class="features-title">What Glyph does.</h2>
+    <div class="bento-row bento-row-3">
+      <ExtensionsTile />
+      <OfflineTile />
+      <PrivacyTile />
+    </div>
+    <div class="bento-row bento-row-2">
+      <SyncTile />
+      <CustomizationTile />
     </div>
   </div>
 </section>
 
 <style>
   .features {
-    padding: 80px 0 120px;
+    padding: 64px 0 96px;
     position: relative;
     z-index: 1;
   }
 
-  .bento {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: 16px;
-    align-items: stretch;
-  }
-
-  .tile-hero {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 28px 28px 24px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-surface);
-    min-height: 560px;
-  }
-
-  .tile-hero-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .tile-hero-phone {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .bento-side {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .title {
+  .features-title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 28px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    font-size: clamp(20px, 2.5vw, 24px);
     color: var(--text);
-    margin: 0 0 10px;
+    margin-bottom: 20px;
+    letter-spacing: -0.015em;
     font-variation-settings:
       'SOFT' 30,
       'opsz' 144;
   }
 
-  .body {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    margin: 0;
-    max-width: 38ch;
+  .bento-row {
+    display: grid;
+    gap: 14px;
+    align-items: stretch;
   }
-
-  .kbd {
-    display: inline-flex;
-    align-items: center;
-    padding: 1px 6px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    font-family: 'Iowan Old Style', Georgia, serif;
-    font-size: 13px;
-    color: var(--text);
-    vertical-align: -0.05em;
+  .bento-row + .bento-row {
+    margin-top: 14px;
+  }
+  .bento-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .bento-row-2 {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 880px) {
-    .bento {
+    .bento-row-3,
+    .bento-row-2 {
       grid-template-columns: 1fr;
     }
-    .tile-hero {
-      min-height: 0;
-    }
     .features {
-      padding: 48px 0 80px;
+      padding: 40px 0 64px;
     }
   }
 </style>

@@ -7,15 +7,37 @@ description: Answers to common questions about Glyph, extensions, offline readin
 
 # Frequently Asked Questions
 
+## About the project
+
+### When does Glyph ship?
+
+TestFlight in 2026–2027. Join the waitlist on the [home page](/#waitlist) to get the link the day it goes out. One email, no spam.
+
+### What if Apple pulls it from the App Store?
+
+TestFlight first, and sideloading is on the roadmap too. More importantly, the extension SDK and format are open. The ecosystem doesn't depend on any single app staying listed, so even a worst-case App Store outcome doesn't kill the sources.
+
+### What if you stop working on Glyph?
+
+The SDK is open and the source format is documented. Sources keep working as long as the novel sites do, and anyone can build or maintain extensions without us. The goal is something that survives its maker.
+
+### Is Glyph open source?
+
+The app itself isn't, but the extension SDK, the WIT contract, and these docs are fully open. That's the part that matters for keeping the ecosystem alive and forkable.
+
+### Can I import my library from another reader?
+
+Not yet. Glyph is a novel reader, not a scan reader, so a library from something like Aidoku or Paperback isn't a 1:1 match, different content entirely. What's planned is import by title: paste a list of novel names and Glyph will match them against your installed sources. No ETA, but it's on the roadmap.
+
+### Is Glyph free?
+
+Yes. Free, no ads, no subscriptions, no in-app purchases. Not "free with a pro tier", just free.
+
 ## General
 
 ### What is Glyph?
 
 Glyph is an iOS app for reading web novels. It doesn't host any content. Instead, it uses community-built extensions to connect to novel websites. Think of it as a browser specifically designed for reading.
-
-### Is Glyph free?
-
-Yes, Glyph is free with no ads, no subscriptions, and no in-app purchases.
 
 ### Where do I get extensions?
 

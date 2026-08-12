@@ -16,7 +16,10 @@ import Platform from '../../components/docs/Platform.astro'
 Glyph extensions can be written in Rust and compiled to WebAssembly Components. Rust extensions implement the same [WIT contract](/docs/wit-contract) as JavaScript extensions and run on the same iOS host, `cargo component` compiles to WASM, [`jco`](https://github.com/bytecodealliance/jco) transpiles to a JS shim, and the app loads the result in WKWebView's JavaScript engine (which has had WebAssembly support since 2017).
 
 <Callout type="warning" title="Status (current)">
-Rust support is **experimental**. JS extensions are the recommended path. The Rust pipeline works end-to-end, but the developer experience is bare metal compared to JS, there is no `glyph-rs` SDK crate yet, no test runner, and the example below is the only working reference. The intent is for the community to flesh out helper crates.
+  Rust support is **experimental**. JS extensions are the recommended path. The Rust pipeline works
+  end-to-end, but the developer experience is bare metal compared to JS, there is no `glyph-rs` SDK
+  crate yet, no test runner, and the example below is the only working reference. The intent is for
+  the community to flesh out helper crates.
 </Callout>
 
 ## Prerequisites

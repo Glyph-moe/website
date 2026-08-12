@@ -4,8 +4,8 @@
   "description": "A free iOS reader for web novels with community-built extensions.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0e0e12",
-  "theme_color": "#0e0e12",
+  "background_color": "#faf7f2",
+  "theme_color": "#faf7f2",
   "icons": [
     {
       "src": "/icon-192.png",

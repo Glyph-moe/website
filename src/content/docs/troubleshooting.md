@@ -80,7 +80,7 @@ The report contains app logs and recent network history. It contains **no person
 
 ## Where to get more help
 
-- **Discord** (fastest): [discord.gg/hvA2sMRwxC](https://discord.gg/hvA2sMRwxC)
+- **GitHub Discussions**: for general help and questions
 - **GitHub issues**: for reproducible bugs
 - **Email**: `contact@glyph.moe` for private matters
 

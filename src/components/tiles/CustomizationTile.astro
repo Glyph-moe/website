@@ -1,0 +1,118 @@
+---
+// Supporting bento tile. Paintbrush icon + theme swatch row mirroring the reader.
+import Icon from '../Icon.astro'
+
+const themes = [
+  { label: 'White', bg: '#FFFFFF', ink: '#121212' },
+  { label: 'Sepia', bg: '#F8EDDC', ink: '#47331F' },
+  { label: 'Gray', bg: '#E8E8ED', ink: '#2C2C2E' },
+  { label: 'Slate', bg: '#2C2C2E', ink: '#DADADF' },
+  { label: 'Dark', bg: '#1A1A1E', ink: '#D9D9E0' },
+  { label: 'Black', bg: '#000000', ink: '#A0A0A5' },
+]
+---
+
+<article class="tile">
+  <div class="tile-text">
+    <h3 class="title">
+      <span class="title-icon" aria-label="Customize">
+        <Icon name="paintbrush" size="0.95em" />
+      </span>
+      Make it yours.
+    </h3>
+    <p class="body">
+      Six built-in themes, custom fonts, per-novel settings. Every detail tunable. Try them live on
+      the reader above.
+    </p>
+  </div>
+  <div class="tile-viz tile-viz-custom">
+    <div class="swatch-row">
+      {
+        themes.map(t => (
+          <span class="swatch" style={`background:${t.bg};color:${t.ink};`} aria-label={t.label}>
+            Aa
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    height: 100%;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin: 0 0 8px;
+    font-variation-settings:
+      'SOFT' 30,
+      'opsz' 144;
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25em;
+  }
+
+  .title-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: -0.1em;
+    margin-right: 0.18em;
+    color: var(--accent);
+  }
+
+  .body {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .tile-viz-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    margin-top: auto;
+    min-height: 96px;
+  }
+
+  .swatch-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .swatch {
+    flex: 1;
+    aspect-ratio: 1;
+    max-width: 44px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+  }
+</style>

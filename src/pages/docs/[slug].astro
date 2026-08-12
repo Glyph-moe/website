@@ -1,6 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content'
 import DocsLayout from '../../layouts/DocsLayout.astro'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+
+const DOCS_DIR = join(process.cwd(), 'src/content/docs')
+const REPO_BASE = 'https://github.com/Glyph-moe/website/blob/master/src/content/docs'
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs')
@@ -12,6 +17,16 @@ export async function getStaticPaths() {
 
 const { doc } = Astro.props
 const { Content, headings } = await render(doc)
+
+// Resolve the real on-disk filename so the GitHub edit link points at the
+// exact file (md vs mdx).
+let editUrl: string | undefined
+for (const ext of ['md', 'mdx']) {
+  if (existsSync(join(DOCS_DIR, `${doc.id}.${ext}`))) {
+    editUrl = `${REPO_BASE}/${doc.id}.${ext}`
+    break
+  }
+}
 ---
 
 <DocsLayout
@@ -19,6 +34,7 @@ const { Content, headings } = await render(doc)
   currentSlug={doc.id}
   description={doc.data.description}
   headings={headings}
+  editUrl={editUrl}
 >
   <Content />
 </DocsLayout>

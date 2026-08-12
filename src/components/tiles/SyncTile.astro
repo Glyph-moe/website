@@ -1,36 +1,39 @@
 ---
-// Supporting bento tile. Lock icon + display copy. No widget.
+// Supporting bento tile. Cloud icon + spec sheet showing sync stays on-device/Apple.
 import Icon from '../Icon.astro'
 ---
 
 <article class="tile">
   <div class="tile-text">
     <h3 class="title">
-      <span class="title-icon" aria-label="Private">
-        <Icon name="lock" size="0.95em" />
+      <span class="title-icon" aria-label="Sync">
+        <Icon name="cloud" size="0.95em" />
       </span>
-      Private by default.
+      Syncs where you sync.
     </h3>
-    <p class="body">No accounts. No analytics. No tracking. Reading data stays on your device.</p>
+    <p class="body">
+      iCloud sync. Your library follows your phone, not our server; nothing leaves Apple, and
+      nothing gets lost when a project goes quiet.
+    </p>
   </div>
-  <div class="tile-viz tile-viz-privacy">
+  <div class="tile-viz tile-viz-sync">
     <ul class="spec-sheet">
       <li>
-        <span class="spec-label">Analytics</span>
+        <span class="spec-label">Library</span>
         <span class="spec-state">
-          <span class="spec-dot" aria-hidden="true"></span> off
+          <span class="spec-dot" aria-hidden="true"></span> iCloud
         </span>
       </li>
       <li>
-        <span class="spec-label">Accounts</span>
+        <span class="spec-label">Our server</span>
         <span class="spec-state">
-          <span class="spec-dot" aria-hidden="true"></span> off
+          <span class="spec-dot off" aria-hidden="true"></span> none
         </span>
       </li>
       <li>
-        <span class="spec-label">Tracking</span>
+        <span class="spec-label">Reading position</span>
         <span class="spec-state">
-          <span class="spec-dot" aria-hidden="true"></span> off
+          <span class="spec-dot" aria-hidden="true"></span> synced
         </span>
       </li>
     </ul>
@@ -82,7 +85,7 @@ import Icon from '../Icon.astro'
     margin: 0;
   }
 
-  .tile-viz-privacy {
+  .tile-viz-sync {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,5 +134,9 @@ import Icon from '../Icon.astro'
     border-radius: 50%;
     background: #2e7d57;
     display: inline-block;
+  }
+  .spec-dot.off {
+    background: var(--text-secondary);
+    opacity: 0.5;
   }
 </style>

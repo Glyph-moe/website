@@ -1,21 +1,24 @@
 ---
-// Final beat before footer. Big quiet sentence + single text link.
-import Icon from './Icon.astro'
+import WaitlistForm from './WaitlistForm.astro'
 ---
 
 <section class="closing">
   <div class="container">
-    <p class="closing-line">
-      Coming to TestFlight. Be there when it <span class="ship-icon" aria-label="ships">
-        <Icon name="ship" size="1em" />
-      </span>.
-    </p>
+    <p class="closing-line">The iOS reader<br />for people who actually read.</p>
+    <WaitlistForm variant="hero" />
+    <ul class="closing-badges" aria-label="Glyph principles">
+      <li>Free</li>
+      <li>No ads</li>
+      <li>No IAP</li>
+      <li>No tracking</li>
+      <li>Open SDK</li>
+    </ul>
   </div>
 </section>
 
 <style>
   .closing {
-    padding: 140px 0;
+    padding: 120px 0;
     text-align: center;
     position: relative;
     z-index: 1;
@@ -24,49 +27,48 @@ import Icon from './Icon.astro'
   .closing-line {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(28px, 4vw, 44px);
-    line-height: 1.2;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.15;
     letter-spacing: -0.02em;
     color: var(--text);
-    max-width: 18ch;
-    margin: 0 auto 28px;
+    max-width: 20ch;
+    margin: 0 auto 32px;
     font-variation-settings:
       'SOFT' 30,
       'opsz' 144;
   }
 
-  .ship-icon {
+  .closing :global(.waitlist) {
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    vertical-align: -0.15em;
-    color: var(--accent);
+  }
+  .closing :global(.waitlist-row) {
+    margin: 0 auto;
   }
 
-  .ship-icon svg {
-    width: 0.95em;
-    height: 0.95em;
+  .closing-badges {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 24px auto 0;
   }
-
-  .closing-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+  .closing-badges li {
     font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--accent);
-    border-bottom: 1px dotted var(--accent);
-    padding-bottom: 2px;
-    transition: border-bottom-style 0.18s ease;
-  }
-
-  .closing-link:hover {
-    border-bottom-style: solid;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
   }
 
   @media (max-width: 640px) {
     .closing {
-      padding: 80px 0;
+      padding: 72px 0;
     }
   }
 </style>
