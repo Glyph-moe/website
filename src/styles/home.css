@@ -1,0 +1,455 @@
+/* The homepage's own layers. The tokens, the base type and the shared
+   header and footer live in site.css. */
+
+/* ── hero ─────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  /* The band the painting occupies. The picture, the placeholder behind it and
+     the fade that dissolves it all read this one value, so none of them can
+     outlive another: the placeholder once ran past the picture's foot and
+     showed as a smeared strip under the hero. */
+  --hero-art-height: 760px;
+  min-height: 900px;
+  overflow: hidden;
+  /* The painting is the LCP element and lands at ~880 ms on a slow
+     connection. Until then the band shows a 32 px crop of the same artwork,
+     inlined in the document, so the page opens on its own colours instead of
+     on bare paper. It sits behind .hero-bg, which covers it on arrival, so it
+     is sized to that picture's box and stops there: below it is paper. */
+  background-image: var(--hero-lqip);
+  background-size: 100% var(--hero-art-height);
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+html[data-theme='night'] .hero {
+  background-image: var(--hero-lqip-night);
+}
+
+.hero .hero-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--hero-art-height);
+  object-fit: cover;
+}
+
+/* Day and night watercolours: the head script picks one before first paint. */
+.hero .hero-night {
+  display: none;
+}
+
+html[data-theme='night'] .hero .hero-day {
+  display: none;
+}
+
+html[data-theme='night'] .hero .hero-night {
+  display: block;
+}
+
+/* At night the waitlist pill turns to paper so it keeps its contrast against
+   the moonlit watercolour. */
+html[data-theme='night'] .hero .site-nav > .pill {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Half the band: the painting is clear above, paper from its foot down. */
+  top: calc(var(--hero-art-height) / 2);
+  height: calc(var(--hero-art-height) / 2);
+  background: linear-gradient(to bottom, rgba(247, 241, 230, 0), #f7f1e6 88%);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  max-width: 900px;
+  margin: 410px auto 0;
+  padding: 0 40px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: 100px;
+  line-height: 0.98;
+  letter-spacing: -2.5px;
+}
+
+.hero-copy .lede {
+  margin: 24px auto 0;
+  max-width: 540px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.waitlist-form {
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+  margin: 30px auto 0;
+}
+
+.hp {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.waitlist-form input[type='email'] {
+  flex: 1;
+  min-width: 0;
+  height: 54px;
+  padding: 0 22px;
+  background: var(--card);
+  border: 1px solid #c9bfae;
+  color: var(--ink);
+  font: 16px var(--font-body);
+  border-radius: 999px;
+}
+
+.waitlist-form input[type='email']::placeholder {
+  color: #6c6377;
+  opacity: 1;
+}
+
+.waitlist-form input[type='email']:focus-visible {
+  border-color: var(--ink);
+}
+
+.go {
+  height: 54px;
+  padding: 0 26px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.go:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+@media (hover: hover) {
+  .go:hover {
+    background: #3b3145;
+  }
+
+  html[data-theme='night'] .hero .site-nav > .pill:hover {
+    background: #e4dac7;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .go {
+    transition: transform 150ms ease-out;
+  }
+
+  .go:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+}
+
+.waitlist-note {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  min-height: 20px;
+  color: var(--muted);
+}
+
+.hero-end {
+  height: 60px;
+  background: var(--paper);
+}
+
+/* Deferred composition artwork. The deferrable copy carries its candidates in
+   data-srcset, so it renders nothing until scripts promote it; visitors without
+   scripts get the <noscript> copy instead and this one must not take up space. */
+html:not(.js) .deferred-picture {
+  display: none;
+}
+
+/* ── scroll zoom ──────────────────────────────────────────────────────── */
+.zoom {
+  position: relative;
+  height: 360vh;
+  background: var(--paper);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.phone {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: min(74vh, 720px);
+  aspect-ratio: 1350 / 2760;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 30px 40px rgba(40, 30, 20, 0.28));
+}
+
+.phone .phone-screen {
+  position: absolute;
+  left: 5.3333%;
+  top: 2.5%;
+  width: 89.3333%;
+  height: 95%;
+  object-fit: fill;
+  /* A screenshot of a whole phone screen, shown at 291 CSS px: every glyph in
+     it is drawn at ~72% of its design size, and text plus hairlines are what a
+     low encode loses first. So the markup ships it at the artwork's native
+     1206 px and quality 80 rather than the usual 124% sample at 55. */
+  /* The artwork's glass has a soft curve and the device outline is rounded
+     much more strongly: without this mask the screenshot's corners poke
+     out past the device. */
+  -webkit-mask-image: url('/screen-mask.svg');
+  mask-image: url('/screen-mask.svg');
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+}
+
+.phone .phone-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.cover .cover-art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: 100vh;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* Portrait viewports only ever see the middle of the artwork — the band is
+   at most 1006 px of the 3136 px original. The cropped file holds exactly
+   that band, so the browser can pick a much smaller candidate. The wide
+   artwork stays in the DOM for landscape screens. */
+.cover .cover-portrait-pic {
+  display: none;
+}
+
+@media (max-aspect-ratio: 0.95/1) {
+  .cover .cover-portrait-pic {
+    display: block;
+  }
+
+  .cover .cover-wide-pic {
+    display: none;
+  }
+}
+
+/* No-JS fallback: centre the artwork inside the full-bleed cover. */
+html:not(.js) .cover {
+  display: grid;
+  place-items: center;
+}
+
+/* Without JavaScript the zoom never runs and the artwork simply sits in the
+   cover, so it wants the whole picture, not the cropped band. */
+html:not(.js) .cover .cover-portrait-pic {
+  display: none;
+}
+
+html:not(.js) .cover .cover-wide-pic {
+  display: block;
+}
+
+html:not(.js) .cover .cover-art {
+  position: static;
+  height: auto;
+  width: auto;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.caption {
+  position: absolute;
+  inset-inline-start: clamp(16px, 4vw, 56px);
+  bottom: clamp(16px, 6vh, 56px);
+  max-width: 430px;
+  padding: 26px 30px;
+  background: var(--paper);
+  border-radius: 4px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.caption h2 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.caption p {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  will-change: opacity;
+}
+
+/* ── manifesto ────────────────────────────────────────────────────────── */
+.manifesto {
+  max-width: 980px;
+  margin: 170px auto 0;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.manifesto h2 {
+  margin: 0;
+  font-size: clamp(34px, 5.2vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+}
+
+.cols {
+  display: flex;
+  gap: 56px;
+  margin-top: 100px;
+}
+
+.cols > div {
+  flex: 1;
+  border-top: 1px solid var(--ink);
+  padding-top: 18px;
+}
+
+.cols p {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ── faq ──────────────────────────────────────────────────────────────── */
+.faq {
+  max-width: 880px;
+  margin: 180px auto 0;
+  padding: 0 24px;
+}
+
+.faq h2 {
+  margin: 0 0 36px;
+  font-size: 44px;
+  letter-spacing: -0.02em;
+}
+
+.q {
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+}
+
+.q:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.q h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.q p {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ── responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .hero-copy {
+    margin-top: 300px;
+    padding: 0 20px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(48px, 14vw, 72px);
+  }
+
+  .waitlist-form {
+    flex-direction: column;
+  }
+
+  .cols {
+    flex-direction: column;
+    gap: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoom {
+    height: 100vh;
+  }
+
+  .phone {
+    opacity: 0;
+  }
+
+  .caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  .scroll-hint {
+    opacity: 0;
+  }
+}

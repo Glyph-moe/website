@@ -1,0 +1,586 @@
+---
+import { Picture } from 'astro:assets'
+import DeferredPicture from '../components/DeferredPicture.astro'
+import { fontsCss, homeCss } from '../lib/inlineCss'
+import SiteNav from '../components/SiteNav.astro'
+import SiteFooter from '../components/SiteFooter.astro'
+
+import heroLqip from '../data/hero-lqip'
+import heroWatercolor from '../assets/hero/hero-watercolor.webp'
+import heroWatercolorNight from '../assets/hero/hero-watercolor-night.webp'
+import worldIllustration from '../assets/cover/world-illustration.webp'
+import worldPortrait from '../assets/cover/world-illustration-portrait.webp'
+import novelDetail from '../assets/screens/screen-novel-detail.webp'
+import phoneFrame from '../assets/phone/frame-glacier.webp'
+
+const title = 'Glyph — a free iOS reader for web novels'
+const description =
+  'Glyph is a free iOS reader for web novels. Bring your own sources, read offline, and keep everything in your own iCloud. No accounts, no ads, no tracking.'
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const ogImage = new URL('/og-home.jpg', Astro.site)
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f7f1e6" />
+    <meta name="color-scheme" content="light" />
+    <link rel="canonical" href={canonicalURL.href} />
+    {
+      /* The whole homepage stylesheet ships inside the HTML: it is 10 kB
+        uncompressed, and a second round trip for it delays the first paint
+        by ~230 ms on a slow connection. */
+    }
+    <style is:inline set:html={homeCss}></style>
+    {
+      /* Type waits. The two text faces are 53 kB of the 86 kB a slow
+        connection can move in the first second, and they were arriving while
+        the hero painting was still on the wire — the hero is the largest
+        element, so it wins the pipe and the faces follow once the page has
+        loaded. With scripts this rule set arrives on `load`; without them it
+        is already here. */
+    }
+    <noscript><style is:inline set:html={fontsCss}></style></noscript>
+    <script is:inline type="text/plain" id="font-faces" set:html={fontsCss} data-deferred-fonts />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" id="favicon-icon" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Watercolor of a tower on a lake at dawn, two travelers on a road"
+    />
+    <meta property="og:site_name" content="Glyph" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <script is:inline>
+      document.documentElement.classList.add('js')
+      // The hero and the favicon follow the visitor's local time: the day
+      // watercolour by day, the moonlit one after 19:00 and before 06:00.
+      const isNight = () => {
+        const hour = new Date().getHours()
+        return hour >= 19 || hour < 6
+      }
+      const applyTheme = () => {
+        const night = isNight()
+        document.documentElement.dataset.theme = night ? 'night' : 'day'
+        const icon = document.getElementById('favicon-icon')
+        if (icon) icon.setAttribute('href', night ? '/icon-night.svg' : '/icon.svg')
+        document.dispatchEvent(new CustomEvent('glyph:theme'))
+      }
+      applyTheme()
+      // The header has not been parsed yet, so run once more when it is.
+      document.addEventListener('DOMContentLoaded', applyTheme)
+      // A tab left open across 19:00 or 06:00 should follow the clock too:
+      // wake up at the next boundary and re-check.
+      {
+        const now = new Date()
+        const next = isNight()
+          ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0)
+          : new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 0, 0)
+        if (next <= now) next.setDate(next.getDate() + 1)
+        setTimeout(
+          () => {
+            applyTheme()
+            setInterval(applyTheme, 60000)
+          },
+          Math.min(next - now + 1000, 2147483647),
+        )
+      }
+    </script>
+  </head>
+
+  <body>
+    <header
+      class="hero"
+      style={`--hero-lqip: url("${heroLqip.day}"); --hero-lqip-night: url("${heroLqip.night}")`}
+    >
+      <Picture
+        src={heroWatercolor}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        quality={45}
+        widths={[640, 960, 1280, 1600, 2000]}
+        sizes="100vw"
+        alt="Watercolor of a misty valley at dawn with a distant tower and a winding road"
+        class="hero-bg hero-day"
+        loading="lazy"
+        decoding="sync"
+        fetchpriority="high"
+      />
+      <Picture
+        src={heroWatercolorNight}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        quality={45}
+        widths={[640, 960, 1280, 1600, 2000]}
+        sizes="100vw"
+        alt="Watercolor of the same valley at night, a full moon over the water and the tower lit on the hill"
+        class="hero-bg hero-night"
+        loading="lazy"
+        decoding="async"
+        fetchpriority="low"
+      />
+      <script is:inline>
+        // The hero stacks a day and a night watercolour and only one is
+        // visible. Both are lazy so the hidden one is never fetched, but that
+        // also means the visible one waits for layout before it is requested.
+        // This promotes it to eager at parse time, which is the difference
+        // between the hero being requested at ~200 ms and at ~240 ms. It is
+        // not the discovery mechanism — the placeholder below the pictures is
+        // what paints first — so it is safe if it never runs.
+        ;(function () {
+          var promote = function () {
+            var night = document.documentElement.dataset.theme === 'night'
+            var img = document.querySelector(night ? '.hero-night' : '.hero-day')
+            if (!img) return
+            img.setAttribute('loading', 'eager')
+            img.setAttribute('fetchpriority', 'high')
+          }
+          promote()
+          // The clock can cross 19:00 or 06:00 while the tab is open.
+          document.addEventListener('glyph:theme', promote)
+        })()
+      </script>
+      <div class="hero-fade" aria-hidden="true"></div>
+
+      <SiteNav waitlistHref="#waitlist-email" />
+
+      <div class="hero-copy">
+        <h1 class="serif">Read where the <i data-mark="marker">road</i> goes.</h1>
+        <p class="lede">
+          A free iOS reader for web novels. Bring your sources, read offline, keep it all in your
+          own iCloud.
+        </p>
+
+        <form
+          id="waitlist-form"
+          name="waitlist"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="waitlist-form"
+          aria-label="Join the Glyph launch waitlist"
+        >
+          <input type="hidden" name="form-name" value="waitlist" />
+          <p class="hp" aria-hidden="true">
+            <label>
+              Don't fill this out if you're human:
+              <input name="bot-field" tabindex="-1" autocomplete="off" />
+            </label>
+          </p>
+          <label class="sr-only" for="waitlist-email">Email address</label>
+          <input
+            id="waitlist-email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+          <button class="go mono" type="submit">Notify me →</button>
+        </form>
+        <p id="waitlist-note" class="waitlist-note" role="status"></p>
+      </div>
+    </header>
+
+    <div class="hero-end" aria-hidden="true"></div>
+
+    <section id="zoom" class="zoom" aria-label="The Glyph app">
+      <div class="stage" id="zoom-stage">
+        <div class="phone" id="phone">
+          {/* A screenshot: it asks for native 1206 + q80 (see .phone-screen). */}
+          <DeferredPicture
+            src={novelDetail}
+            widths={[480, 720, 960, 1206]}
+            sizes="(max-width: 700px) 290px, (min-resolution: 2dppx) 600px, 320px"
+            quality={80}
+            alt="The Glyph novel page for Shadow Monarch: Rise of the Forgotten King, showing the cover, the title, an Add to Library button and a chapter list"
+            class="phone-screen"
+          />
+          <DeferredPicture
+            src={phoneFrame}
+            widths={[440, 880, 1350]}
+            sizes="330px"
+            fallback="webp"
+            alt=""
+            class="phone-frame"
+          />
+        </div>
+
+        <div
+          class="cover"
+          id="cover"
+          role="img"
+          aria-label="Watercolor cover: a tower on a lake at dawn, two travelers on a road"
+        >
+          <DeferredPicture
+            src={worldPortrait}
+            widths={[448, 896, 1344]}
+            sizes="100vh"
+            quality={58}
+            alt=""
+            class="cover-art cover-portrait"
+            pictureClass="cover-portrait-pic"
+          />
+          {
+            /* The stage draws this one at 100vh tall and 2.33:1 wide, so at a
+              900 px viewport the element is 2100 CSS px across. The old list
+              stopped at 1600 px, which left a Retina screen with well under
+              half the pixels it needs. */
+          }
+          <DeferredPicture
+            src={worldIllustration}
+            widths={[800, 1200, 1600, 2000]}
+            sizes="(max-aspect-ratio: 1/1) 500vw, (min-aspect-ratio: 2/1) 100vw, 150vw"
+            quality={55}
+            alt=""
+            class="cover-art cover-wide"
+            pictureClass="cover-wide-pic"
+          />
+        </div>
+
+        <div class="caption" id="caption">
+          <h2 class="serif">
+            Every novel is a <i data-mark="circle" data-mark-play="manual">door.</i>
+          </h2>
+          <p>Glyph opens it, then gets out of your way.</p>
+        </div>
+
+        <span class="scroll-hint mono" id="scroll-hint">Scroll</span>
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <h2 class="serif">
+        No accounts. No analytics. No tracking. Your shelf lives in <i data-mark="underline">your</i
+        > iCloud, not on our server.
+      </h2>
+    </section>
+
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <span class="mono">Sources</span>
+          <p>
+            Paste a repository address, preview it, install only what you want. The SDK is open.
+          </p>
+        </div>
+        <div>
+          <span class="mono">Offline</span>
+          <p>Download one chapter or all of them, and read without a signal.</p>
+        </div>
+        <div>
+          <span class="mono">Your own files</span>
+          <p>Import EPUB and PDF from Files or the share sheet.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="faq">
+      <h2 class="serif">Questions</h2>
+      <div class="q">
+        <h3>What is Glyph?</h3>
+        <p>
+          An iOS app for reading web novels. It has no content of its own and reads sites through
+          community-built sources.
+        </p>
+      </div>
+      <div class="q">
+        <h3>Is it free?</h3>
+        <p>Yes. No ads, no subscription, no in-app purchases.</p>
+      </div>
+      <div class="q">
+        <h3>What if Apple pulls it, or you stop working on it?</h3>
+        <p>
+          The SDK and source format are open, so sources keep working and anyone can maintain them.
+        </p>
+      </div>
+      <div class="q">
+        <h3>When does it ship?</h3>
+        <p>
+          TestFlight in 2026 to 2027. Leave your email and you get one message the day it opens.
+        </p>
+      </div>
+    </section>
+
+    <SiteFooter />
+
+    <script>
+      // Hand-drawn annotation marks (marker, circle, underline, …). Client-side
+      // only, and only on this page.
+      import '../scripts/glyph-marks.js'
+
+      // ── waitlist ────────────────────────────────────────────────────────────
+      const form = document.getElementById('waitlist-form') as HTMLFormElement | null
+      const note = document.getElementById('waitlist-note')
+
+      if (form && note) {
+        form.addEventListener('submit', async event => {
+          event.preventDefault()
+          const button = form.querySelector('button[type="submit"]') as HTMLButtonElement | null
+          if (button) button.disabled = true
+          note.textContent = 'Sending…'
+          try {
+            const body = new URLSearchParams(new FormData(form) as any).toString()
+            const response = await fetch(window.location.pathname, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body,
+            })
+            if (!response.ok) throw new Error(String(response.status))
+            note.textContent = 'You are on the list. One email when TestFlight opens.'
+            form.reset()
+          } catch (error) {
+            note.textContent = 'That did not go through. Try again in a moment.'
+            if (button) button.disabled = false
+          }
+        })
+      }
+
+      // ── scroll zoom ─────────────────────────────────────────────────────────
+      // ── type ────────────────────────────────────────────────────────────────
+      // The @font-face rules sit in an inert <script type="text/plain">, so no
+      // font is requested until this runs. `load` is the earliest moment the
+      // hero painting is certainly done, which is what the faces were
+      // competing with: with them blocked the hero finished 266 ms sooner.
+      {
+        const applyFaces = () => {
+          const source = document.getElementById('font-faces')
+          if (!source) return
+          const style = document.createElement('style')
+          style.textContent = source.textContent ?? ''
+          document.head.appendChild(style)
+          source.remove()
+        }
+        if (document.readyState === 'complete') applyFaces()
+        else window.addEventListener('load', applyFaces, { once: true })
+      }
+
+      // ── composition artwork ─────────────────────────────────────────────────
+      // The zoom section's pictures carry their candidates in data-srcset, so
+      // nothing is fetched while the hero is still painting. They are promoted
+      // once the section is a screen away; the zoom animates opacity and
+      // transform only, so they are fully in place before they are visible.
+      {
+        const deferred = [...document.querySelectorAll('[data-deferred]')]
+        const promote = () => {
+          for (const picture of deferred) {
+            for (const source of picture.querySelectorAll('source[data-srcset]')) {
+              source.setAttribute('srcset', source.getAttribute('data-srcset') ?? '')
+              source.removeAttribute('data-srcset')
+            }
+            const img = picture.querySelector('img[data-srcset]')
+            if (img) {
+              img.setAttribute('srcset', img.getAttribute('data-srcset') ?? '')
+              img.removeAttribute('data-srcset')
+            }
+          }
+        }
+        const zoom = document.getElementById('zoom')
+        const watch = () => {
+          const el = zoom
+          if (!el) {
+            promote()
+            return
+          }
+          const observer = new IntersectionObserver(
+            entries => {
+              if (!entries.some(entry => entry.isIntersecting)) return
+              observer.disconnect()
+              promote()
+            },
+            { rootMargin: '0px' },
+          )
+          observer.observe(el)
+        }
+        // Start watching once the page has loaded. The section sits just below
+        // the fold, so a margin wide enough to avoid a blank band is also wide
+        // enough to fire during the hero's own transfer — which is the thing
+        // being avoided. After `load` there is nothing left to compete with,
+        // and a reader takes far longer than that to scroll.
+        if (!zoom || !('IntersectionObserver' in window)) promote()
+        else if (document.readyState === 'complete') watch()
+        else window.addEventListener('load', watch, { once: true })
+      }
+
+      const section = document.getElementById('zoom')
+      const stage = document.getElementById('zoom-stage')
+      const phone = document.getElementById('phone')
+      const cover = document.getElementById('cover')
+      const portraitArt = cover?.querySelector<HTMLElement>('.cover-portrait')
+      const wideArt = cover?.querySelector<HTMLElement>('.cover-wide')
+      // Portrait viewports use the cropped artwork, landscape the full one.
+      // Both are in the DOM; only one is displayed.
+      const portrait = window.matchMedia('(max-aspect-ratio: 0.95/1)')
+      let art = portrait.matches ? portraitArt : wideArt
+      const caption = document.getElementById('caption')
+      const hint = document.getElementById('scroll-hint')
+
+      if (section && stage && phone && cover && art && caption && hint) {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+        const ART_ASPECT = 3136 / 1344 // the artwork's own proportions, width / height
+        // Apple iPhone 18 Pro frame artwork: 1350 × 2760 canvas, the display
+        // sits at (72, 69) and measures 1206 × 2622 — exactly the screenshot.
+        const FRAME_ASPECT = 1350 / 2760
+        const SCREEN = {
+          left: 72 / 1350,
+          top: 69 / 2760,
+          width: 1206 / 1350,
+          height: 2622 / 2760,
+        }
+
+        let frame = 0
+        let captionDrawn = false
+        let geometry = {
+          top: 0,
+          height: 0,
+          width: 0,
+          heightPx: 0,
+          artHeight: 0,
+          artWidth: 0,
+          slot: { x: 0, y: 0, w: 0, h: 0 },
+        }
+
+        const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value))
+
+        function measure() {
+          const rect = section!.getBoundingClientRect()
+          const vw = stage!.clientWidth
+          const vh = stage!.clientHeight
+
+          // The cropped artwork is a band of the original, so it has its own
+          // proportions; the cover fit still works from the original's.
+          art = portrait.matches ? portraitArt : wideArt
+          const aspect = Number(art!.getAttribute('width')) / Number(art!.getAttribute('height'))
+
+          // Phone: the Apple frame artwork, height min(74vh, 720px), centred.
+          const phoneH = Math.min(vh * 0.74, 720)
+          const phoneW = phoneH * FRAME_ASPECT
+          const left = (vw - phoneW) / 2
+          const top = (vh - phoneH) / 2
+
+          // The display inside the frame.
+          const screenX = left + SCREEN.left * phoneW
+          const screenY = top + SCREEN.top * phoneH
+          const screenW = SCREEN.width * phoneW
+          const screenH = SCREEN.height * phoneH
+
+          // Cover slot inside the phone's display.
+          const slot = {
+            x: screenX + 0.3266 * screenW,
+            y: screenY + 0.1557 * screenH,
+            w: 0.3468 * screenW,
+            h: 0.2131 * screenH,
+          }
+
+          // The artwork is drawn so it covers the stage at full bleed.
+          const artHeight = Math.max(vh, vw / aspect)
+          const artWidth = artHeight * aspect
+
+          geometry = {
+            top: rect.top + window.scrollY,
+            height: rect.height,
+            width: vw,
+            heightPx: vh,
+            artHeight,
+            artWidth,
+            slot,
+          }
+
+          art!.style.height = `${artHeight}px`
+        }
+
+        function render() {
+          frame = 0
+          const g = geometry
+          const reduced = reduceMotion.matches
+          const travel = Math.max(1, g.height - g.heightPx)
+          const p = reduced ? 1 : clamp((window.scrollY - g.top) / travel)
+          const e = p * p * (3 - 2 * p)
+
+          // Phone fades out while it grows.
+          phone!.style.opacity = String(clamp(1 - e * 2.4))
+          phone!.style.transform = `translate(-50%, -50%) scale(${1 + 0.25 * e})`
+
+          // Cover box travels from the slot in the phone to the full stage.
+          const x = g.slot.x * (1 - e)
+          const y = g.slot.y * (1 - e)
+          const w = g.slot.w + (g.width - g.slot.w) * e
+          const h = g.slot.h + (g.heightPx - g.slot.h) * e
+          cover!.style.left = `${x}px`
+          cover!.style.top = `${y}px`
+          cover!.style.width = `${w}px`
+          cover!.style.height = `${h}px`
+          cover!.style.borderRadius = `${10 * (1 - e)}px`
+          cover!.style.boxShadow = `0 ${5 * (1 - e)}px ${30 * (1 - e)}px rgba(40,30,20,${0.25 * (1 - e)})`
+
+          // The artwork keeps the cover crop: it is scaled, never re-rastered.
+          const drawn = Math.max(h, w / ART_ASPECT)
+          const scale = drawn / g.artHeight
+          art!.style.transform = `translate(${w / 2 - (g.artWidth * scale) / 2}px, ${
+            h / 2 - drawn / 2
+          }px) scale(${scale})`
+
+          // Caption arrives at the end of the run.
+          const cap = clamp((e - 0.82) * 6)
+          caption!.style.opacity = String(cap)
+          caption!.style.transform = `translateY(${18 * (1 - cap)}px)`
+
+          // The circle around "door." is drawn in step with the caption, not
+          // when the section scrolls past.
+          if (cap > 0 && !captionDrawn) {
+            const door = caption!.querySelector('[data-mark]')
+            // Only mark it drawn once the mark script has built the stroke,
+            // so a deep link that starts at the bottom still gets the circle.
+            if (door && (door as Element & { _play?: unknown })._play) {
+              captionDrawn = true
+              const marks = (window as Window & { GlyphMarks?: { play(el: Element): void } })
+                .GlyphMarks
+              marks?.play(door)
+            }
+          }
+
+          hint!.style.opacity = String(clamp(1 - p * 8))
+        }
+
+        function schedule() {
+          if (!frame) frame = requestAnimationFrame(render)
+        }
+
+        measure()
+        render()
+
+        window.addEventListener('scroll', schedule, { passive: true })
+        window.addEventListener('resize', () => {
+          measure()
+          schedule()
+        })
+        portrait.addEventListener('change', () => {
+          measure()
+          schedule()
+        })
+        reduceMotion.addEventListener('change', () => {
+          measure()
+          schedule()
+        })
+      }
+    </script>
+  </body>
+</html>

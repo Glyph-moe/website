@@ -1,0 +1,45 @@
+/* Glyph marks: reading-universe annotations. Add data-mark="marker|circle|underline|squiggle|brackets|star" to an <i>. */
+[data-mark] {
+  --m-ink: #2a2230;
+  --m-apricot: #d9824a;
+  --m-marker: #f2a46b;
+  --m-violet: #7c62ad;
+  /* The underline sits straight on the paper, so it uses a deeper terracotta:
+     #d9824a is only 2.58:1 there, this is 3.57:1. */
+  --m-underline: #c2662a;
+  position: relative;
+  display: inline-block;
+  /* A marked word keeps the upright face of the line it sits in; the
+     annotation is the drawing, not a change of typeface. */
+  font-style: normal;
+  isolation: isolate;
+}
+.gm {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.gm path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+.gm-marker {
+  z-index: -1;
+  mix-blend-mode: multiply;
+}
+.gm-marker path {
+  stroke-linecap: butt;
+}
+/* room for marks that sit beside neighbouring words */
+[data-mark='brackets'] {
+  margin-inline: 0.26em;
+}
+[data-mark='circle'] {
+  margin-inline: 0.1em;
+}
+[data-mark='star'] {
+  margin-right: 0.2em;
+}

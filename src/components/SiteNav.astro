@@ -1,0 +1,111 @@
+---
+/**
+ * The site header: the brand tile, the link group and the waitlist call to
+ * action. One implementation, shared by the homepage and the inner pages.
+ *
+ * The link group carries a highlight that slides from one link to the next
+ * when the pointer moves over it, and follows the keyboard focus as well.
+ */
+interface Props {
+  /** Where the waitlist pill goes. The homepage points at its own form. */
+  waitlistHref?: string
+  /** Extra class on the pill, used by the homepage to mark the active page. */
+  class?: string
+}
+
+const { waitlistHref = '/#waitlist-email', class: className = '' } = Astro.props
+const pathname = Astro.url.pathname
+/* Four entries, and no fifth: the SDK is not a section of the site the way
+   these are. It is reached from the documentation, which lists it, and from
+   the footer. */
+const links = [
+  { href: '/blog', label: 'Blog', current: pathname.startsWith('/blog') },
+  { href: '/docs', label: 'Docs', current: pathname.startsWith('/docs') },
+  { href: '/support', label: 'Support', current: pathname.startsWith('/support') },
+  { href: '/privacy', label: 'Privacy', current: pathname.startsWith('/privacy') },
+]
+---
+
+<nav class="site-nav" aria-label="Primary">
+  <a class="brand" href="/">
+    <img
+      id="brand-mark"
+      class="brand-mark"
+      src="/icon.svg"
+      alt="Glyph"
+      width="64"
+      height="64"
+      decoding="async"
+    />
+  </a>
+  <ul class="nav-links">
+    <li class="nav-hint" aria-hidden="true"></li>
+    {
+      links.map(link => (
+        <li>
+          <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+            {link.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <a class:list={['pill', 'mono', className]} href={waitlistHref}>Join waitlist</a>
+  <details class="mobile-nav">
+    <summary>Menu</summary>
+    <nav aria-label="Mobile">
+      {
+        links.map(link => (
+          <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </details>
+</nav>
+
+<script>
+  // The brand tile is the mark the browser tab shows, so it follows the clock
+  // with the rest of the theme.
+  const mark = document.getElementById('brand-mark')
+  if (mark) {
+    const paint = () => {
+      const night = document.documentElement.dataset.theme === 'night'
+      mark.setAttribute('src', night ? '/icon-night.svg' : '/icon.svg')
+    }
+    paint()
+    document.addEventListener('glyph:theme', paint)
+  }
+
+  // The highlight that slides between the links.
+  const group = document.querySelector('.nav-links')
+  const navHint = document.querySelector<HTMLElement>('.nav-hint')
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+  if (group && navHint) {
+    const show = (link: HTMLElement) => {
+      const a = link.getBoundingClientRect()
+      const b = group.getBoundingClientRect()
+      navHint.style.top = `${a.top - b.top}px`
+      navHint.style.height = `${a.height}px`
+      navHint.style.width = `${a.width}px`
+      navHint.style.transform = `translateX(${a.left - b.left}px)`
+      navHint.classList.add('is-on')
+    }
+
+    const hide = () => {
+      navHint.classList.remove('is-on')
+    }
+
+    group.querySelectorAll('a').forEach(link => {
+      link.addEventListener('pointerenter', () => {
+        if (finePointer.matches) show(link)
+      })
+      link.addEventListener('focus', () => show(link))
+      link.addEventListener('blur', hide)
+    })
+
+    group.addEventListener('pointerleave', hide)
+  }
+</script>

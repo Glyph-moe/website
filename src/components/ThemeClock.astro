@@ -1,0 +1,39 @@
+---
+/**
+ * The clock that decides whether the site is showing its day or its night
+ * face. The pages themselves are always the same warm paper — this only
+ * picks the mark in the browser tab and the tile in the header.
+ */
+---
+
+<script is:inline>
+  ;(function () {
+    var isNight = function () {
+      var hour = new Date().getHours()
+      return hour >= 19 || hour < 6
+    }
+    var apply = function () {
+      var night = isNight()
+      document.documentElement.setAttribute('data-theme', night ? 'night' : 'day')
+      var icon = document.getElementById('favicon-icon')
+      if (icon) icon.setAttribute('href', night ? '/icon-night.svg' : '/icon.svg')
+      document.dispatchEvent(new CustomEvent('glyph:theme'))
+    }
+    apply()
+    // The header is not parsed yet, so run once more when it is.
+    document.addEventListener('DOMContentLoaded', apply)
+    // A tab left open across 19:00 or 06:00 should follow the clock too.
+    var now = new Date()
+    var next = isNight()
+      ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0)
+      : new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 0, 0)
+    if (next <= now) next.setDate(next.getDate() + 1)
+    setTimeout(
+      function () {
+        apply()
+        setInterval(apply, 60000)
+      },
+      Math.min(next - now + 1000, 2147483647),
+    )
+  })()
+</script>

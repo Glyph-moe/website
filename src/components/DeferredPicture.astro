@@ -1,0 +1,82 @@
+---
+/**
+ * A responsive picture that does not fetch anything until it is approached.
+ *
+ * The zoom section's artwork sits ~900 px into a 360 vh section, which is
+ * inside Chrome's lazy-loading margin, so `loading="lazy"` never defers it: all
+ * three images (128 kB on a phone) are requested while the hero is still
+ * painting. Holding them back costs the LCP nothing and the reader nothing,
+ * because they are only visible after a deliberate scroll.
+ *
+ * The markup ships twice on purpose. The live `<picture>` carries its
+ * candidates in `data-srcset` so nothing fetches, and the no-script copy holds
+ * the ordinary markup for readers without JavaScript. `html.js` (set by the
+ * head script) hides the deferrable copy, so exactly one of the two is live.
+ *
+ * The `<img>` keeps its real `width`/`height` so the box has the right shape
+ * from the first frame — the zoom stage measures geometry before the artwork
+ * has arrived.
+ */
+import { getImage } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+  src: ImageMetadata
+  widths: number[]
+  sizes: string
+  /** The format the `<img>` itself falls back to. `webp` where the source has alpha. */
+  fallback?: 'jpg' | 'webp'
+  quality?: number
+  alt?: string
+  class?: string
+  pictureClass?: string
+}
+
+const {
+  src,
+  widths,
+  sizes,
+  fallback = 'jpg',
+  quality,
+  alt = '',
+  class: imageClass,
+  pictureClass,
+} = Astro.props
+
+async function srcset(format: 'avif' | 'webp' | 'jpg') {
+  const images = await Promise.all(widths.map(width => getImage({ src, format, width, quality })))
+  return images.map((image, index) => `${image.src} ${widths[index]}w`).join(', ')
+}
+
+const avif = await srcset('avif')
+const alternative = fallback === 'webp' ? null : await srcset('webp')
+const fallbackSet = await srcset(fallback)
+
+// A 1×1 transparent GIF: a valid `src` that fetches nothing and keeps the
+// element renderable. The real candidates arrive when the observer promotes it.
+const PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+
+const shared = {
+  sizes,
+  width: src.width,
+  height: src.height,
+  alt,
+  loading: 'lazy' as const,
+  decoding: 'async' as const,
+  fetchpriority: 'low' as const,
+}
+---
+
+<picture class:list={['deferred-picture', pictureClass]} data-deferred>
+  <source type="image/avif" data-srcset={avif} sizes={sizes} />
+  {alternative && <source type="image/webp" data-srcset={alternative} sizes={sizes} />}
+  <img {...shared} class={imageClass} src={PLACEHOLDER} data-srcset={fallbackSet} />
+</picture>
+
+<noscript>
+  <picture class={pictureClass}>
+    <source type="image/avif" srcset={avif} sizes={sizes} />
+    {alternative && <source type="image/webp" srcset={alternative} sizes={sizes} />}
+    <img {...shared} class={imageClass} srcset={fallbackSet} />
+  </picture>
+</noscript>

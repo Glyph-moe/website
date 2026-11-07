@@ -1,0 +1,59 @@
+---
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import heroWatercolor from '../assets/hero/hero-watercolor.webp'
+
+interface Props {
+  title: string
+  lede: string
+  art?: ImageMetadata
+  artAlt?: string
+  artPosition?: string
+}
+
+const {
+  title,
+  lede,
+  art = heroWatercolor,
+  artAlt = 'Glyph’s watercolor valley: a winding road through mist toward a distant tower',
+  artPosition = '50% 46%',
+} = Astro.props
+const hasActions = Astro.slots.has('default')
+---
+
+<header class="editorial-hero">
+  {
+    /* The homepage's hero, cut down to a band: the painting bleeds to the
+      viewport edges and fades into the paper, so the title and the lede read
+      on paper instead of sitting beside a framed card. */
+  }
+  <div class="editorial-banner">
+    <Picture
+      src={art}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      quality={45}
+      widths={[640, 960, 1280, 1600, 2000]}
+      sizes="100vw"
+      alt={artAlt}
+      class="editorial-art"
+      pictureAttributes={{ class: 'editorial-art-picture' }}
+      style={`object-position: ${artPosition}`}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+    <div class="editorial-banner-fade" aria-hidden="true"></div>
+  </div>
+  <div class="editorial-copy">
+    <h1>{title}</h1>
+    <p class="editorial-lede">{lede}</p>
+    {
+      hasActions && (
+        <div class="editorial-actions">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</header>
