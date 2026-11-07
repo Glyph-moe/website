@@ -1,0 +1,119 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Astro fingerprints everything in /_astro/ (images, fonts, CSS, JS), so those
+# files can be cached forever. Without this Netlify revalidates every asset on
+# every visit, which turns a warm cache into a slow page.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Documents are the opposite trade: cheap to regenerate, expensive to
+# revalidate, because a returning reader waits a full round trip before
+# anything can paint. Serving them from cache for a minute and refreshing in
+# the background makes navigation feel local. 60 seconds bounds the window in
+# which someone can hold HTML written before a deploy — that is why it is 60
+# and not 3600: a stale document can reference fingerprinted assets from the
+# previous deploy.
+#
+# The paths are listed explicitly rather than with a "/*" catch-all. Netlify
+# applies every rule that matches, and whether a catch-all or "/_astro/*" wins
+# depends on rule order; the safe failure here is a page that revalidates, not
+# an asset that stops being immutable. A route missing from this list gets
+# Netlify's default, which is correct, just slower.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/docs/*"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+# Notes is a document surface too: a post that goes stale long enough to be
+# noticed is worse than one that is a minute old.
+[[headers]]
+  for = "/blog/*"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/privacy/"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/support/"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/template/*"
+  [headers.values]
+    Cache-Control = "public, max-age=60, s-maxage=604800, stale-while-revalidate=86400"
+
+# Demo clips never change without changing their name.
+[[headers]]
+  for = "/clips/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Stable-named icons. Their names survive deploys, so a day is long enough to
+# matter and short enough that a redesigned mark propagates.
+[[headers]]
+  for = "/icon.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/icon-night.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/icon-192.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/icon-512.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/favicon.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/favicon-night-64.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/favicon-64.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/screen-mask.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

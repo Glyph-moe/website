@@ -1,0 +1,60 @@
+{
+  "name": "glyph-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing page, documentation and mock test site for Glyph, a source-first iOS novel reader.",
+  "homepage": "https://glyph.moe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Glyph-moe/website.git"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "node scripts/preview.mjs",
+    "perf": "node scripts/check-perf.mjs",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "astro": "astro",
+    "fonts": "node scripts/subset-fonts.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "lqip": "node scripts/make-lqip.mjs",
+    "posters": "node scripts/make-posters.mjs",
+    "mask": "node scripts/make-screen-mask.mjs",
+    "covers": "node scripts/make-cover-crops.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{astro,ts,js,mjs,css,md,mdx,json}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/netlify": "^8.2.0",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.2.0",
+    "lucide-static": "^1.20.0",
+    "satori": "^0.63.2",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.2.9",
+    "@fontsource/dm-mono": "^5.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3"
+  }
+}

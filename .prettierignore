@@ -1,0 +1,10 @@
+dist
+node_modules
+.astro
+.netlify
+
+# generated, or binary by nature — Prettier has nothing to say about these
+package-lock.json
+public
+design
+.husky
