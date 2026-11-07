@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import PageHero from '../components/PageHero.astro'
+import DocsSearch from '../components/docs/DocsSearch.astro'
+import { getSearchIndex } from '../lib/searchIndex.ts'
+import heroDocs from '../assets/hero/hero-docs.webp'
+
+const title = 'Documentation — Glyph'
+const description =
+  'Learn to use Glyph, read offline, sync privately, and build web-novel sources with the open SDK. Search all reader and developer guides.'
+const docs = (await getCollection('docs')).sort((a, b) => a.data.order - b.data.order)
+const sectionOrder = ['Using Glyph', 'Building Extensions', 'SDK Reference'] as const
+const sectionCopy: Record<string, string> = {
+  'Using Glyph': 'Set up your shelf, read offline, sync privately, and make the reader yours.',
+  'Building Extensions': 'Create, test, and publish a community source in TypeScript or Rust.',
+  'SDK Reference': 'Types, requests, capabilities, and debugging tools for extension authors.',
+}
+const sections = sectionOrder
+  .map(name => ({ name, docs: docs.filter(doc => doc.data.section === name) }))
+  .filter(section => section.docs.length > 0)
+const searchIndex = await getSearchIndex()
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  url: canonicalURL.href,
+  isPartOf: { '@type': 'WebSite', name: 'Glyph', url: 'https://glyph.moe' },
+}
+---
+
+<Base title={title} description={description} schema={schema} overlayNav>
+  <main id="main-content" class="docs-index">
+    <PageHero
+      title="Documentation"
+      lede="Everything for reading with Glyph and building a source, from your first chapter to the SDK."
+      art={heroDocs}
+      artAlt="Illustration for the Glyph documentation page"
+    >
+      <DocsSearch index={searchIndex} />
+      <a href="/docs/getting-started">Start reading</a>
+      <a href="/docs/sdk-overview">Build a source</a>
+    </PageHero>
+
+    {
+      sections.map(section => (
+        <section
+          class="guide-section"
+          aria-labelledby={`guides-${sectionOrder.indexOf(section.name)}`}
+        >
+          <div class="guide-section-head">
+            <h2 id={`guides-${sectionOrder.indexOf(section.name)}`}>{section.name}</h2>
+            <p>{sectionCopy[section.name]}</p>
+          </div>
+          <div class="guide-list">
+            {section.docs.map(doc => (
+              <a class="guide-link" href={`/docs/${doc.id}`}>
+                <span class="guide-title">{doc.data.title}</span>
+                <span class="guide-description">{doc.data.description}</span>
+                <span class="guide-arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="guide-help" aria-labelledby="guides-help">
+      <h2 id="guides-help">Couldn’t find it?</h2>
+      <p>Ask a question, report a problem, or tell us which guide is missing.</p>
+      <a class="help-link" href="/support">Get support</a>
+    </section>
+  </main>
+</Base>

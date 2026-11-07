@@ -1,0 +1,58 @@
+---
+import type { SearchEntry } from '../../lib/searchIndex.ts'
+import Icon from '../Icon.astro'
+
+interface Props {
+  index: SearchEntry[]
+  triggerLabel?: string
+}
+
+const { index, triggerLabel = 'Search the guides' } = Astro.props
+const searchJson = JSON.stringify(index).replace(/</g, '\\u003c')
+---
+
+<button
+  type="button"
+  class="docs-search-open"
+  data-docs-search-open
+  aria-haspopup="dialog"
+  aria-controls="docs-search-dialog"
+  aria-keyshortcuts="Meta+K Control+K"
+>
+  <Icon name="search" size={18} />
+  <span>{triggerLabel}</span>
+  <span class="search-shortcut" aria-hidden="true">⌘K</span>
+</button>
+
+<dialog
+  class="docs-search"
+  id="docs-search-dialog"
+  data-docs-search-dialog
+  aria-label="Search Glyph documentation"
+>
+  <div class="docs-search-panel">
+    <div class="docs-search-field">
+      <Icon name="search" size={20} />
+      <label class="sr-only" for="docs-search-input">Search documentation</label>
+      <input
+        id="docs-search-input"
+        data-docs-search-input
+        type="search"
+        placeholder="Try “offline”, “iCloud”, or “HTTP”"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      />
+      <form method="dialog">
+        <button class="docs-search-close" value="close" aria-label="Close search">Close</button>
+      </form>
+    </div>
+    <p class="docs-search-status" data-docs-search-status role="status" aria-live="polite"></p>
+    <ul class="docs-search-results" data-docs-search-results></ul>
+  </div>
+</dialog>
+<script type="application/json" data-docs-search-index set:html={searchJson} />
+
+<script>
+  import '../../scripts/docs-search.ts'
+</script>

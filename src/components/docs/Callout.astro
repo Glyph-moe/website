@@ -1,0 +1,128 @@
+---
+import Icon from '../Icon.astro'
+
+type CalloutType = 'note' | 'tip' | 'warning' | 'info'
+
+interface Props {
+  type?: CalloutType
+  title?: string
+}
+
+const { type = 'note', title } = Astro.props
+
+const defaultTitle: Record<CalloutType, string> = {
+  note: 'Note',
+  tip: 'Tip',
+  warning: 'Warning',
+  info: 'Info',
+}
+
+const iconFor: Record<CalloutType, string> = {
+  note: 'info',
+  tip: 'lightbulb',
+  warning: 'triangle-alert',
+  info: 'circle-alert',
+}
+
+const label = title ?? defaultTitle[type]
+const icon = iconFor[type]
+// Show a visible title only when the author passed one explicitly. Default
+// callouts rely on the icon + color to convey type.
+const showTitle = title !== undefined
+---
+
+<aside class:list={['callout', `callout-${type}`]} role="note" aria-label={label}>
+  <span class="callout-icon" aria-hidden="true">
+    <Icon name={icon} size={18} />
+  </span>
+  <div class="callout-content">
+    {showTitle && <p class="callout-title">{label}</p>}
+    <div class="callout-body">
+      <slot />
+    </div>
+  </div>
+</aside>
+
+<style>
+  .callout {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 22px 0;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--c-bg);
+  }
+
+  .callout-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--c-icon);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .callout-content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .callout-title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: var(--c-icon);
+    margin: 0 0 4px;
+  }
+
+  .callout-body :global(p) {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+  }
+  .callout-body :global(p + p) {
+    margin-top: 10px;
+  }
+  .callout-body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: color-mix(in oklab, var(--c-icon) 14%, transparent);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+  .callout-body :global(a) {
+    color: var(--c-icon);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .callout-body :global(a:hover) {
+    text-decoration-thickness: 2px;
+  }
+  .callout-body :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* Warm light palettes share the documentation paper theme. */
+  .callout-note {
+    --c-icon: #4a4252;
+    --c-bg: color-mix(in oklab, #a4521a 7%, var(--paper));
+  }
+  .callout-tip {
+    --c-icon: #2f6b4f;
+    --c-bg: color-mix(in oklab, #3b7a5c 8%, var(--paper));
+  }
+  .callout-warning {
+    --c-icon: #8a4b0f;
+    --c-bg: color-mix(in oklab, #d97706 10%, var(--paper));
+  }
+  .callout-info {
+    --c-icon: #a4521a;
+    --c-bg: color-mix(in oklab, #a4521a 7%, var(--paper));
+  }
+</style>

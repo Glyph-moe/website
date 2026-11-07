@@ -1,0 +1,44 @@
+---
+interface Props {
+  prompt?: string
+}
+const { prompt = '$' } = Astro.props
+---
+
+<div class="cli">
+  <div class="cli-line">
+    <span class="cli-prompt" aria-hidden="true">{prompt}</span>
+    <code class="cli-cmd"><slot /></code>
+  </div>
+</div>
+
+<style>
+  .cli {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-surface);
+    overflow-x: auto;
+  }
+  .cli-line {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .cli-prompt {
+    color: var(--accent);
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .cli-cmd {
+    color: var(--text);
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    white-space: pre;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  sections: { name: string; docs: CollectionEntry<'docs'>[] }[]
+  currentSlug?: string
+}
+
+const { sections, currentSlug } = Astro.props
+---
+
+<div class="docs-nav-groups">
+  {
+    sections.map(section => (
+      <section class="docs-nav-group">
+        <p class="docs-nav-heading">{section.name}</p>
+        <nav aria-label={section.name}>
+          {section.docs.map(doc => (
+            <a
+              class="docs-nav-link"
+              href={`/docs/${doc.id}`}
+              aria-current={doc.id === currentSlug ? 'page' : undefined}
+            >
+              {doc.data.title}
+            </a>
+          ))}
+        </nav>
+      </section>
+    ))
+  }
+</div>

@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content'
+import type { MarkdownHeading } from 'astro'
+import Base from './Base.astro'
+import Icon from '../components/Icon.astro'
+import DocsNav from '../components/docs/DocsNav.astro'
+import DocsSearch from '../components/docs/DocsSearch.astro'
+import { getSearchIndex } from '../lib/searchIndex.ts'
+import { docsCss } from '../lib/inlineCss'
+
+interface Props {
+  title: string
+  currentSlug: string
+  description?: string
+  headings?: MarkdownHeading[]
+  editUrl?: string
+}
+
+const { title, currentSlug, description, headings = [], editUrl } = Astro.props
+const tocHeadings = headings.filter(heading => heading.depth === 2 || heading.depth === 3)
+const showToc = tocHeadings.length >= 2
+const pageDescription =
+  description ||
+  `${title} — Glyph documentation for using the reader, building extensions, and exploring the SDK.`
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+
+const allDocs = await getCollection('docs')
+const sorted = allDocs.sort((a, b) => a.data.order - b.data.order)
+const currentIndex = sorted.findIndex(doc => doc.id === currentSlug)
+const prevDoc = currentIndex > 0 ? sorted[currentIndex - 1] : null
+const nextDoc = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null
+const sectionOrder = ['Using Glyph', 'Building Extensions', 'SDK Reference'] as const
+const sections = sectionOrder
+  .map(name => ({ name, docs: sorted.filter(doc => doc.data.section === name) }))
+  .filter(section => section.docs.length > 0)
+const searchIndex = await getSearchIndex()
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description: pageDescription,
+  url: canonicalURL.href,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Glyph',
+    url: 'https://glyph.moe',
+  },
+}
+---
+
+<Base
+  title={`${title} | Glyph Docs`}
+  description={pageDescription}
+  ogType="article"
+  schema={schema}
+>
+  <style is:inline slot="head" set:html={docsCss}></style>
+  <div class="docs-frame">
+    <aside class="docs-guide-rail" aria-label="Documentation guides">
+      <div class="docs-guide-sticky">
+        <a class="docs-all-guides" href="/docs">← All guides</a>
+        <DocsNav sections={sections} currentSlug={currentSlug} />
+      </div>
+    </aside>
+
+    <main id="main-content" class="docs-main">
+      <article class="docs-article" aria-labelledby="article-title">
+        <header class="article-header">
+          <h1 id="article-title">{title}</h1>
+          <p class="article-description">{pageDescription}</p>
+        </header>
+
+        <div class="article-search">
+          <DocsSearch index={searchIndex} triggerLabel="Search documentation" />
+        </div>
+
+        <details class="docs-guide-disclosure">
+          <summary>Browse all guides</summary>
+          <DocsNav sections={sections} currentSlug={currentSlug} />
+        </details>
+
+        <div class="article-reading-layout">
+          <div class="article-body">
+            <slot />
+          </div>
+
+          {
+            showToc && (
+              <aside class="docs-toc" aria-label="On this page">
+                <p class="docs-toc-title">On this page</p>
+                <nav>
+                  {tocHeadings.map(heading => (
+                    <a
+                      href={`#${heading.slug}`}
+                      class:list={['docs-toc-link', `depth-${heading.depth}`]}
+                      data-slug={heading.slug}
+                    >
+                      {heading.text}
+                    </a>
+                  ))}
+                </nav>
+              </aside>
+            )
+          }
+        </div>
+      </article>
+
+      <footer class="article-footer">
+        <div class="docs-page-meta">
+          {
+            editUrl && (
+              <a href={editUrl} target="_blank" rel="noopener" class="docs-meta-link">
+                <Icon name="pencil" size={16} />
+                Edit this page on GitHub
+              </a>
+            )
+          }
+          <a
+            href="https://github.com/Glyph-moe/website/issues/new"
+            target="_blank"
+            rel="noopener"
+            class="docs-meta-link"
+          >
+            <Icon name="circle-help" size={16} />
+            Report an issue
+          </a>
+        </div>
+
+        <nav class="docs-pager" aria-label="Documentation pages">
+          {
+            prevDoc && (
+              <a rel="prev" href={`/docs/${prevDoc.id}`} class="pager-link pager-prev">
+                <span class="pager-direction">← Previous</span>
+                <span class="pager-title">{prevDoc.data.title}</span>
+              </a>
+            )
+          }
+          {
+            nextDoc && (
+              <a rel="next" href={`/docs/${nextDoc.id}`} class="pager-link pager-next">
+                <span class="pager-direction">Next →</span>
+                <span class="pager-title">{nextDoc.data.title}</span>
+              </a>
+            )
+          }
+        </nav>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    import '../scripts/docs-ui.ts'
+  </script>
+</Base>
