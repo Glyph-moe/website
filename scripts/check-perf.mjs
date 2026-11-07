@@ -9,11 +9,10 @@
 // The measurements use Lighthouse's mobile profile so the numbers move with
 // bandwidth rather than with whatever this machine happens to have.
 import assert from 'node:assert/strict'
-import { createRequire } from 'node:module'
+import { loadPuppeteer } from './puppeteer.mjs'
 import zlib from 'node:zlib'
 
-const require = createRequire('/opt/homebrew/lib/node_modules/puppeteer/')
-const puppeteer = require('puppeteer')
+const puppeteer = loadPuppeteer()
 
 export const BASE = process.env.TEST_BASE_URL || 'http://localhost:4322'
 

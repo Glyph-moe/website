@@ -68,6 +68,16 @@ npm run dev        # http://localhost:4321
 
 A Husky pre-commit hook runs Prettier on staged Astro/TS/CSS/Markdown/JSON files.
 
+`check:perf` and `check:blog` drive a real browser and are the only scripts that
+need Puppeteer, which is not a dependency (it downloads a browser). To run them:
+
+```bash
+npm install --no-save puppeteer
+npm run build
+npm run preview -- --port 4322 &     # check:perf reads http://localhost:4322
+npm run check:perf
+```
+
 ## Project structure
 
 ```

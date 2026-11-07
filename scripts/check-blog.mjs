@@ -6,11 +6,10 @@
 // under it), the cover is screenshotted, and every pixel inside the title's
 // own box is compared with the colour the title is drawn in. The lowest ratio
 // in the box is the number reported.
-import { createRequire } from 'node:module'
+import { loadPuppeteer } from './puppeteer.mjs'
 import sharp from 'sharp'
 
-const require = createRequire('/opt/homebrew/lib/node_modules/puppeteer/')
-const puppeteer = require('puppeteer')
+const puppeteer = loadPuppeteer()
 
 const baseUrl = process.env.TEST_BASE_URL || process.argv[2] || 'http://localhost:4322'
 
