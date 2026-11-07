@@ -1,0 +1,538 @@
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-reveal: 800ms;
+  --t-open: 1100ms;
+}
+
+body {
+  font-size: 16px;
+}
+
+.editorial-hero {
+  /* The homepage sets its headline at 100px; the inner pages use the same
+     ceiling so a page title never outweighs the site's own title. */
+  --hero-title-size: clamp(50px, 7vw, 100px);
+  padding: 0 var(--page-margin) 64px;
+}
+
+/* A short full-bleed band of the page's watercolour, bled to the viewport
+   edges and faded into the paper at its foot. It is the homepage hero at a
+   fifth of the height, so the pages share one language: a painting at the
+   top with the header on it, ink type on paper below. */
+.editorial-banner {
+  position: relative;
+  /* Tall enough to carry the 104px header over its top and still show a
+     stretch of painting underneath it, and no taller. */
+  height: clamp(200px, 18vw, 300px);
+  /* Break out of the page's centred column to the viewport edges. The 100%
+     here is the hero's own content box, so the calc collapses to the page
+     margin on pages that are already full width, and keeps the band bleeding
+     once the column hits its 1680px cap. */
+  margin-inline: calc((100% - 100vw) / 2);
+  overflow: clip;
+  background: var(--chip);
+}
+
+.editorial-art-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.editorial-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editorial-banner-fade {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  /* The header covers the band's top 40%, so the ramp starts just under it:
+     the painting is legible behind the header and melts into the paper where
+     the page's own words begin. */
+  height: 40%;
+  /* An eased ramp, not a linear wash. The paper reaches full strength exactly
+     at the banner's foot and the stops bunch up towards the end, so the eye
+     finds no seam where the painting stops. */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--paper) 0%, transparent) 0%,
+    color-mix(in srgb, var(--paper) 26%, transparent) 45%,
+    color-mix(in srgb, var(--paper) 66%, transparent) 72%,
+    color-mix(in srgb, var(--paper) 92%, transparent) 90%,
+    var(--paper) 100%
+  );
+  pointer-events: none;
+}
+
+/* The copy under the band is an editorial opening in two columns: the page's
+   own title on the left, what the page is for on the right. Both close on the
+   page margins, so the first screen has no half left empty and the header's
+   edges are the type's edges. */
+.editorial-copy {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px var(--page-gutter);
+  padding-block-start: clamp(32px, 3.8vw, 56px);
+}
+
+.editorial-copy h1 {
+  grid-column: 1 / 7;
+  grid-row: 1 / span 2;
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--hero-title-size);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+.editorial-lede {
+  grid-column: 7 / 13;
+  grid-row: 1;
+  max-width: 46ch;
+  /* The display face has no leading above its cap; 12px brings the lede's
+     first line level with the title's. */
+  margin: 12px 0 0;
+  font-size: clamp(18px, 1.5vw, 20px);
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.editorial-actions {
+  grid-column: 7 / 13;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px 24px;
+  margin-top: 0;
+}
+
+.editorial-actions > a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  text-underline-offset: 5px;
+}
+
+.docs-search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: min(100%, 320px);
+  min-height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.docs-search-open > span:first-of-type {
+  flex: 1;
+  text-align: left;
+}
+
+.search-shortcut {
+  color: var(--paper);
+  font-size: 13px;
+  opacity: 0.76;
+}
+
+.docs-search {
+  width: min(680px, calc(100% - 32px));
+  max-height: 82dvh;
+  margin: 12vh auto 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 80px rgba(42, 34, 48, 0.22); /* native dialog overlay */
+}
+
+.docs-search::backdrop {
+  background: rgba(42, 34, 48, 0.42);
+}
+
+.docs-search-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--paper);
+}
+
+.docs-search-field > svg {
+  flex: none;
+  color: var(--muted);
+}
+
+.docs-search-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 18px var(--font-body);
+}
+
+.docs-search-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.82;
+}
+
+.docs-search-field form {
+  flex: none;
+}
+
+.docs-search-close {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  font: 600 14px var(--font-body);
+  cursor: pointer;
+}
+
+.docs-search-status {
+  margin: 0;
+  padding: 18px 20px 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.docs-search-results {
+  max-height: 54dvh;
+  margin: 0;
+  padding: 8px 12px 14px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.docs-search-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 12px;
+  border-radius: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.docs-search-item.active {
+  background: var(--chip);
+}
+
+.docs-search-item-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.docs-search-item-title {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.docs-search-item-description {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-search-item-section {
+  flex: none;
+  max-width: 150px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.docs-search-empty {
+  padding: 22px 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.guide-section {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 32px var(--page-gutter);
+  margin: 136px var(--page-margin) 0;
+}
+
+.guide-section-head {
+  grid-column: 1 / 5;
+  align-self: start;
+}
+
+.guide-section h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 4.5vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.guide-section-head p {
+  max-width: 34ch;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.guide-list {
+  grid-column: 6 / 13;
+}
+
+.guide-link {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.65fr) minmax(0, 1.35fr) auto;
+  align-items: start;
+  gap: 20px;
+  padding: 16px 0 24px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.guide-link + .guide-link {
+  margin-top: 16px;
+}
+
+.guide-title {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  transition: color var(--t-hover) ease;
+}
+
+.guide-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.guide-arrow {
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.guide-help {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  gap: var(--page-gutter);
+  margin: 144px var(--page-margin) 0;
+  padding: clamp(28px, 4vw, 52px);
+  background: var(--chip);
+}
+
+.guide-help h2 {
+  grid-column: 1 / 5;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 4.5vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.guide-help p {
+  grid-column: 6 / 10;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.help-link {
+  display: inline-flex;
+  grid-column: 11 / 13;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 0;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .guide-link:hover .guide-title {
+    color: var(--accent);
+  }
+
+  .guide-link:hover .guide-arrow {
+    color: var(--accent);
+  }
+
+  .docs-search-open:hover,
+  .help-link:hover {
+    background: #3b3145;
+  }
+}
+
+@media (max-width: 900px) {
+  .guide-section-head {
+    grid-column: 1 / 6;
+  }
+
+  .guide-list {
+    grid-column: 6 / 13;
+  }
+
+  .editorial-copy h1 {
+    grid-column: 1 / 8;
+  }
+
+  .editorial-lede,
+  .editorial-actions {
+    grid-column: 8 / 13;
+  }
+
+  .guide-link {
+    grid-template-columns: minmax(110px, 0.55fr) minmax(0, 1.45fr) auto;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 700px) {
+  .editorial-hero {
+    --hero-title-size: clamp(46px, 13vw, 52px);
+    padding: 0 var(--page-margin) 32px;
+  }
+
+  .editorial-banner {
+    height: clamp(180px, 50vw, 230px);
+  }
+
+  .editorial-copy {
+    display: block;
+    padding-block-start: 24px;
+  }
+
+  .editorial-copy h1 {
+    max-width: 12ch;
+  }
+
+  .editorial-lede {
+    margin-top: 28px;
+    font-size: 20px;
+  }
+
+  .editorial-actions {
+    align-items: stretch;
+    gap: 12px 18px;
+    margin-top: 24px;
+  }
+
+  .docs-search-open {
+    width: 100%;
+  }
+
+  .guide-section {
+    display: block;
+    margin-top: 88px;
+  }
+
+  .guide-section-head {
+    margin-bottom: 36px;
+  }
+
+  .guide-section h2 {
+    font-size: 42px;
+  }
+
+  .guide-section-head p {
+    max-width: 42ch;
+    font-size: 16px;
+  }
+
+  .guide-link {
+    grid-template-columns: 1fr auto;
+    gap: 8px 16px;
+    padding: 12px 0 20px;
+  }
+
+  .guide-title {
+    font-size: 20px;
+  }
+
+  .guide-description {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .guide-arrow {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .guide-help {
+    display: block;
+    margin-top: 88px;
+    padding: 28px 24px;
+  }
+
+  .guide-help h2 {
+    margin-bottom: 12px;
+  }
+
+  .help-link {
+    margin-top: 24px;
+  }
+
+  .docs-search {
+    margin-top: 6vh;
+  }
+
+  .docs-search-item {
+    gap: 12px;
+  }
+
+  .docs-search-item-section {
+    display: none;
+  }
+
+  .docs-search-item-description {
+    max-width: 68vw;
+  }
+}

@@ -1,0 +1,408 @@
+---
+import Base from '../layouts/Base.astro'
+import PageHero from '../components/PageHero.astro'
+import heroPrivacy from '../assets/hero/hero-privacy.webp'
+
+const lastUpdated = '17 May 2026'
+const description =
+  'Glyph’s privacy policy: no personal data collection, accounts, analytics, or tracking, with clear details on iCloud, extensions, diagnostics, and TestFlight.'
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Privacy Policy | Glyph',
+  description,
+  url: canonicalURL.href,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Glyph',
+    url: 'https://glyph.moe',
+  },
+}
+const sections = [
+  ['short-version', 'The short version'],
+  ['on-device', 'What stays on your device'],
+  ['icloud-sync', 'iCloud sync'],
+  ['third-party-sources', 'Third-party novel sources'],
+  ['repository-urls', 'Extension repository URLs'],
+  ['diagnostics', 'Diagnostic information'],
+  ['no-third-party-services', 'No third-party services'],
+  ['testflight', 'Beta testing (TestFlight)'],
+  ['children', 'Children’s privacy'],
+  ['changes', 'Changes to this policy'],
+  ['contact', 'Contact'],
+] as const
+---
+
+<Base title="Privacy Policy | Glyph" description={description} schema={schema} overlayNav>
+  <main id="main-content" class="privacy-main">
+    <PageHero
+      title="Privacy Policy"
+      lede="Glyph is a free iOS reader for web novels. We’ve designed it to need as little of your data as possible. This page explains what we collect, what we don’t, and what happens when extensions connect to third-party websites."
+      artPosition="50% 44%"
+      art={heroPrivacy}
+      artAlt="Illustration for the Glyph privacy policy page"
+    >
+      <p class="privacy-updated">Last updated: <time datetime="2026-05-17">{lastUpdated}</time></p>
+      <a class="privacy-contact-link" href="#contact">Contact about privacy</a>
+    </PageHero>
+
+    <section class="privacy-summary" id="short-version" aria-labelledby="short-version-title">
+      <h2 id="short-version-title">The short version</h2>
+      <ul>
+        <li>We don't collect any personal data.</li>
+        <li>We don't track you or use analytics.</li>
+        <li>You don't need an account.</li>
+        <li>
+          Your library and reading progress are stored on your device and synced via your personal
+          iCloud. We never see them.
+        </li>
+        <li>
+          Extensions make HTTP requests to third-party novel websites. Those sites have their own
+          privacy policies; we have no control over what they log.
+        </li>
+      </ul>
+    </section>
+
+    <div class="privacy-layout">
+      <aside class="privacy-index" aria-label="Privacy policy sections">
+        <p>On this page</p>
+        <nav>
+          {sections.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+      </aside>
+
+      <article class="privacy-policy" aria-label="Full privacy policy">
+        <section class="policy-section" id="on-device" aria-labelledby="on-device-title">
+          <h2 id="on-device-title">What stays on your device</h2>
+          <p>
+            Your library, reading history, bookmarks, downloaded chapters, reader preferences, and
+            installed extension sources are stored locally on your device using Apple's SwiftData.
+            None of this is transmitted to Glyph.
+          </p>
+        </section>
+
+        <section class="policy-section" id="icloud-sync" aria-labelledby="icloud-sync-title">
+          <h2 id="icloud-sync-title">iCloud sync</h2>
+          <p>
+            If you're signed into iCloud and iCloud Drive is enabled for Glyph, your library and
+            reading progress sync between your devices through Apple's CloudKit service. This data
+            is encrypted in transit and at rest, and is stored in your private iCloud container.
+            Glyph (the app) has access to it on your devices, but the Glyph project (us) does not.
+            Apple's privacy policy applies to this data:
+            <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">
+              apple.com/legal/privacy
+            </a>.
+          </p>
+          <p>
+            You can disable iCloud sync at any time in Settings → iCloud. Disabling sync does not
+            delete your local data.
+          </p>
+        </section>
+
+        <section
+          class="policy-section"
+          id="third-party-sources"
+          aria-labelledby="third-party-sources-title"
+        >
+          <h2 id="third-party-sources-title">Third-party novel sources (extensions)</h2>
+          <p>
+            Glyph extensions connect to websites you choose to install. When you browse, search, or
+            read on a source, Glyph makes HTTP requests directly to that website on your behalf.
+            These requests carry the same information any browser would send (User-Agent, IP
+            address, cookies set by that site, etc.) and are subject to the site's own privacy
+            policy.
+          </p>
+          <p>
+            Glyph isolates each source with its own cookie storage and restricts network access to
+            the source's declared domain. Extensions cannot read cookies or data from other sources.
+            Cookies are kept in memory and discarded when the app restarts.
+          </p>
+        </section>
+
+        <section
+          class="policy-section"
+          id="repository-urls"
+          aria-labelledby="repository-urls-title"
+        >
+          <h2 id="repository-urls-title">Extension repository URLs</h2>
+          <p>
+            When you add a repository URL (for example, a GitHub Pages site that hosts an
+            extension's manifest), Glyph fetches that URL directly from your device. We don't proxy,
+            log, or track which repositories you add.
+          </p>
+        </section>
+
+        <section class="policy-section" id="diagnostics" aria-labelledby="diagnostics-title">
+          <h2 id="diagnostics-title">Diagnostic information</h2>
+          <p>
+            Glyph keeps a local log of network requests and app events for debugging. You can view
+            it in Settings → Developer Tools and share a diagnostic report by tapping
+            <em>Share Diagnostic Report</em>. Reports are never sent automatically, only when you
+            explicitly share one, and only to whoever you share it with (typically the Glyph
+            developer via email or GitHub when you report a bug).
+          </p>
+          <p>
+            If you enable crash reporting in iOS Settings → Privacy & Security → Analytics &
+            Improvements, anonymized crash reports may be shared with Apple, who passes a subset to
+            developers via Xcode Organizer. These contain no personal data. You can disable this in
+            iOS settings.
+          </p>
+        </section>
+
+        <section
+          class="policy-section"
+          id="no-third-party-services"
+          aria-labelledby="no-third-party-services-title"
+        >
+          <h2 id="no-third-party-services-title">No third-party services</h2>
+          <p>
+            Glyph does not use any third-party SDKs for analytics, advertising, attribution, A/B
+            testing, or crash reporting beyond Apple's own. There are no trackers in the app.
+          </p>
+        </section>
+
+        <section class="policy-section" id="testflight" aria-labelledby="testflight-title">
+          <h2 id="testflight-title">Beta testing (TestFlight)</h2>
+          <p>
+            While Glyph is in beta, Apple's TestFlight handles distribution. TestFlight collects
+            information about your beta usage and crash reports per Apple's own policy:
+            <a
+              href="https://www.apple.com/legal/internet-services/itunes/testflight/"
+              target="_blank"
+              rel="noopener"
+            >
+              apple.com/legal/internet-services/itunes/testflight
+            </a>. Feedback you submit through TestFlight goes to us via Apple. We use it only to fix
+            bugs and improve the app.
+          </p>
+        </section>
+
+        <section class="policy-section" id="children" aria-labelledby="children-title">
+          <h2 id="children-title">Children's privacy</h2>
+          <p>
+            Glyph is not directed at children under 13. It does not knowingly collect data from
+            anyone, regardless of age. The content displayed by extensions, however, depends on the
+            sources you install; apply the Content Rating filter in Settings if appropriate.
+          </p>
+        </section>
+
+        <section class="policy-section" id="changes" aria-labelledby="changes-title">
+          <h2 id="changes-title">Changes to this policy</h2>
+          <p>
+            If we change this policy in a way that affects what we collect or share, we'll update
+            the date above and announce the change in release notes and on GitHub. Material changes
+            will also be mentioned in app release notes.
+          </p>
+        </section>
+
+        <section class="policy-section" id="contact" aria-labelledby="contact-title">
+          <h2 id="contact-title">Contact</h2>
+          <p>
+            Questions or concerns? Email <a href="mailto:contact@glyph.moe">contact@glyph.moe</a>
+            or start a thread in
+            <a href="https://github.com/Glyph-moe" target="_blank" rel="noopener">
+              GitHub Discussions
+            </a>.
+          </p>
+        </section>
+      </article>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .privacy-main {
+    max-width: 1680px;
+    margin: 0 auto;
+  }
+
+  .privacy-updated {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .privacy-contact-link {
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+    text-underline-offset: 5px;
+  }
+
+  .privacy-summary {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 32px var(--page-gutter);
+    margin: 112px var(--page-margin) 0;
+    padding: clamp(28px, 4vw, 52px);
+    background: var(--chip);
+    scroll-margin-top: 32px;
+  }
+
+  .privacy-summary h2,
+  .policy-section h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4.5vw, 64px);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .privacy-summary h2 {
+    grid-column: 1 / 5;
+  }
+
+  .privacy-summary ul {
+    grid-column: 6 / 13;
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding-left: 24px;
+  }
+
+  .privacy-summary li {
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .privacy-layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 48px var(--page-gutter);
+    margin: 112px var(--page-margin) 144px;
+  }
+
+  .privacy-index {
+    grid-column: 1 / 4;
+    align-self: start;
+    position: sticky;
+    top: 32px;
+    max-height: calc(100svh - 56px);
+    overflow-y: auto;
+  }
+
+  .privacy-index > p {
+    margin: 0 0 16px;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+  }
+
+  .privacy-index nav {
+    display: grid;
+  }
+
+  .privacy-index a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 6px 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .privacy-index a:hover {
+    color: var(--accent);
+  }
+
+  .privacy-policy {
+    grid-column: 6 / 13;
+    min-width: 0;
+    max-width: 70ch;
+  }
+
+  .policy-section {
+    scroll-margin-top: 32px;
+  }
+
+  .policy-section + .policy-section {
+    margin-top: 72px;
+  }
+
+  .policy-section h2 {
+    margin-bottom: 24px;
+    font-size: clamp(36px, 3.8vw, 48px);
+  }
+
+  .policy-section p {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .policy-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-section a {
+    color: var(--accent);
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 900px) {
+    .privacy-summary,
+    .privacy-layout {
+      margin-top: 88px;
+    }
+
+    .privacy-layout {
+      display: block;
+    }
+
+    .privacy-index {
+      position: static;
+      max-height: none;
+      margin-bottom: 80px;
+      overflow: visible;
+    }
+
+    .privacy-index nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 24px;
+    }
+
+    .privacy-policy {
+      max-width: 65ch;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .privacy-summary {
+      display: block;
+      margin-top: 72px;
+    }
+
+    .privacy-summary ul {
+      margin-top: 32px;
+    }
+
+    .privacy-summary li {
+      font-size: 16px;
+    }
+
+    .privacy-layout {
+      margin-top: 72px;
+      margin-bottom: 96px;
+    }
+
+    .privacy-index {
+      margin-bottom: 72px;
+    }
+
+    .privacy-index nav {
+      grid-template-columns: 1fr;
+    }
+
+    .policy-section + .policy-section {
+      margin-top: 64px;
+    }
+  }
+</style>
