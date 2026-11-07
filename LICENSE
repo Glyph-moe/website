@@ -1,0 +1,13 @@
+Copyright (c) 2026 the Glyph authors. All rights reserved.
+
+This repository is published so that the site can be read and the extension
+documentation checked. No licence is granted for reuse, modification or
+redistribution of the source, the documentation, the paintings, the app icons
+or the Glyph name and marks.
+
+Third-party material keeps its own licence:
+
+- Lucide icons — ISC, https://lucide.dev
+- Newsreader, Hanken Grotesk, DM Mono (via Fontsource) — SIL Open Font License 1.1
+- iPhone device artwork — Apple Inc., used to depict the app on its hardware
+- Astro, and the packages listed in package.json — their respective licences
