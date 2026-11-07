@@ -1,0 +1,98 @@
+---
+/**
+ * The blog's shell: the site header and footer, the blog stylesheet, the RSS
+ * discovery link, and the one small script the archive uses for scroll
+ * reveal. Every Notes page goes through here.
+ */
+import Base from './Base.astro'
+import { blogCss } from '../lib/inlineCss'
+import { placeholderVars } from '../lib/lqip'
+
+interface Props {
+  title: string
+  description: string
+  ogType?: 'website' | 'article'
+  ogImage?: string
+  ogImageAlt?: string
+  schema?: Record<string, unknown>
+}
+
+const { title, description, ogType = 'website', ogImage, ogImageAlt, schema } = Astro.props
+const rssHref = new URL('/blog/rss.xml', Astro.site)
+/** The three cover thumbnails, inlined: ~2 kB against a 700 kB painting. */
+const lqipCss = await placeholderVars()
+---
+
+<Base
+  title={title}
+  description={description}
+  ogType={ogType}
+  ogImage={ogImage}
+  ogImageAlt={ogImageAlt}
+  schema={schema}
+>
+  <style is:inline slot="head" set:html={blogCss}></style>
+  <style is:inline slot="head" set:html={lqipCss}></style>
+  <Fragment slot="head">
+    {
+      /* Covers hold back their painting until it has arrived. This runs before
+        the body is parsed, so nothing is ever painted sharp and then blurred. */
+    }
+    <script is:inline>
+      document.documentElement.classList.add('js-cover')
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Glyph — Notes" href={rssHref.href} />
+  </Fragment>
+
+  <slot />
+
+  <script>
+    // Covers: blur up from their thumbnail as each painting arrives. `load` does
+    // not bubble, so listen in the capture phase, and re-scan once for images
+    // that were already complete when the parser got here.
+    const settle = (img: HTMLImageElement) => {
+      const picture = img.parentElement
+      if (picture) picture.classList.add('is-loaded')
+    }
+
+    document.addEventListener(
+      'load',
+      event => {
+        const target = event.target as HTMLElement | null
+        if (target instanceof HTMLImageElement && target.classList.contains('cover-art')) {
+          settle(target)
+        }
+      },
+      true,
+    )
+
+    const catchUp = () => {
+      for (const img of document.querySelectorAll<HTMLImageElement>('.cover-art')) {
+        if (img.complete && img.naturalWidth > 0) settle(img)
+      }
+    }
+
+    catchUp()
+
+    // Scroll reveal. The class that hides the cards is only added once this
+    // script has run, so a reader without JS — or with reduced motion — sees
+    // the whole page immediately.
+    const targets = document.querySelectorAll<HTMLElement>('[data-reveal]')
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    if (targets.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
+      document.documentElement.classList.add('js-reveal')
+      const observer = new IntersectionObserver(
+        entries => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue
+            entry.target.classList.add('is-in')
+            observer.unobserve(entry.target)
+          }
+        },
+        { rootMargin: '0px 0px -6% 0px', threshold: 0.06 },
+      )
+      targets.forEach(target => observer.observe(target))
+    }
+  </script>
+</Base>

@@ -1,0 +1,1041 @@
+/* Notes — the Glyph blog.
+ *
+ * Three paintings, three moods, and one cover template. Everything here is
+ * paper, ink and the three faces the site already loads; the only thing that
+ * moves is the painting itself (a 3% zoom on hover, off under reduced motion).
+ */
+
+@import './marks.css';
+
+/* ── the frame ───────────────────────────────────────────────────────── */
+.blog-frame {
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: max(var(--page-margin), 16px);
+}
+
+/* ── the cover ───────────────────────────────────────────────────────── */
+
+/* A cover is a painted band with type on it. The mood decides the text
+   colour, the scrim that keeps that text readable over the watercolour, and
+   the tint of the glass the pills are made of. The palette hangs off
+   [data-mood] rather than off .cover, so a glass element sitting beside a
+   cover (the feature's "Read the post" pill) is painted by the same mood. */
+[data-mood] {
+  --tx: var(--ink);
+  --wash: #f4d8bd;
+  --wash-deep: #e3b489;
+  --lqip: var(--lqip-dawn);
+  --sun: #d9824a;
+  --scrim-core: rgba(247, 241, 230, 0.43);
+  --scrim: rgba(247, 241, 230, 0.24);
+  --glass-bg: linear-gradient(158deg, rgba(255, 255, 255, 0.66), rgba(255, 252, 244, 0.34));
+  --glass-solid: rgba(255, 250, 240, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 10px 26px rgba(42, 34, 48, 0.16);
+  --glass-ink: var(--ink);
+}
+
+[data-mood='dusk'] {
+  --wash: #efc5bd;
+  --wash-deep: #d9978c;
+  --lqip: var(--lqip-dusk);
+}
+
+[data-mood='night'] {
+  --tx: var(--paper);
+  --wash: #74839b;
+  --wash-deep: #3f4c6d;
+  --lqip: var(--lqip-night);
+  --sun: #f2a46b;
+  --scrim-core: rgba(24, 16, 32, 0.79);
+  --scrim: rgba(24, 16, 32, 0.56);
+  --glass-bg: linear-gradient(158deg, rgba(32, 23, 41, 0.66), rgba(32, 23, 41, 0.44));
+  --glass-solid: rgba(28, 20, 36, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.32);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 10px 26px rgba(18, 12, 24, 0.34);
+  --glass-ink: var(--paper);
+}
+
+.cover {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  padding: clamp(14px, 1.8vw, 22px);
+  overflow: hidden;
+  background: var(--wash, var(--chip));
+  border-radius: var(--radius-lg);
+  /* The title is sized in container units, so one template holds from a
+     320px card to the 1240px band on a post. */
+  container-type: size;
+  isolation: isolate;
+}
+
+.cover--card {
+  aspect-ratio: 4 / 5;
+}
+
+.cover--wide {
+  width: 100%;
+  aspect-ratio: 21 / 9;
+}
+
+/* A 21:9 band is 141px tall at 360px wide: too little room for a real
+   headline. On phones the band keeps its 21:9 proportions on the artwork but
+   grows to a height that can hold a title. */
+@media (max-width: 620px) {
+  .cover--wide {
+    min-height: 240px;
+  }
+}
+
+/* ── what the cover shows before its image arrives ──────────────────── */
+
+/* A wash in the mood's colour, two soft blobs drifting against each other
+   over half a minute. No shimmer, no sweep: the card is not "loading", it is
+   painted, and then the painting sharpens into place on top of it. */
+.cover-wash,
+.cover-lqip {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cover-wash {
+  z-index: 0;
+  background-color: var(--wash);
+  overflow: hidden;
+}
+
+.cover-wash::after {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background:
+    radial-gradient(48% 52% at 30% 34%, rgba(255, 255, 255, 0.5), transparent 68%),
+    radial-gradient(54% 58% at 72% 70%, var(--wash-deep), transparent 70%);
+  animation: cover-wash-drift 34s ease-in-out infinite alternate;
+}
+
+/* Once the painting is in place the wash is underneath it, so stop paying
+   for the drift. */
+.cover:has(.cover-art-picture.is-loaded) .cover-wash::after {
+  animation-play-state: paused;
+}
+
+@keyframes cover-wash-drift {
+  from {
+    transform: translate3d(-3%, 2%, 0) scale(1.02);
+  }
+
+  to {
+    transform: translate3d(3%, -2%, 0) scale(1.1);
+  }
+}
+
+/* The painting's own 24px thumbnail, upscaled and softened: the placeholder
+   is the picture, not a colour that has to be replaced by one. The title sits
+   above it from the first paint. */
+.cover-lqip {
+  z-index: 1;
+  background-image: var(--lqip);
+  background-position: var(--cx, 68%) 64%;
+  background-size: cover;
+  filter: blur(6px);
+  transform: scale(1.03);
+}
+
+.cover-art-picture {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition:
+    opacity 1s var(--ease-out, ease-out),
+    filter 1s var(--ease-out, ease-out),
+    transform 1.2s var(--ease-out, ease-out);
+}
+
+/* The unloaded state is applied by script, so a reader without JS gets the
+   plain image at full strength rather than a cover that never appears. */
+html.js-cover .cover-art-picture {
+  opacity: 0;
+  filter: blur(16px);
+  transform: scale(1.07);
+}
+
+html.js-cover .cover-art-picture.is-loaded {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.cover-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The scrim: a soft pool of paper (or of night) under the type, so the title
+   never lands on a patch of the painting that erases it. It reaches full
+   strength where the words are and is gone at the edges, so the corners of
+   the painting stay clean. */
+.cover-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(
+    116% 76% at 50% 43%,
+    var(--scrim-core) 0%,
+    var(--scrim-core) 38%,
+    var(--scrim) 62%,
+    transparent 88%
+  );
+}
+
+/* ── type on the painting ────────────────────────────────────────────── */
+.cover-center {
+  position: relative;
+  z-index: 4;
+  grid-area: 2 / 1;
+  display: grid;
+  justify-items: center;
+  gap: clamp(8px, 2.4cqw, 18px);
+  padding-inline: clamp(4px, 2cqw, 20px);
+  text-align: center;
+}
+
+.cover-sun {
+  width: clamp(18px, 5.4cqw, 30px);
+  height: auto;
+  flex: none;
+}
+
+.cover--wide .cover-sun {
+  width: clamp(20px, 2.2cqw, 34px);
+}
+
+.cover--wide .cover-center--sun-only .cover-sun {
+  width: clamp(30px, 4cqw, 54px);
+}
+
+.cover-title {
+  margin: 0;
+  color: var(--tx);
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  line-height: 1.1;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.cover--card .cover-title {
+  max-width: 15ch;
+  font-size: clamp(22px, 8.2cqw, 42px);
+}
+
+.cover--wide .cover-title {
+  max-width: 22ch;
+  /* Sized against whichever side of the band is shorter: a 21:9 box has
+     plenty of width and not much height, and a long title needs the height
+     to wrap into. */
+  font-size: clamp(30px, min(5.1cqw, 14cqh), 70px);
+  line-height: 1.06;
+}
+
+.cover[data-mood='night'] .cover-title {
+  text-shadow: 0 1px 22px rgba(18, 12, 24, 0.55);
+}
+
+/* ── the glass pills ─────────────────────────────────────────────────── */
+.glass {
+  background-image: var(--glass-bg);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  color: var(--glass-ink);
+  border-radius: 999px;
+}
+
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  .glass {
+    background-image: none;
+    background-color: var(--glass-solid);
+  }
+}
+
+.cover-pill {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.5em 0.85em;
+  font-family: var(--font-mono);
+  font-size: clamp(9.5px, 2.7cqw, 11.5px);
+  letter-spacing: 0.07em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cover--card .cover-pill--category {
+  grid-area: 1 / 1;
+  justify-self: start;
+}
+
+.cover--card .cover-pill--date {
+  grid-area: 3 / 1;
+  justify-self: start;
+}
+
+.cover--wide .cover-pill {
+  font-size: clamp(10px, 1.15cqw, 12px);
+}
+
+.cover--wide .cover-pill--category {
+  grid-area: 1 / 1;
+  justify-self: start;
+}
+
+.cover--wide .cover-pill--date {
+  grid-area: 3 / 1;
+  justify-self: start;
+}
+
+/* ── cards ───────────────────────────────────────────────────────────── */
+.post-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-lg);
+}
+
+.post-card .cover {
+  transition: box-shadow var(--t-hover) ease;
+}
+
+.post-card .cover-art {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .post-card:hover .cover-art,
+  .post-card-link:focus-visible .cover-art {
+    transform: scale(1.03);
+  }
+}
+
+.post-card-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-card .cover-art,
+  .post-card .cover,
+  .blog-feature-link .cover-art {
+    transition: none;
+  }
+
+  /* The picture still arrives over the thumbnail, it just does not slide,
+     swell or go soft on the way. */
+  html.js-cover .cover-art-picture {
+    filter: none;
+    transform: none;
+    transition: opacity 0.4s linear;
+  }
+
+  .cover-wash::after {
+    animation: none;
+  }
+
+  .post-card:hover .cover-art,
+  .post-card-link:focus-visible .cover-art,
+  .blog-feature-link:hover .cover-art,
+  .blog-feature-link:focus-visible .cover-art {
+    transform: none;
+  }
+}
+
+/* ── the index ───────────────────────────────────────────────────────── */
+.blog-hero {
+  padding: clamp(20px, 3.4vw, 44px) 0 clamp(28px, 4vw, 52px);
+  text-align: center;
+}
+
+.blog-eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.blog-hero h1 {
+  max-width: 22ch;
+  margin: 20px auto 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6.4vw, 78px);
+  font-weight: 400;
+  letter-spacing: -0.038em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.blog-sub {
+  max-width: 52ch;
+  margin: 22px auto 0;
+  color: var(--muted);
+  font-size: clamp(17px, 1.3vw, 19px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* The latest post: a wide band, one link, one glass invitation. */
+.blog-feature {
+  display: block;
+}
+
+.blog-feature-link {
+  position: relative;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-lg);
+}
+
+.blog-feature-link .cover-art {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .blog-feature-link:hover .cover-art,
+  .blog-feature-link:focus-visible .cover-art {
+    transform: scale(1.02);
+  }
+}
+
+.blog-feature-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.blog-feature-cta {
+  position: absolute;
+  right: clamp(14px, 1.8vw, 22px);
+  bottom: clamp(14px, 1.8vw, 22px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.72em 1.1em;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.blog-feature-cta::after {
+  content: '→';
+  color: var(--accent);
+}
+
+.cover[data-mood='night'] .blog-feature-cta::after {
+  color: #f2a46b;
+}
+
+/* ── the category tabs ───────────────────────────────────────────────── */
+.blog-toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin: clamp(44px, 5.4vw, 72px) 0 clamp(20px, 2.4vw, 28px);
+}
+
+.blog-toolbar-title {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.blog-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  font-size: 15px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--t-hover) ease,
+    color var(--t-hover) ease;
+}
+
+.blog-tab-count {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.blog-tab[aria-current='page'],
+.blog-tab:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.blog-tab[aria-current='page'] .blog-tab-count,
+.blog-tab:hover .blog-tab-count {
+  color: rgba(247, 241, 230, 0.72);
+}
+
+.blog-tab:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* The grid: three across, two under 980px, one under 620px. */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.2vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The archive is one filterable list. Without JS the attribute is already in
+   the HTML; with JS the script rewrites it. Either way the rule holds: on
+   "all" the first card is the same post as the feature above, so it steps
+   aside; on a category the feature steps aside instead. */
+.blog-archive[data-filter]:not([data-filter='all']) .blog-feature {
+  display: none;
+}
+
+.blog-archive[data-filter='all'] .blog-grid > .post-card:first-child {
+  display: none;
+}
+
+.blog-grid > li {
+  min-width: 0;
+}
+
+.blog-archive[data-filter='release'] .blog-grid > li:not([data-cat='release']),
+.blog-archive[data-filter='sources'] .blog-grid > li:not([data-cat='sources']),
+.blog-archive[data-filter='privacy'] .blog-grid > li:not([data-cat='privacy']),
+.blog-archive[data-filter='roadmap'] .blog-grid > li:not([data-cat='roadmap']),
+.blog-archive[data-filter='guide'] .blog-grid > li:not([data-cat='guide']) {
+  display: none;
+}
+
+.blog-empty {
+  margin: clamp(32px, 4vw, 48px) 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+/* ── the post ────────────────────────────────────────────────────────── */
+.post-header {
+  max-width: 820px;
+  margin-inline: auto;
+  padding: clamp(8px, 2vw, 24px) 0 clamp(28px, 3.6vw, 44px);
+  text-align: center;
+}
+
+.post-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.post-cat {
+  display: inline-flex;
+  padding: 0.48em 0.86em;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.post-header h1 {
+  max-width: 18ch;
+  margin: 20px auto 0;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5.6vw, 68px);
+  font-weight: 400;
+  letter-spacing: -0.036em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.post-meta > span[aria-hidden='true'] {
+  opacity: 0.55;
+}
+
+.post-cover {
+  margin: 0 0 clamp(36px, 4.4vw, 56px);
+}
+
+/* The reading column: one measure, Newsreader, generous leading. */
+.post-reading {
+  max-width: 65ch;
+  margin-inline: auto;
+}
+
+.post-lede {
+  margin: 0 0 clamp(28px, 3vw, 40px);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(21px, 2vw, 25px);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.post-body {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(18.5px, 1.35vw, 20px);
+  line-height: 1.72;
+  overflow-wrap: break-word;
+}
+
+.post-body > *:first-child {
+  margin-top: 0;
+}
+
+.post-body p,
+.post-body ul,
+.post-body ol,
+.post-body dl {
+  margin: 0 0 1.25em;
+}
+
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  color: var(--ink);
+  scroll-margin-top: 32px;
+  text-wrap: balance;
+}
+
+.post-body h2 {
+  margin: 2.1em 0 0.55em;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 2.9vw, 36px);
+  font-weight: 400;
+  letter-spacing: -0.028em;
+  line-height: 1.1;
+}
+
+.post-body h3 {
+  margin: 1.8em 0 0.45em;
+  font-family: var(--font-body);
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  line-height: 1.35;
+}
+
+.post-body h4 {
+  margin: 1.6em 0 0.4em;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.post-body strong {
+  font-weight: 600;
+}
+
+.post-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.post-body ul,
+.post-body ol {
+  padding-inline-start: 1.2em;
+}
+
+.post-body li + li {
+  margin-top: 0.4em;
+}
+
+.post-body li::marker {
+  color: var(--accent);
+}
+
+.post-body blockquote {
+  margin: 1.8em 0;
+  padding: 0.1em 0 0.1em 1.2em;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.post-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.post-body hr {
+  width: 100%;
+  height: 1px;
+  margin: 2.6em 0;
+  border: 0;
+  background: var(--line);
+}
+
+.post-body :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--chip);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+}
+
+/* Code and tables scroll inside their own box: the page never does. */
+.post-body pre {
+  max-width: 100%;
+  margin: 1.8em 0;
+  padding: 18px 20px;
+  overflow-x: auto;
+  border-radius: 14px;
+  background: var(--chip) !important;
+  font-size: 14px;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.post-body pre code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: inherit;
+}
+
+.post-body pre code span[style*='#6e7781' i],
+.post-body pre code span[style*='#6a737d' i] {
+  color: #525965 !important;
+}
+
+.post-body pre code span[style*='#8250df' i] {
+  color: #753ec4 !important;
+}
+
+.post-body pre code span[style*='#cf222e' i] {
+  color: #c21f2d !important;
+}
+
+.article-table-scroll {
+  max-width: 100%;
+  margin: 1.8em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.post-body th,
+.post-body td {
+  min-width: 120px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.post-body th {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.post-body img {
+  width: 100%;
+  height: auto;
+  margin: 1.8em 0;
+  border-radius: 14px;
+}
+
+.post-body figure {
+  margin: 1.8em 0;
+}
+
+.post-body figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── keep reading, and the pager ─────────────────────────────────────── */
+.post-more {
+  margin-top: clamp(64px, 8vw, 112px);
+}
+
+.post-more-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(20px, 2.4vw, 28px);
+}
+
+.post-more h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.post-more-all {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.post-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(48px, 6vw, 80px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--line);
+}
+
+.post-pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 20px 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.post-pager a[rel='next'] {
+  text-align: right;
+}
+
+.post-pager span {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-pager strong {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+@media (hover: hover) {
+  .post-pager a:hover strong,
+  .post-more-all:hover,
+  .post-back:hover {
+    color: var(--accent);
+  }
+
+  .post-body a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .post-cat:hover {
+    background: #e8ddcb;
+  }
+}
+
+/* ── the category page ───────────────────────────────────────────────── */
+.blog-category-header {
+  max-width: 720px;
+  margin-inline: auto;
+  padding: clamp(12px, 2.4vw, 28px) 0 clamp(28px, 3.6vw, 44px);
+  text-align: center;
+}
+
+.blog-category-header h1 {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5.4vw, 68px);
+  font-weight: 400;
+  letter-spacing: -0.036em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.blog-category-header p {
+  max-width: 48ch;
+  margin: 20px auto 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.blog-category-header .blog-eyebrow {
+  margin: 0;
+  font-size: 12px;
+}
+
+.blog-category-header .blog-eyebrow a {
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.blog-category-all {
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  font-size: 15px;
+}
+
+.blog-category-all a {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+@media (hover: hover) {
+  .blog-category-header .blog-eyebrow a:hover,
+  .blog-category-all a:hover {
+    color: var(--accent);
+  }
+}
+
+/* ── scroll reveal ───────────────────────────────────────────────────── */
+/* Off unless the script says the page is ready and motion is welcome, so a
+   reader without JS (or with reduced motion) gets the whole page at once. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js-reveal [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .blog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .blog-tabs {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    padding-bottom: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .blog-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .blog-toolbar {
+    display: block;
+  }
+
+  .blog-toolbar-title {
+    margin-bottom: 12px;
+  }
+
+  .post-pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .post-pager a[rel='next'] {
+    text-align: left;
+  }
+}

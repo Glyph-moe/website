@@ -1,0 +1,127 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro'
+import BlogHero from '../../components/blog/BlogHero.astro'
+import CategoryTabs from '../../components/blog/CategoryTabs.astro'
+import PostCard from '../../components/blog/PostCard.astro'
+import PostCover from '../../components/blog/PostCover.astro'
+import { categoryCounts, getPublishedPosts, postHref } from '../../lib/blog'
+
+const posts = await getPublishedPosts()
+const [feature] = posts
+const counts = categoryCounts(posts)
+
+const title = 'Notes — Glyph'
+const description =
+  'Release notes, source news and guides from Glyph, the free iOS reader for web novels.'
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: title,
+  description,
+  url: canonicalURL.href,
+  inLanguage: 'en',
+  publisher: { '@type': 'Organization', name: 'Glyph', url: 'https://glyph.moe' },
+}
+---
+
+<BlogLayout title={title} description={description} schema={schema}>
+  <main id="main-content" class="blog-frame">
+    <BlogHero
+      eyebrow="Notes · release notes & source news"
+      subhead="Release notes, new sources, and short guides — written between chapters."
+    >
+      Notes from the <i data-mark="marker">margin</i>.
+    </BlogHero>
+
+    <div class="blog-archive" data-blog-archive data-filter="all">
+      {
+        feature && (
+          <section class="blog-feature" aria-label="Latest post">
+            <a
+              class="blog-feature-link"
+              href={postHref(feature)}
+              data-mood={feature.data.mood}
+              aria-label={`Read the post: ${feature.data.title}`}
+            >
+              <PostCover
+                mood={feature.data.mood}
+                title={feature.data.title}
+                category={feature.data.category}
+                date={feature.data.date}
+                cx={feature.data.cx}
+                size="wide"
+                heading="h2"
+                priority
+                image={feature.data.cover}
+              />
+              <span class="glass blog-feature-cta" aria-hidden="true">
+                Read the post
+              </span>
+            </a>
+          </section>
+        )
+      }
+
+      <div class="blog-toolbar">
+        <h2 class="blog-toolbar-title" data-blog-title>All notes</h2>
+        <CategoryTabs counts={counts} current="all" />
+        <p class="sr-only" aria-live="polite" data-blog-status></p>
+      </div>
+
+      <ul class="blog-grid" data-blog-grid>
+        {posts.map((post, index) => <PostCard post={post} reveal={index > 2} eager={index < 3} />)}
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    // The tabs are real links to the category pages. With JS they filter the
+    // grid in place instead, and the href becomes the history entry, so Back
+    // returns to the unfiltered index.
+    const archive = document.querySelector<HTMLElement>('[data-blog-archive]')
+    const tabs = archive?.querySelector<HTMLElement>('[data-blog-tabs]')
+    const grid = archive?.querySelector<HTMLElement>('[data-blog-grid]')
+    const heading = archive?.querySelector<HTMLElement>('[data-blog-title]')
+    const status = archive?.querySelector<HTMLElement>('[data-blog-status]')
+
+    if (archive && tabs && grid) {
+      const cards = [...grid.querySelectorAll<HTMLElement>('[data-cat]')]
+
+      const apply = (slug: string, options: { url?: string; push?: boolean } = {}) => {
+        archive.dataset.filter = slug
+
+        let label = 'All notes'
+        tabs.querySelectorAll<HTMLAnchorElement>('a').forEach(tab => {
+          const isCurrent = tab.dataset.cat === slug
+          if (isCurrent) {
+            tab.setAttribute('aria-current', 'page')
+            label = tab.textContent?.replace(/\s+\d+$/, '').trim() || label
+          } else {
+            tab.removeAttribute('aria-current')
+          }
+        })
+
+        const count =
+          slug === 'all' ? cards.length : cards.filter(card => card.dataset.cat === slug).length
+        if (heading) heading.textContent = slug === 'all' ? 'All notes' : label
+        if (status) status.textContent = `${count} ${count === 1 ? 'post' : 'posts'} shown`
+
+        if (options.push && options.url) history.pushState({ filter: slug }, '', options.url)
+      }
+
+      tabs.addEventListener('click', event => {
+        const tab = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[data-cat]')
+        if (!tab) return
+        // Every modified click keeps its default: open in a new tab, save, etc.
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        event.preventDefault()
+        apply(tab.dataset.cat ?? 'all', { push: true, url: tab.getAttribute('href') ?? '/blog' })
+      })
+
+      window.addEventListener('popstate', event => {
+        apply((event.state as { filter?: string } | null)?.filter ?? 'all')
+      })
+    }
+  </script>
+</BlogLayout>

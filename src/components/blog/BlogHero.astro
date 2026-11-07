@@ -1,0 +1,22 @@
+---
+/**
+ * The archive's opening: a mono label, one headline with a hand-drawn marker
+ * on the phrase that matters, and a single line under it.
+ */
+interface Props {
+  eyebrow?: string
+  subhead?: string
+}
+
+const { eyebrow, subhead } = Astro.props
+---
+
+<header class="blog-hero">
+  {eyebrow && <p class="blog-eyebrow">{eyebrow}</p>}
+  <h1><slot /></h1>
+  {subhead && <p class="blog-sub">{subhead}</p>}
+</header>
+
+<script>
+  import '../../scripts/glyph-marks.js'
+</script>

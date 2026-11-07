@@ -1,0 +1,79 @@
+---
+import BlogLayout from '../../../layouts/BlogLayout.astro'
+import CategoryTabs from '../../../components/blog/CategoryTabs.astro'
+import PostCard from '../../../components/blog/PostCard.astro'
+import {
+  BLOG_CATEGORIES,
+  CATEGORY_COPY,
+  categoryCounts,
+  categorySlug,
+  getPublishedPosts,
+  postsInCategory,
+  type BlogCategory,
+} from '../../../lib/blog'
+
+export async function getStaticPaths() {
+  return BLOG_CATEGORIES.map(category => ({
+    params: { category: categorySlug(category) },
+    props: { category },
+  }))
+}
+
+interface Props {
+  category: BlogCategory
+}
+
+const { category } = Astro.props
+const slug = categorySlug(category)
+const posts = await getPublishedPosts()
+const counts = categoryCounts(posts)
+const inCategory = postsInCategory(posts, category)
+const description = `${CATEGORY_COPY[category]} Notes from Glyph, the free iOS reader for web novels.`
+
+const title = `${category} — Glyph Notes`
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  url: canonicalURL.href,
+  isPartOf: { '@type': 'WebSite', name: 'Glyph', url: 'https://glyph.moe' },
+}
+---
+
+<BlogLayout title={title} description={description} schema={schema}>
+  <main id="main-content" class="blog-frame">
+    <header class="blog-category-header">
+      <p class="blog-eyebrow">
+        <a href="/blog">Notes</a> · {inCategory.length}
+        {inCategory.length === 1 ? 'post' : 'posts'}
+      </p>
+      <h1>{category}</h1>
+      <p>{CATEGORY_COPY[category]}</p>
+    </header>
+
+    <div class="blog-archive" data-filter={slug}>
+      <div class="blog-toolbar">
+        <h2 class="blog-toolbar-title">Categories</h2>
+        <CategoryTabs counts={counts} current={slug} />
+      </div>
+
+      {
+        inCategory.length > 0 ? (
+          <ul class="blog-grid">
+            {inCategory.map((post, index) => (
+              <PostCard post={post} eager={index < 3} />
+            ))}
+          </ul>
+        ) : (
+          <p class="blog-empty">
+            Nothing in this category yet. <a href="/blog">Read the latest notes</a> instead.
+          </p>
+        )
+      }
+
+      <p class="blog-category-all"><a href="/blog">← All notes</a></p>
+    </div>
+  </main>
+</BlogLayout>

@@ -1,0 +1,47 @@
+---
+/**
+ * The category filter.
+ *
+ * These are real links, so the filter works with JS off: each tab is the
+ * category's own page. On the index the page turns clicks into an in-place
+ * filter instead (see src/pages/blog/index.astro), and the href stays behind
+ * as the history entry.
+ */
+import { categorySlug } from '../../lib/blog'
+
+interface Props {
+  counts: { category: string; count: number }[]
+  /** 'all' or a category slug. */
+  current: string
+}
+
+const { counts, current } = Astro.props
+const total = counts.reduce((sum, entry) => sum + entry.count, 0)
+---
+
+<ul class="blog-tabs" data-blog-tabs>
+  <li>
+    <a
+      class="blog-tab"
+      href="/blog"
+      data-cat="all"
+      aria-current={current === 'all' ? 'page' : undefined}
+    >
+      All <span class="blog-tab-count">{total}</span>
+    </a>
+  </li>
+  {
+    counts.map(({ category, count }) => (
+      <li>
+        <a
+          class="blog-tab"
+          href={`/blog/category/${categorySlug(category)}`}
+          data-cat={categorySlug(category)}
+          aria-current={current === categorySlug(category) ? 'page' : undefined}
+        >
+          {category} <span class="blog-tab-count">{count}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

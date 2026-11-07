@@ -1,0 +1,36 @@
+---
+/**
+ * One card in the archive grid: a single link, whose accessible name is the
+ * post's title. The cover renders that title as real text, so the card says
+ * what it is to a reader, a screen reader and a crawler alike.
+ */
+import PostCover from './PostCover.astro'
+import { categorySlug, postHref, type BlogPost } from '../../lib/blog'
+
+interface Props {
+  post: BlogPost
+  /** Below the first screen: fade the card in as it is scrolled to. */
+  reveal?: boolean
+  /** In the first row of the grid: fetch now rather than on approach. */
+  eager?: boolean
+}
+
+const { post, reveal = true, eager = false } = Astro.props
+const { title, category, date, mood, cx } = post.data
+---
+
+<li class="post-card" data-cat={categorySlug(category)} data-reveal={reveal ? '' : undefined}>
+  <a class="post-card-link" href={postHref(post)} aria-label={title}>
+    <PostCover
+      mood={mood}
+      title={title}
+      category={category}
+      date={date}
+      cx={cx}
+      size="card"
+      heading="h2"
+      eager={eager}
+      image={post.data.cover}
+    />
+  </a>
+</li>
