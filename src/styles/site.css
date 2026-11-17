@@ -322,6 +322,9 @@ img {
 /* ── responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 820px) {
   .site-nav {
+    /* The bar's own height, so the sheet can start under it without the two
+       numbers drifting apart. */
+    --bar-h: 84px;
     padding: 20px var(--page-margin);
     grid-template-columns: 1fr auto auto;
     gap: 10px;
@@ -331,6 +334,10 @@ img {
     display: none;
   }
 
+  /* ── the mobile menu: a full-screen sheet, not a dropdown ──────────────
+     The bar does not move when it opens: the same brand, the same waitlist
+     chip, and the menu chip becoming Close. The sheet opens underneath them,
+     so the header reads the same before and after the tap. */
   .mobile-nav {
     position: relative;
     display: block;
@@ -341,42 +348,211 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 52px;
+    min-width: 92px;
     min-height: 44px;
-    padding: 0 10px;
+    padding: 0 16px;
+    background: var(--card);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--ink);
     cursor: pointer;
     list-style: none;
-    font-size: 15px;
-    font-weight: 600;
+    /* Mono and tracked, like the waitlist chip beside it: two labelled chips
+       make one bar. */
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.077em;
+    text-transform: uppercase;
   }
 
   .mobile-nav summary::-webkit-details-marker {
     display: none;
   }
 
-  .mobile-nav nav {
-    position: absolute;
-    top: calc(100% + 12px);
-    right: 0;
-    z-index: 120;
-    width: min(240px, calc(100vw - 40px));
-    padding: 10px;
-    background: var(--card);
-    border-radius: 12px;
+  .menu-when-open {
+    display: none;
   }
 
-  .mobile-nav nav a {
+  /* Above the sheet, so the chip can close what it opened. */
+  .mobile-nav[open] > summary {
+    position: relative;
+    z-index: 95;
+    background: transparent;
+    border-color: var(--line);
+  }
+
+  .mobile-nav[open] .menu-when-closed {
+    display: none;
+  }
+
+  .mobile-nav[open] .menu-when-open {
+    display: inline;
+  }
+
+  /* The brand and the waitlist chip stay visible over the sheet as well —
+     without this the paper would hide the logo and leave a blank top row.
+     The class is the script's fallback for browsers without :has(). */
+  .site-nav:has(.mobile-nav[open]) > .brand,
+  .site-nav:has(.mobile-nav[open]) > .pill,
+  html.menu-open .site-nav > .brand,
+  html.menu-open .site-nav > .pill {
+    position: relative;
+    z-index: 95;
+  }
+
+  /* The sheet carries the waitlist action itself, at the foot where a thumb
+     reaches it. The header's chip steps aside so the same call does not appear
+     twice on one screen. `visibility` rather than opacity, so it also leaves
+     the tab order. */
+  .site-nav:has(.mobile-nav[open]) > .pill,
+  html.menu-open .site-nav > .pill {
+    visibility: hidden;
+  }
+
+  .mobile-nav nav {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
     display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 16px;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    padding: calc(var(--bar-h) + 20px + env(safe-area-inset-top, 0px)) var(--page-margin)
+      calc(28px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--paper);
+  }
+
+  .menu-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu-list li {
+    border-top: 1px solid var(--line);
+  }
+
+  .menu-list li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .menu-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 22px 0;
     text-decoration: none;
   }
 
-  .mobile-nav nav a[aria-current='page'] {
-    background: var(--chip);
-    font-weight: 600;
+  /* A full-width row takes the ring inside itself: outside it would hang over
+     the hairline above and below. */
+  .menu-list a:focus-visible {
+    outline-offset: -2px;
+    border-radius: 4px;
   }
+
+  .menu-num {
+    flex: none;
+    width: 24px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .menu-label {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 10.5vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+
+  .menu-list a[aria-current='page'] .menu-num,
+  .menu-list a[aria-current='page'] .menu-label {
+    color: var(--accent);
+  }
+
+  .menu-list a[aria-current='page'] .menu-label {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 10px;
+  }
+
+  .menu-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .menu-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 0 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    text-decoration: none;
+  }
+}
+
+/* The foot of the sheet: the mono line, then the action, held to the bottom
+   edge so the paper between the entries and them is one calm field. */
+.menu-foot {
+  display: grid;
+  gap: 18px;
+  margin: auto 0 0;
+  padding-top: 24px;
+}
+
+/* The sheet and its rows arrive in order. Everything is opt-in: without this
+   media query the menu simply appears. */
+@media (prefers-reduced-motion: no-preference) {
+  .mobile-nav[open] nav {
+    animation: menu-fade 160ms ease-out both;
+  }
+
+  .mobile-nav[open] .menu-list li,
+  .mobile-nav[open] .menu-foot {
+    animation: menu-row 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .mobile-nav[open] .menu-list li:nth-child(2) {
+    animation-delay: 40ms;
+  }
+
+  .mobile-nav[open] .menu-list li:nth-child(3) {
+    animation-delay: 80ms;
+  }
+
+  .mobile-nav[open] .menu-list li:nth-child(4) {
+    animation-delay: 120ms;
+  }
+
+  .mobile-nav[open] .menu-foot {
+    animation-delay: 160ms;
+  }
+}
+
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes menu-row {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* While the sheet is open the page behind it holds still. */
+html.menu-open {
+  overflow: hidden;
+  overscroll-behavior: none;
 }

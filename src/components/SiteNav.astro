@@ -15,10 +15,12 @@ interface Props {
 
 const { waitlistHref = '/#waitlist-email', class: className = '' } = Astro.props
 const pathname = Astro.url.pathname
-/* Four entries, and no fifth: the SDK is not a section of the site the way
+/* Five entries, and no sixth: the SDK is not a section of the site the way
    these are. It is reached from the documentation, which lists it, and from
-   the footer. */
+   the footer. Home is here as well as on the brand tile, because a reader who
+   has scrolled deep into a page should not have to hunt for the way back. */
 const links = [
+  { href: '/', label: 'Home', current: pathname === '/' },
   { href: '/blog', label: 'Blog', current: pathname.startsWith('/blog') },
   { href: '/docs', label: 'Docs', current: pathname.startsWith('/docs') },
   { href: '/support', label: 'Support', current: pathname.startsWith('/support') },
@@ -52,15 +54,31 @@ const links = [
   </ul>
   <a class:list={['pill', 'mono', className]} href={waitlistHref}>Join waitlist</a>
   <details class="mobile-nav">
-    <summary>Menu</summary>
-    <nav aria-label="Mobile">
-      {
-        links.map(link => (
-          <a href={link.href} aria-current={link.current ? 'page' : undefined}>
-            {link.label}
-          </a>
-        ))
-      }
+    <summary aria-controls="mobile-menu">
+      <span class="menu-when-closed">Menu</span>
+      <span class="menu-when-open">Close</span>
+    </summary>
+    <nav id="mobile-menu" aria-label="Mobile">
+      <ul class="menu-list">
+        {
+          links.map((link, index) => (
+            <li>
+              <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+                <span class="menu-num mono" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span class="menu-label">{link.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="menu-foot">
+        <p class="menu-note mono">Free · iOS · your own iCloud</p>
+        <a class="menu-cta mono" href={waitlistHref}>
+          Join the waitlist <span aria-hidden="true">→</span>
+        </a>
+      </div>
     </nav>
   </details>
 </nav>
@@ -107,5 +125,112 @@ const links = [
     })
 
     group.addEventListener('pointerleave', hide)
+  }
+
+  // The phone menu is a full-screen sheet. <details> hands it to a reader
+  // without scripts for free; this adds the parts a disclosure cannot do on
+  // its own: the page behind stops scrolling and leaves the focus order,
+  // Escape closes it, and the chip takes the focus back when it does.
+  const mobileNav = document.querySelector<HTMLDetailsElement>('.mobile-nav')
+
+  if (mobileNav) {
+    const summary = mobileNav.querySelector('summary')
+    const sheet = mobileNav.querySelector('nav')
+    // Everything outside the header goes inert while the sheet is open. Built by
+    // walking up from the header, so it holds whichever wrapper the page puts
+    // around it — the homepage's hero holds the nav, and inerting the hero
+    // outright would leave the waitlist form live under the paper.
+    const behind: HTMLElement[] = []
+    {
+      let node: Element | null = mobileNav.closest('.site-nav')
+      while (node && node !== document.body) {
+        for (const sibling of node.parentElement?.children ?? []) {
+          if (sibling !== node) behind.push(sibling as HTMLElement)
+        }
+        node = node.parentElement
+      }
+    }
+    let returnTo: HTMLElement | null = null
+
+    const hold = (on: boolean) => {
+      document.documentElement.classList.toggle('menu-open', on)
+      // Without inert the page keeps taking screen-reader and tab traffic
+      // under the sheet. Browsers that lack it still get the focus ring and
+      // the scroll lock.
+      if ('inert' in HTMLElement.prototype) {
+        for (const element of behind) element.inert = on
+      }
+    }
+
+    mobileNav.addEventListener('toggle', () => {
+      if (mobileNav.open) {
+        returnTo = document.activeElement instanceof HTMLElement ? document.activeElement : summary
+        hold(true)
+        requestAnimationFrame(() => sheet?.querySelector('a')?.focus({ preventScroll: true }))
+      } else {
+        hold(false)
+        ;(returnTo ?? summary)?.focus?.({ preventScroll: true })
+      }
+    })
+
+    // The brand and the waitlist chip stay visible over the sheet, and they sit
+    // before the links in the document, so they are part of the ring: following
+    // the header's own controls never leaves a focused element hidden under
+    // paper.
+    const header = mobileNav.closest('.site-nav')
+    header?.addEventListener('click', event => {
+      if (!mobileNav.open) return
+      const target = event.target as HTMLElement
+      if (target.closest('summary')) return
+      const link = target.closest('a')
+      if (!link) return
+      // Only a jump inside this document wants the sheet gone at once. A real
+      // navigation keeps it up: closing on tap would hand back the page that is
+      // on its way out, and the reader would watch the old page for as long as
+      // the new one takes to arrive.
+      const url = new URL(link.href, location.href)
+      const samePage = url.origin === location.origin && url.pathname === location.pathname
+      if (samePage && url.hash) mobileNav.open = false
+    })
+
+    // Coming back to a page kept in the back/forward cache would otherwise restore
+    // it with the sheet open and the page behind still held still.
+    window.addEventListener('pageshow', event => {
+      if (event.persisted && mobileNav.open) mobileNav.open = false
+    })
+
+    document.addEventListener('keydown', event => {
+      if (!mobileNav.open || !summary) return
+
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        mobileNav.open = false
+        return
+      }
+
+      if (event.key !== 'Tab') return
+
+      const ring = [
+        ...document.querySelectorAll<HTMLElement>(
+          '.site-nav > .brand, .site-nav > .pill, .mobile-nav summary',
+        ),
+        ...mobileNav.querySelectorAll<HTMLElement>('nav a'),
+      ]
+      const at = ring.indexOf(document.activeElement as HTMLElement)
+
+      if (event.shiftKey && at <= 0) {
+        event.preventDefault()
+        ring[ring.length - 1].focus()
+      } else if (!event.shiftKey && at === ring.length - 1) {
+        event.preventDefault()
+        ring[0].focus()
+      }
+    })
+
+    // A sheet that only exists on phones must not stay open behind a desktop
+    // window, where none of its styles apply.
+    window.matchMedia('(min-width: 821px)').addEventListener('change', event => {
+      if (event.matches) mobileNav.open = false
+    })
   }
 </script>

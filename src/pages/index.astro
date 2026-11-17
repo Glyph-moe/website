@@ -192,6 +192,9 @@ const ogImage = new URL('/og-home.jpg', Astro.site)
             type="email"
             placeholder="you@example.com"
             autocomplete="email"
+            autocapitalize="none"
+            autocorrect="off"
+            spellcheck="false"
             required
           />
           <button class="go mono" type="submit">Notify me →</button>
@@ -379,20 +382,31 @@ const ogImage = new URL('/og-home.jpg', Astro.site)
       // once the section is a screen away; the zoom animates opacity and
       // transform only, so they are fully in place before they are visible.
       {
-        const deferred = [...document.querySelectorAll('[data-deferred]')]
+        // The section holds two crops of the same painting and the layout shows
+        // one of them. Assigning candidates to the hidden one makes Chrome
+        // fetch it anyway, so a phone downloaded the wide file (254 kB) for a
+        // picture with `display: none`. Only the crop on screen is promoted;
+        // the other waits for an aspect change, where it becomes the one shown.
+        const attach = (picture: Element) => {
+          for (const source of picture.querySelectorAll('source[data-srcset]')) {
+            source.setAttribute('srcset', source.getAttribute('data-srcset') ?? '')
+            source.removeAttribute('data-srcset')
+          }
+          const img = picture.querySelector('img[data-srcset]')
+          if (img) {
+            img.setAttribute('srcset', img.getAttribute('data-srcset') ?? '')
+            img.removeAttribute('data-srcset')
+          }
+          picture.removeAttribute('data-deferred')
+        }
         const promote = () => {
-          for (const picture of deferred) {
-            for (const source of picture.querySelectorAll('source[data-srcset]')) {
-              source.setAttribute('srcset', source.getAttribute('data-srcset') ?? '')
-              source.removeAttribute('data-srcset')
-            }
-            const img = picture.querySelector('img[data-srcset]')
-            if (img) {
-              img.setAttribute('srcset', img.getAttribute('data-srcset') ?? '')
-              img.removeAttribute('data-srcset')
-            }
+          for (const picture of [...document.querySelectorAll('[data-deferred]')]) {
+            if (picture.getClientRects().length > 0) attach(picture)
           }
         }
+        // Portrait windows swap the crop; whatever was waiting is the picture
+        // now on screen.
+        window.matchMedia('(max-aspect-ratio: 0.95/1)').addEventListener('change', promote)
         const zoom = document.getElementById('zoom')
         const watch = () => {
           const el = zoom
